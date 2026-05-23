@@ -27,11 +27,11 @@ export default function Schedule() {
           <div className="flex items-center gap-2 min-w-0">
             <span className="h-2 w-2 rounded-full bg-rouge animate-pulse shrink-0" />
             <span className="truncate">
-              <span className="hidden sm:inline">LIVE · MJ AIRLINES DEPARTURES</span>
-              <span className="sm:hidden">LIVE · DEPARTURES</span>
+              <span className="hidden sm:inline">Live · MJ Airways Departures</span>
+              <span className="sm:hidden">Live · Departures</span>
             </span>
           </div>
-          <span className="hidden md:inline">12 DEC 2026 · MNL</span>
+          <span className="hidden md:inline">{wedding.shortDateCompact}</span>
           <span className="shrink-0">SCHED · {wedding.schedule.length}</span>
         </div>
 
@@ -83,7 +83,7 @@ export default function Schedule() {
 
         {/* Footer */}
         <div className="bg-black/40 px-3 sm:px-4 md:px-8 py-3 flex items-center justify-between gap-2 border-t border-cream/15 font-mono uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[9px] sm:text-[10px] text-cream/60">
-          <span>FLT MJ1212</span>
+          <span>FLT {wedding.flightNumber}</span>
           <span className="hidden md:inline">PILOT IN COMMAND · J. SANTOS</span>
           <span>SYS · OK</span>
         </div>

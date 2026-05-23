@@ -2,7 +2,7 @@ import { wedding } from "@/lib/config";
 import { PaperPlane } from "@/components/Decor";
 
 export default function Marquee() {
-  const phrase = ` Flight MJ1212 · ${wedding.brideFirst} & ${wedding.groomFirst} · Departing 12.12.26 · MNL → Forever · ${wedding.hashtag} · Now Boarding · `;
+  const phrase = ` Flight ${wedding.flightNumber} · ${wedding.brideFirst} & ${wedding.groomFirst} · Departing ${wedding.shortDateCompact} · Here → Forever · ${wedding.hashtag} · Now Boarding · `;
   return (
     <div className="bg-navy text-cream py-5 overflow-hidden border-y border-gold/30">
       <div className="flex animate-[scroll_42s_linear_infinite] gap-10 whitespace-nowrap">

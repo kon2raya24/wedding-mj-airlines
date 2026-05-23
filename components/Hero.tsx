@@ -1,172 +1,303 @@
 import { wedding } from "@/lib/config";
-import { Monogram, FlightArc, PaperPlane, Barcode } from "@/components/Decor";
-import AnimatedName from "@/components/AnimatedName";
-import MagneticLink from "@/components/MagneticLink";
+import {
+  PaperPlane,
+  CalendarIcon,
+  PinIcon,
+  ClockIcon,
+  Barcode,
+  FakeQR,
+  PlayIcon,
+  VideoIcon,
+} from "@/components/Decor";
+
+function InfoChip({
+  icon,
+  text,
+}: {
+  icon: React.ReactNode;
+  text: string;
+}) {
+  return (
+    <div className="flex items-center gap-3 font-sans uppercase tracking-[0.25em] text-[11px] text-cream/85">
+      <span className="text-gold shrink-0">{icon}</span>
+      <span>{text}</span>
+    </div>
+  );
+}
+
+function BoardingPassCard() {
+  return (
+    <div className="relative bg-cream/95 text-navy rounded-md shadow-2xl shadow-navy-deep/60 overflow-hidden grid grid-cols-[1fr_auto_180px] sm:grid-cols-[1fr_auto_200px]">
+      {/* MAIN STUB */}
+      <div className="p-5 sm:p-6 md:p-7">
+        {/* Header strip */}
+        <div className="flex items-center justify-between gap-3 pb-4 border-b border-navy/10">
+          <div className="flex items-center gap-2 min-w-0">
+            <PaperPlane className="w-5 h-5 text-gold shrink-0" />
+            <div className="min-w-0">
+              <div className="font-serif text-base sm:text-lg leading-none">
+                <span className="font-semibold">MJ</span>{" "}
+                <span className="font-sans uppercase tracking-[0.3em] text-[10px] text-navy/70 align-middle ml-1">
+                  Airways
+                </span>
+              </div>
+              <div className="font-sans uppercase tracking-[0.3em] text-[9px] text-navy/55 mt-1">
+                Flight to Forever
+              </div>
+            </div>
+          </div>
+          <div className="font-sans uppercase tracking-[0.3em] text-[9px] sm:text-[10px] text-navy/55 shrink-0">
+            First Class
+          </div>
+        </div>
+
+        {/* Body grid */}
+        <div className="grid grid-cols-2 gap-x-4 sm:gap-x-6 gap-y-4 mt-5">
+          <div>
+            <dt className="font-sans uppercase tracking-[0.25em] text-[9px] text-navy/55">
+              Passenger
+            </dt>
+            <dd className="font-serif text-sm sm:text-base mt-1">You Are Invited!</dd>
+          </div>
+          <div>
+            <dt className="font-sans uppercase tracking-[0.25em] text-[9px] text-navy/55">
+              From
+            </dt>
+            <dd className="font-serif text-sm sm:text-base mt-1 flex items-center gap-2">
+              Here
+              <PaperPlane className="w-4 h-4 text-gold" />
+            </dd>
+          </div>
+
+          <div>
+            <dt className="font-sans uppercase tracking-[0.25em] text-[9px] text-navy/55">
+              Flight
+            </dt>
+            <dd className="font-serif text-sm sm:text-base mt-1">{wedding.flightNumber}</dd>
+          </div>
+          <div>
+            <dt className="font-sans uppercase tracking-[0.25em] text-[9px] text-navy/55">
+              To
+            </dt>
+            <dd className="font-serif text-sm sm:text-base mt-1">Forever</dd>
+          </div>
+
+          <div>
+            <dt className="font-sans uppercase tracking-[0.25em] text-[9px] text-navy/55">
+              Date
+            </dt>
+            <dd className="font-serif text-sm sm:text-base mt-1">{wedding.shortDateCompact}</dd>
+          </div>
+          <div>
+            <dt className="font-sans uppercase tracking-[0.25em] text-[9px] text-navy/55">
+              Destination
+            </dt>
+            <dd className="font-serif text-sm sm:text-base mt-1">{wedding.destinationVenue}</dd>
+          </div>
+
+          <div>
+            <dt className="font-sans uppercase tracking-[0.25em] text-[9px] text-navy/55">
+              Boarding Time
+            </dt>
+            <dd className="font-serif text-sm sm:text-base mt-1">{wedding.boardingTime}</dd>
+          </div>
+          <div>
+            <dt className="font-sans uppercase tracking-[0.25em] text-[9px] text-navy/55">
+              Dress Code
+            </dt>
+            <dd className="font-serif text-sm sm:text-base mt-1">{wedding.dressCode}</dd>
+          </div>
+        </div>
+
+        {/* Footer line */}
+        <div className="mt-6 pt-4 border-t border-dashed border-navy/20 text-center font-sans uppercase tracking-[0.35em] text-[10px] text-navy/65">
+          Together is our favorite destination ♡
+        </div>
+      </div>
+
+      {/* Tear line */}
+      <div className="relative w-px">
+        <div className="absolute inset-y-3 left-1/2 -translate-x-1/2 w-px border-l border-dashed border-navy/30" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 h-4 w-4 rounded-full bg-navy" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 h-4 w-4 rounded-full bg-navy" />
+      </div>
+
+      {/* RIGHT STUB */}
+      <div className="bg-cream/95 p-5 sm:p-6 flex flex-col">
+        <div>
+          <div className="font-sans uppercase tracking-[0.25em] text-[9px] text-navy/55">
+            Seat / Table
+          </div>
+          <div className="font-serif text-2xl sm:text-3xl mt-1 leading-none">{wedding.seat}</div>
+        </div>
+
+        <div className="mt-5">
+          <div className="font-sans uppercase tracking-[0.25em] text-[9px] text-navy/55">
+            Gate
+          </div>
+          <div className="font-serif text-base sm:text-lg mt-1 leading-tight">
+            {wedding.gate.split(" ").map((w, i) => (
+              <span key={i} className="block uppercase tracking-wide">
+                {w}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-5 text-navy">
+          <Barcode className="w-full h-10" />
+        </div>
+        <div className="mt-4 bg-white p-1 rounded-sm self-start text-navy">
+          <FakeQR className="w-16 h-16 sm:w-20 sm:h-20" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PrenupCard() {
+  return (
+    <div className="relative bg-navy-deep/40 backdrop-blur-sm border border-cream/15 rounded-md overflow-hidden shadow-2xl shadow-navy-deep/50">
+      <div className="flex items-center gap-2 px-4 sm:px-5 py-3 border-b border-cream/10">
+        <VideoIcon className="w-4 h-4 text-gold" />
+        <span className="font-sans uppercase tracking-[0.3em] text-[10px] text-cream/85">
+          Our Prenup Video
+        </span>
+      </div>
+
+      <div className="relative aspect-[16/10]">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url('${wedding.prenup.coverImage}')`,
+          }}
+          aria-hidden
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/80 via-navy/30 to-transparent" />
+
+        {/* Name overlay */}
+        <div className="absolute inset-x-4 sm:inset-x-5 top-1/2 -translate-y-1/2 text-center">
+          <p className="font-script text-3xl sm:text-4xl text-cream leading-none">
+            {wedding.brideFirst} &amp; {wedding.groomFirst}
+          </p>
+          <p className="font-sans uppercase tracking-[0.3em] text-[10px] text-gold mt-2">
+            {wedding.prenup.tagline}
+          </p>
+        </div>
+
+        {/* Mock video controls */}
+        <div className="absolute inset-x-0 bottom-0 px-4 py-3 flex items-center gap-3 bg-navy-deep/60 text-cream/90 font-mono text-[10px]">
+          <button
+            aria-label="Play preview"
+            className="w-7 h-7 rounded-full grid place-items-center bg-cream/10 hover:bg-gold hover:text-navy transition-colors"
+          >
+            <PlayIcon className="w-3.5 h-3.5" />
+          </button>
+          <span className="shrink-0">0:00 / {wedding.prenup.duration}</span>
+          <div className="flex-1 h-1 bg-cream/15 rounded-full overflow-hidden">
+            <div className="h-full w-[3%] bg-gold" />
+          </div>
+        </div>
+      </div>
+
+      <div className="px-4 sm:px-5 py-4">
+        <a
+          href={wedding.prenup.videoUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="w-full inline-flex items-center justify-center gap-2 font-sans uppercase tracking-[0.3em] text-[10px] px-5 py-3 bg-cream/10 hover:bg-gold hover:text-navy text-cream rounded-sm transition-colors"
+        >
+          <PlayIcon className="w-3.5 h-3.5" />
+          Watch Full Video
+        </a>
+      </div>
+    </div>
+  );
+}
 
 export default function Hero() {
   return (
     <section
       id="top"
-      className="relative min-h-[100svh] flex items-center justify-center overflow-hidden bg-navy"
+      className="relative min-h-[100svh] flex items-center overflow-hidden bg-navy-deep pt-16 sm:pt-20"
     >
-      {/* Background — clouds / sky */}
+      {/* Background — airplane / clouds */}
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-55"
+        className="absolute inset-0 bg-cover bg-center opacity-45"
         style={{
           backgroundImage:
-            "url('https://images.unsplash.com/photo-1473625247510-8ceb1760943f?w=2000&q=85')",
+            "url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=2400&q=85')",
         }}
         aria-hidden
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-navy-deep/60 via-navy/30 to-navy" aria-hidden />
-      <div className="absolute inset-0 [background:radial-gradient(ellipse_at_center,transparent_40%,rgba(8,26,46,0.85)_100%)]" aria-hidden />
+      <div className="absolute inset-0 bg-gradient-to-b from-navy-deep/70 via-navy-deep/40 to-navy-deep" aria-hidden />
+      <div className="absolute inset-0 bg-gradient-to-r from-navy-deep via-navy-deep/40 to-transparent" aria-hidden />
 
-      {/* Airline header strip */}
-      <div className="absolute top-0 inset-x-0 z-10 border-b border-cream/15 backdrop-blur-sm bg-navy-deep/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 py-3 flex items-center justify-between font-mono uppercase tracking-[0.18em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] text-cream/70 gap-2">
-          <span className="flex items-center gap-2 shrink-0">
-            <span className="text-gold">●</span> M &amp; J AIRLINES
-          </span>
-          <span className="hidden md:inline">FLIGHT MJ · 12.12.26 · MNL → ∞</span>
-          <span className="shrink-0">BOARDING PASS</span>
-        </div>
-      </div>
-
-      <div className="relative z-10 w-full max-w-6xl px-4 sm:px-6 pt-24 pb-12 animate-fade-in">
-        {/* Pre-title */}
-        <div className="text-center mb-6">
-          <p className="font-sans uppercase tracking-[0.6em] text-[10px] md:text-xs text-gold mb-3">
-            Now boarding
-          </p>
-          <h1 className="font-script text-[clamp(3.5rem,11vw,11rem)] text-cream leading-[0.85]">
-            <AnimatedName text={wedding.brideFirst} />
-            <span className="text-gold mx-2 md:mx-4 align-middle">&amp;</span>
-            <AnimatedName text={wedding.groomFirst} delay={500} />
-          </h1>
-          <p className="font-serif italic text-cream/70 text-lg md:text-xl mt-3">
-            invite you to take flight with them
-          </p>
-        </div>
-
-        {/* Boarding pass card */}
-        <div className="mt-10 mx-auto max-w-4xl">
-          <div className="relative bg-cream text-navy rounded-md overflow-hidden shadow-2xl shadow-navy-deep/60 grid grid-cols-1 md:grid-cols-[1fr_auto_180px]">
-            {/* Decorative corner sprig — removed in favor of clean stub */}
-
-            {/* MAIN STUB */}
-            <div className="p-5 sm:p-6 md:p-8 relative">
-              <div className="flex items-center justify-between mb-5 sm:mb-6 gap-3">
-                <div className="flex items-center gap-2 min-w-0">
-                  <Monogram className="w-9 h-9 sm:w-10 sm:h-10 text-gold shrink-0" />
-                  <div className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] min-w-0">
-                    <div className="text-navy truncate">M&amp;J Airlines</div>
-                    <div className="text-navy/60 truncate">Boarding Pass</div>
-                  </div>
-                </div>
-                <div className="font-mono text-[9px] sm:text-[10px] tracking-widest text-navy/50 shrink-0">
-                  MJ · 12.12.26
-                </div>
-              </div>
-
-              {/* Route */}
-              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-4 mb-6">
-                <div className="min-w-0">
-                  <div className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] text-navy/55">From</div>
-                  <div className="font-serif text-2xl sm:text-3xl md:text-4xl mt-1 leading-none">MNL</div>
-                  <div className="font-sans text-[11px] sm:text-xs text-navy/70 mt-1">Manila</div>
-                </div>
-                <div className="text-gold shrink-0">
-                  <FlightArc className="w-14 sm:w-32 md:w-44 h-10 sm:h-12" />
-                </div>
-                <div className="text-right min-w-0">
-                  <div className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] text-navy/55">To</div>
-                  <div className="font-serif text-xl sm:text-3xl md:text-4xl mt-1 leading-none">FOREVER</div>
-                  <div className="font-sans text-[11px] sm:text-xs text-navy/70 mt-1">Together</div>
-                </div>
-              </div>
-
-              <div className="perforation text-gold/60 my-6" />
-
-              {/* Pass details */}
-              <dl className="grid grid-cols-2 sm:grid-cols-4 gap-x-3 gap-y-4 sm:gap-4 text-left">
-                <div>
-                  <dt className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[9px] text-navy/55">Passenger</dt>
-                  <dd className="font-serif text-sm sm:text-base mt-1">You + 1</dd>
-                </div>
-                <div>
-                  <dt className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[9px] text-navy/55">Date</dt>
-                  <dd className="font-serif text-sm sm:text-base mt-1">12 Dec 2026</dd>
-                </div>
-                <div>
-                  <dt className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[9px] text-navy/55">Gate</dt>
-                  <dd className="font-serif text-sm sm:text-base mt-1">San Agustin</dd>
-                </div>
-                <div>
-                  <dt className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[9px] text-navy/55">Boarding</dt>
-                  <dd className="font-serif text-sm sm:text-base mt-1">14:00</dd>
-                </div>
-              </dl>
+      <div className="relative z-10 w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 py-10 lg:py-14 animate-fade-in">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+          {/* LEFT — names + chips + CTAs */}
+          <div className="lg:col-span-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 border border-cream/30 rounded-full font-sans uppercase tracking-[0.3em] text-[10px] text-cream/85 mb-6">
+              <PaperPlane className="w-3.5 h-3.5 text-gold" />
+              Boarding Soon
             </div>
 
-            {/* Tear line */}
-            <div className="hidden md:block relative">
-              <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-px border-l border-dashed border-navy/30" />
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 h-4 w-4 rounded-full bg-navy" />
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 h-4 w-4 rounded-full bg-navy" />
+            <h1 className="font-serif text-cream leading-[0.95]">
+              <span className="block text-5xl sm:text-6xl md:text-7xl font-semibold uppercase tracking-tight">
+                {wedding.brideFirst}
+              </span>
+              <span className="block text-5xl sm:text-6xl md:text-7xl font-semibold uppercase tracking-tight">
+                <span className="text-gold">&amp;</span> {wedding.groomFirst}
+              </span>
+            </h1>
+
+            <p className="font-script text-2xl sm:text-3xl text-cream/85 mt-4">
+              flight {wedding.flightNumber.toLowerCase()} to forever
+            </p>
+
+            <div className="mt-8 space-y-3">
+              <InfoChip
+                icon={<CalendarIcon className="w-4 h-4" />}
+                text={wedding.shortDateCompact}
+              />
+              <InfoChip
+                icon={<PinIcon className="w-4 h-4" />}
+                text={wedding.destinationVenue}
+              />
+              <InfoChip
+                icon={<ClockIcon className="w-4 h-4" />}
+                text={wedding.ceremonyTime}
+              />
             </div>
 
-            {/* RIGHT STUB */}
-            <div className="bg-navy text-cream p-5 sm:p-6 md:p-8 relative flex flex-col">
-              <div className="font-sans uppercase tracking-[0.3em] text-[9px] text-gold mb-2">Stub</div>
-              <div className="font-script text-3xl text-cream leading-none mb-4">
-                M &amp; J
-              </div>
-              <div className="space-y-2 font-mono text-[10px] text-cream/80 mb-4">
-                <div>SEAT · 12A</div>
-                <div>FLT  · MJ1212</div>
-                <div>GATE · MNL-A</div>
-              </div>
-              <div className="mt-auto text-gold">
-                <Barcode className="w-full h-10" />
-                <div className="font-mono text-[9px] text-center mt-1 tracking-widest text-cream/70 truncate">
-                  MARJORIE+JOSEPH-12122026
-                </div>
-              </div>
+            <div className="mt-8 flex flex-col sm:flex-row gap-3">
+              <a
+                href="#checkin"
+                className="inline-flex items-center justify-center gap-2 font-sans uppercase tracking-[0.3em] text-[11px] px-6 py-3.5 bg-cream text-navy-deep rounded-sm hover:bg-gold transition-colors shadow-lg shadow-navy-deep/40"
+              >
+                <PaperPlane className="w-4 h-4" />
+                Begin Check-in
+              </a>
+              <a
+                href="#schedule"
+                className="inline-flex items-center justify-center gap-2 font-sans uppercase tracking-[0.3em] text-[11px] px-6 py-3.5 border border-cream/50 text-cream rounded-sm hover:bg-cream/10 transition-colors"
+              >
+                View Flight Details
+              </a>
             </div>
           </div>
 
-          {/* Decorative paper plane crossing the stub */}
-          <PaperPlane className="hidden md:block w-10 h-10 text-gold absolute right-[12%] -mt-12 rotate-12 animate-float-slow" />
-        </div>
+          {/* CENTER — boarding pass */}
+          <div className="lg:col-span-5">
+            <BoardingPassCard />
+          </div>
 
-        {/* CTAs */}
-        <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <MagneticLink
-            href="#rsvp"
-            className="font-sans uppercase tracking-[0.3em] sm:tracking-[0.4em] text-[10px] px-6 sm:px-8 py-4 bg-gold text-navy hover:bg-cream transition-colors shadow-lg shadow-navy-deep/40"
-            strength={0.4}
-          >
-            Confirm boarding <span>→</span>
-          </MagneticLink>
-          <MagneticLink
-            href="#story"
-            className="font-sans uppercase tracking-[0.3em] sm:tracking-[0.4em] text-[10px] text-cream/80 hover:text-gold transition-colors"
-            strength={0.3}
-          >
-            Read flight log
-          </MagneticLink>
+          {/* RIGHT — prenup video */}
+          <div className="lg:col-span-3">
+            <PrenupCard />
+          </div>
         </div>
       </div>
-
-      {/* Scroll cue */}
-      <a
-        href="#countdown"
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-cream/50 hover:text-gold transition-colors"
-        aria-label="Scroll down"
-      >
-        <span className="font-sans uppercase tracking-[0.4em] text-[9px]">Pre-departure</span>
-        <span className="w-px h-10 bg-cream/30 animate-pulse" />
-      </a>
     </section>
   );
 }

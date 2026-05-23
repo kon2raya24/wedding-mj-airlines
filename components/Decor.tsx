@@ -144,7 +144,7 @@ export function PassportStamp({
         fill="currentColor"
         letterSpacing="3"
       >
-        12 DEC 2026
+        NOV 26 2026
       </text>
     </svg>
   );
@@ -251,6 +251,219 @@ export function CornerSprig({ className = "" }: SvgProps) {
       <path d="M0 0 L120 0 L120 24" stroke="currentColor" strokeWidth="1.2" />
       <path d="M0 0 L0 24" stroke="currentColor" strokeWidth="1.2" />
       <text x="12" y="60" fontFamily="var(--font-sans), sans-serif" fontSize="10" letterSpacing="2" fill="currentColor">M&amp;J</text>
+    </svg>
+  );
+}
+
+// --- New UI icons -------------------------------------------------
+
+export function MJLogo({ className = "" }: SvgProps) {
+  return (
+    <svg viewBox="0 0 120 60" className={className} fill="none" aria-hidden>
+      <text
+        x="2"
+        y="44"
+        fontFamily="var(--font-serif), serif"
+        fontSize="42"
+        fontWeight="500"
+        letterSpacing="2"
+        fill="currentColor"
+      >
+        M
+      </text>
+      <text
+        x="52"
+        y="44"
+        fontFamily="var(--font-serif), serif"
+        fontSize="42"
+        fontWeight="300"
+        fill="currentColor"
+        opacity="0.5"
+      >
+        |
+      </text>
+      <text
+        x="68"
+        y="44"
+        fontFamily="var(--font-serif), serif"
+        fontSize="42"
+        fontWeight="500"
+        letterSpacing="2"
+        fill="currentColor"
+      >
+        J
+      </text>
+      <g transform="translate(98, 14) rotate(-8)">
+        <path d="M0 6 L18 0 L13 18 L9 11 L0 6 Z" fill="currentColor" opacity="0.85" />
+      </g>
+    </svg>
+  );
+}
+
+export function CalendarIcon({ className = "" }: SvgProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="3" y="5" width="18" height="16" rx="2" />
+      <path d="M3 9h18" />
+      <path d="M8 3v4M16 3v4" />
+    </svg>
+  );
+}
+
+export function PinIcon({ className = "" }: SvgProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M12 22s7-7.5 7-13a7 7 0 1 0-14 0c0 5.5 7 13 7 13Z" />
+      <circle cx="12" cy="9" r="2.6" />
+    </svg>
+  );
+}
+
+export function ClockIcon({ className = "" }: SvgProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
+    </svg>
+  );
+}
+
+export function GiftIcon({ className = "" }: SvgProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="3" y="9" width="18" height="11" rx="1.5" />
+      <path d="M3 13h18" />
+      <path d="M12 9v11" />
+      <path d="M12 9c-2 0-4-1.2-4-3a2 2 0 0 1 4 0 2 2 0 0 1 4 0c0 1.8-2 3-4 3Z" />
+    </svg>
+  );
+}
+
+export function CameraIcon({ className = "" }: SvgProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M4 8h3l2-2h6l2 2h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z" />
+      <circle cx="12" cy="13" r="3.6" />
+    </svg>
+  );
+}
+
+export function UsersIcon({ className = "" }: SvgProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <circle cx="9" cy="9" r="3.2" />
+      <circle cx="17" cy="10" r="2.4" />
+      <path d="M3 19c0-2.8 2.7-5 6-5s6 2.2 6 5" />
+      <path d="M15 19c0-2 1.6-3.6 4-3.8" />
+    </svg>
+  );
+}
+
+export function ItineraryIcon({ className = "" }: SvgProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M3 20 L11 9 L17 16 L21 4" />
+      <circle cx="11" cy="9" r="1.6" fill="currentColor" />
+      <circle cx="17" cy="16" r="1.6" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function HourglassIcon({ className = "" }: SvgProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M6 3h12" />
+      <path d="M6 21h12" />
+      <path d="M7 3c0 5 5 6 5 9s-5 4-5 9" />
+      <path d="M17 3c0 5-5 6-5 9s5 4 5 9" />
+    </svg>
+  );
+}
+
+export function PlayIcon({ className = "" }: SvgProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden>
+      <path d="M8 5v14l11-7L8 5z" />
+    </svg>
+  );
+}
+
+export function VideoIcon({ className = "" }: SvgProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="3" y="6" width="14" height="12" rx="2" />
+      <path d="M17 10l4-2v8l-4-2z" />
+    </svg>
+  );
+}
+
+export function FacebookIcon({ className = "" }: SvgProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden>
+      <path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.7c0-.93.26-1.56 1.6-1.56h1.7V4.27c-.3-.04-1.3-.13-2.46-.13-2.43 0-4.1 1.48-4.1 4.2v2.46H7.6V14h2.65v8h3.25Z" />
+    </svg>
+  );
+}
+
+export function InstagramIcon({ className = "" }: SvgProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.4" cy="6.6" r="1" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function TikTokIcon({ className = "" }: SvgProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden>
+      <path d="M16.6 3h-2.8v12.4a2.4 2.4 0 1 1-2.4-2.4v-2.8a5.2 5.2 0 1 0 5.2 5.2V8.7a6.4 6.4 0 0 0 4 1.4V7.3a3.7 3.7 0 0 1-2.8-1.2A3.7 3.7 0 0 1 16.6 3Z" />
+    </svg>
+  );
+}
+
+export function YouTubeIcon({ className = "" }: SvgProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden>
+      <path d="M22.5 7.2c-.25-1.4-1.3-2.46-2.7-2.7C17.6 4 12 4 12 4s-5.6 0-7.8.5C2.8 4.74 1.75 5.8 1.5 7.2 1 9.4 1 12 1 12s0 2.6.5 4.8c.25 1.4 1.3 2.46 2.7 2.7 2.2.5 7.8.5 7.8.5s5.6 0 7.8-.5c1.4-.24 2.45-1.3 2.7-2.7.5-2.2.5-4.8.5-4.8s0-2.6-.5-4.8ZM10 15.5v-7l6 3.5-6 3.5Z" />
+    </svg>
+  );
+}
+
+// Simple stylized QR-like pattern. Not a real QR code — purely decorative.
+export function FakeQR({ className = "" }: SvgProps) {
+  // deterministic pseudo-random pattern
+  const cells: { x: number; y: number }[] = [];
+  for (let y = 0; y < 21; y++) {
+    for (let x = 0; x < 21; x++) {
+      const v = ((x * 31 + y * 17 + x * y) % 7) === 0 || ((x + y * 3) % 11) === 1;
+      if (v) cells.push({ x, y });
+    }
+  }
+  return (
+    <svg viewBox="0 0 21 21" className={className} aria-hidden shapeRendering="crispEdges">
+      <rect width="21" height="21" fill="white" />
+      {/* corner finder squares */}
+      {[
+        { x: 0, y: 0 },
+        { x: 14, y: 0 },
+        { x: 0, y: 14 },
+      ].map((p, i) => (
+        <g key={i}>
+          <rect x={p.x} y={p.y} width="7" height="7" fill="currentColor" />
+          <rect x={p.x + 1} y={p.y + 1} width="5" height="5" fill="white" />
+          <rect x={p.x + 2} y={p.y + 2} width="3" height="3" fill="currentColor" />
+        </g>
+      ))}
+      {cells.map((c, i) => {
+        const inCorner =
+          (c.x < 8 && c.y < 8) ||
+          (c.x > 12 && c.y < 8) ||
+          (c.x < 8 && c.y > 12);
+        if (inCorner) return null;
+        return <rect key={i} x={c.x} y={c.y} width="1" height="1" fill="currentColor" />;
+      })}
     </svg>
   );
 }

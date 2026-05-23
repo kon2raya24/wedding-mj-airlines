@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { wedding } from "@/lib/config";
-import { FloralDivider } from "@/components/Decor";
-import Odometer from "@/components/Odometer";
+import { PaperPlane } from "@/components/Decor";
 
 type Parts = { days: number; hours: number; minutes: number; seconds: number };
 
@@ -26,59 +25,57 @@ export default function Countdown() {
     return () => clearInterval(id);
   }, [target]);
 
-  const items: Array<{ label: string; value: number; pad: number }> = parts
+  const items: Array<{ label: string; value: number }> = parts
     ? [
-        { label: "Days", value: parts.days, pad: 3 },
-        { label: "Hours", value: parts.hours, pad: 2 },
-        { label: "Minutes", value: parts.minutes, pad: 2 },
-        { label: "Seconds", value: parts.seconds, pad: 2 },
+        { label: "Days", value: parts.days },
+        { label: "Hrs", value: parts.hours },
+        { label: "Mins", value: parts.minutes },
+        { label: "Secs", value: parts.seconds },
       ]
     : [
-        { label: "Days", value: 0, pad: 3 },
-        { label: "Hours", value: 0, pad: 2 },
-        { label: "Minutes", value: 0, pad: 2 },
-        { label: "Seconds", value: 0, pad: 2 },
+        { label: "Days", value: 0 },
+        { label: "Hrs", value: 0 },
+        { label: "Mins", value: 0 },
+        { label: "Secs", value: 0 },
       ];
 
   return (
-    <section id="countdown" className="section">
-      <div className="section-title">
-        <p className="section-eyebrow">Estimated Time of Arrival</p>
-        <h2 className="section-heading">Until take-off</h2>
-        <FloralDivider className="mt-6" />
-      </div>
+    <section
+      id="countdown"
+      className="relative bg-cream rounded-md border border-navy/10 shadow-sm overflow-hidden h-full"
+    >
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-90"
+        style={{
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1569154941061-e231b4725ef1?w=1600&q=85')",
+        }}
+        aria-hidden
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-cream via-cream/85 to-cream/20" aria-hidden />
 
-      <div className="max-w-4xl mx-auto bg-navy text-cream rounded-md p-4 sm:p-6 md:p-10 shadow-2xl shadow-navy-deep/40 relative grain border border-cream/10">
-        <div className="flex items-center justify-between gap-2 mb-5 sm:mb-6 font-mono uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] text-cream/60">
-          <span className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-rouge animate-pulse" />
-            LIVE
-          </span>
-          <span className="hidden sm:inline">FLIGHT MJ1212</span>
-          <span>MNL → ∞</span>
+      <div className="relative p-6 sm:p-8 lg:p-10 h-full flex flex-col">
+        <div className="flex items-center gap-2 font-sans uppercase tracking-[0.3em] text-[11px] text-navy mb-6">
+          Final Boarding Call
+          <PaperPlane className="w-4 h-4 text-gold" />
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-4 gap-4 sm:gap-6 max-w-md">
           {items.map((it) => (
-            <div
-              key={it.label}
-              className="bg-navy-deep border border-cream/10 rounded text-center py-4 sm:py-6 px-2 sm:px-3 relative overflow-hidden"
-            >
-              <div className="font-mono text-4xl sm:text-6xl md:text-7xl text-gold leading-none">
-                <Odometer value={it.value} pad={it.pad} />
+            <div key={it.label}>
+              <div className="font-serif text-4xl sm:text-5xl md:text-6xl text-navy leading-none tabular-nums">
+                {String(it.value).padStart(2, "0")}
               </div>
-              <div className="font-sans uppercase tracking-[0.3em] sm:tracking-[0.4em] text-[9px] sm:text-[10px] text-cream/60 mt-2 sm:mt-3">
+              <div className="font-sans uppercase tracking-[0.3em] text-[10px] text-navy/55 mt-2">
                 {it.label}
               </div>
-              <div className="absolute inset-x-0 top-1/2 h-px bg-cream/5" />
             </div>
           ))}
         </div>
 
-        <div className="mt-5 sm:mt-6 flex items-center justify-between gap-2 font-mono text-[9px] sm:text-[10px] tracking-widest text-cream/50">
-          <span>SCHED · 14:00 PHT</span>
-          <span>STATUS · ON-TIME</span>
-        </div>
+        <p className="font-serif italic text-navy/75 text-base sm:text-lg mt-6 sm:mt-8">
+          We can&apos;t wait to celebrate with you!
+        </p>
       </div>
     </section>
   );

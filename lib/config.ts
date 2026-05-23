@@ -3,10 +3,21 @@ export const wedding = {
   brideLast: "Dela Cruz",
   groomFirst: "Joseph",
   groomLast: "Santos",
-  hashtag: "#MarjorieAndJoseph2026",
-  shortDate: "December 12, 2026",
+  hashtag: "#MJ1126",
+  brand: "MJ Airways",
+  tagline: "Flight to Forever",
+  flightNumber: "MJ1126",
+  seat: "26A",
+  gate: "Forever Hall",
+  destinationVenue: "The Glass Garden",
+  shortDate: "November 26, 2026",
+  shortDateCompact: "NOV 26, 2026",
   // ISO with PH timezone offset (+08:00)
-  date: "2026-12-12T14:00:00+08:00",
+  date: "2026-11-26T15:00:00+08:00",
+  ceremonyTime: "3:00 PM",
+  boardingTime: "02:30 PM",
+  rsvpCloseDate: "November 1, 2026",
+  dressCode: "Formal Attire",
 
   story: [
     {
@@ -33,7 +44,7 @@ export const wedding = {
     {
       year: "2026",
       title: "Final destination · Forever",
-      body: "Manila, December 12. The runway is clear, the cabin is full of our favorite people, and we finally take off — for good. Thank you for flying with us.",
+      body: "Manila, November 26. The runway is clear, the cabin is full of our favorite people, and we finally take off — for good. Thank you for flying with us.",
       city: "Manila, PH",
       code: "∞",
     },
@@ -41,29 +52,29 @@ export const wedding = {
 
   ceremony: {
     title: "Ceremony",
-    time: "2:00 PM",
-    venue: "San Agustin Church",
-    address: "General Luna St, Intramuros, Manila",
-    dressCode: "Formal — blush, champagne, sage tones",
-    mapsUrl: "https://maps.google.com/?q=San+Agustin+Church+Intramuros",
+    time: "3:00 PM",
+    venue: "The Glass Garden",
+    address: "Forever Hall, The Glass Garden, Manila",
+    dressCode: "Formal Attire",
+    mapsUrl: "https://maps.google.com/?q=The+Glass+Garden+Manila",
   },
   reception: {
     title: "Reception",
-    time: "5:00 PM",
-    venue: "The Manila Hotel — Fiesta Pavilion",
-    address: "One Rizal Park, Manila",
+    time: "5:30 PM",
+    venue: "The Glass Garden — Forever Hall",
+    address: "Forever Hall, The Glass Garden, Manila",
     dressCode: "Formal cocktail attire",
-    mapsUrl: "https://maps.google.com/?q=Manila+Hotel+Fiesta+Pavilion",
+    mapsUrl: "https://maps.google.com/?q=The+Glass+Garden+Forever+Hall+Manila",
   },
 
   schedule: [
-    { time: "1:30 PM", title: "Guest Arrival", note: "Welcome drinks at the church courtyard" },
-    { time: "2:00 PM", title: "Ceremony Begins", note: "Please be seated by 1:50 PM" },
-    { time: "3:30 PM", title: "Photo Session", note: "Family & wedding party photos" },
-    { time: "5:00 PM", title: "Cocktail Hour", note: "Fiesta Pavilion garden" },
-    { time: "6:30 PM", title: "Reception & Dinner", note: "Speeches, dinner, first dance" },
-    { time: "9:00 PM", title: "Party & Dancing", note: "Open floor — wear comfy shoes!" },
-    { time: "11:00 PM", title: "Send-off", note: "Sparkler exit — drive safe!" },
+    { time: "2:30 PM", title: "Guest Arrival", note: "Welcome drinks at the garden foyer" },
+    { time: "3:00 PM", title: "Ceremony Begins", note: "Please be seated by 2:50 PM" },
+    { time: "4:30 PM", title: "Photo Session", note: "Family & wedding party photos" },
+    { time: "5:30 PM", title: "Cocktail Hour", note: "Glass Garden terrace" },
+    { time: "7:00 PM", title: "Reception & Dinner", note: "Speeches, dinner, first dance" },
+    { time: "9:30 PM", title: "Party & Dancing", note: "Open floor — wear comfy shoes!" },
+    { time: "11:30 PM", title: "Send-off", note: "Sparkler exit — drive safe!" },
   ],
 
   party: {
@@ -90,22 +101,30 @@ export const wedding = {
     { src: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800", alt: "Candid laughter" },
   ],
 
+  prenup: {
+    coverImage:
+      "https://images.unsplash.com/photo-1519741497674-611481863552?w=1600&q=85",
+    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    duration: "4:52",
+    tagline: "Our Journey to Forever",
+  },
+
   travel: [
     {
-      name: "The Manila Hotel",
-      distance: "On-site (reception venue)",
+      name: "The Glass Garden Inn",
+      distance: "On-site (venue rooms)",
       note: "Special block-rate available — mention 'Santos-Dela Cruz Wedding' when booking.",
-      link: "https://manila-hotel.com.ph",
+      link: "#",
     },
     {
       name: "Bayleaf Intramuros",
-      distance: "5 minutes from church",
+      distance: "12 minutes from venue",
       note: "Boutique hotel with rooftop bar. Great for smaller groups.",
       link: "#",
     },
     {
       name: "Diamond Hotel Philippines",
-      distance: "8 minutes from reception",
+      distance: "15 minutes from venue",
       note: "Family-friendly with pool — good for guests with kids.",
       link: "#",
     },
@@ -114,7 +133,7 @@ export const wedding = {
   registry: [
     {
       title: "GCash",
-      handle: "Marjorie D. — 09XX-XXX-1212",
+      handle: "Marjorie D. — 09XX-XXX-1126",
       note: "Quick & easy — just scan our QR at the reception entrance.",
     },
     {
@@ -144,7 +163,7 @@ export const wedding = {
     },
     {
       q: "Is there parking?",
-      a: "Yes — both venues have ample parking. We also have a shuttle running between the church and reception from 3:00 PM to 4:30 PM.",
+      a: "Yes — the Glass Garden has ample parking on-site. Valet is available from 2:00 PM onward.",
     },
     {
       q: "What if I have a dietary restriction?",
@@ -158,7 +177,14 @@ export const wedding = {
 
   social: {
     instagram: "@marjorie.j.santos",
+    facebook: "#",
+    tiktok: "#",
+    youtube: "#",
     spotifyPlaylist: "#",
+  },
+
+  contact: {
+    email: "hello@marjorieandjoseph.com",
   },
 
   quote: {

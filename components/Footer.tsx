@@ -1,51 +1,84 @@
 import { wedding } from "@/lib/config";
-import { Monogram, FloralDivider, PaperPlane, Barcode } from "@/components/Decor";
+import {
+  MJLogo,
+  FacebookIcon,
+  InstagramIcon,
+  TikTokIcon,
+  YouTubeIcon,
+} from "@/components/Decor";
 
 export default function Footer() {
   return (
-    <footer className="relative bg-navy-deep text-cream py-16 sm:py-20 px-4 sm:px-6 text-center overflow-hidden">
-      <div className="absolute inset-0 opacity-[0.04] [background:radial-gradient(circle_at_2px_2px,rgba(246,239,224,1)_1px,transparent_0)] [background-size:26px_26px]" aria-hidden />
+    <footer className="relative bg-navy-deep text-cream py-10 sm:py-12 border-t border-cream/10">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+        {/* Left — brand */}
+        <div className="flex items-center gap-3 justify-center md:justify-start">
+          <MJLogo className="w-14 h-8 text-cream" />
+          <div className="font-sans uppercase tracking-[0.3em] text-[9px] text-cream/70 leading-tight border-l border-cream/30 pl-3">
+            Flight to
+            <br />
+            Forever
+          </div>
+        </div>
 
-      <Monogram className="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-gold mb-6" />
+        {/* Center — hashtag + socials */}
+        <div className="flex flex-col items-center gap-4">
+          <div className="font-script text-2xl text-gold">{wedding.hashtag}</div>
+          <ul className="flex items-center gap-5 text-cream/85">
+            <li>
+              <a
+                href={wedding.social.facebook}
+                aria-label="Facebook"
+                className="hover:text-gold transition-colors"
+              >
+                <FacebookIcon className="w-5 h-5" />
+              </a>
+            </li>
+            <li>
+              <a
+                href={`https://instagram.com/${wedding.social.instagram.replace(/^@/, "")}`}
+                aria-label="Instagram"
+                className="hover:text-gold transition-colors"
+              >
+                <InstagramIcon className="w-5 h-5" />
+              </a>
+            </li>
+            <li>
+              <a
+                href={wedding.social.tiktok}
+                aria-label="TikTok"
+                className="hover:text-gold transition-colors"
+              >
+                <TikTokIcon className="w-5 h-5" />
+              </a>
+            </li>
+            <li>
+              <a
+                href={wedding.social.youtube}
+                aria-label="YouTube"
+                className="hover:text-gold transition-colors"
+              >
+                <YouTubeIcon className="w-5 h-5" />
+              </a>
+            </li>
+          </ul>
+        </div>
 
-      <p className="font-script text-5xl sm:text-6xl md:text-7xl mb-3">
-        {wedding.brideFirst} &amp; {wedding.groomFirst}
-      </p>
-      <p className="font-mono uppercase tracking-[0.25em] sm:tracking-[0.4em] text-[10px] sm:text-[11px] text-cream/60 mb-1 flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
-        <PaperPlane className="w-4 h-4 text-gold" />
-        <span>FLIGHT MJ1212 · 12.12.26 · MNL → ∞</span>
-      </p>
-
-      <FloralDivider className="!text-gold/70 mt-8 mb-8" />
-
-      <div className="font-serif italic text-cream/70 mb-3">
-        Tag your inflight memories
+        {/* Right — copyright + contact */}
+        <div className="flex flex-col items-center md:items-end gap-2">
+          <div className="text-center md:text-right font-sans text-[11px] text-cream/55">
+            <a
+              href={`mailto:${wedding.contact.email}`}
+              className="block font-sans uppercase tracking-[0.3em] text-[10px] text-cream/70 hover:text-gold transition-colors mb-1"
+            >
+              Need Help? Contact Us
+            </a>
+            © {new Date().getFullYear()} {wedding.brideFirst} &amp; {wedding.groomFirst}.
+            <br />
+            All rights reserved.
+          </div>
+        </div>
       </div>
-      <div className="font-script text-3xl sm:text-4xl text-gold mb-10 break-words px-2">
-        {wedding.hashtag}
-      </div>
-
-      <div className="flex flex-wrap justify-center items-center gap-x-6 sm:gap-x-8 gap-y-2 font-sans uppercase tracking-[0.3em] sm:tracking-[0.4em] text-[10px] text-cream/70 mb-10">
-        <a
-          href={`https://instagram.com/${wedding.social.instagram.replace(/^@/, "")}`}
-          className="hover:text-gold transition-colors"
-        >
-          Instagram
-        </a>
-        <span className="text-gold/40">·</span>
-        <a href={wedding.social.spotifyPlaylist} className="hover:text-gold transition-colors">
-          Cabin playlist
-        </a>
-      </div>
-
-      <Barcode className="w-40 sm:w-48 h-10 text-cream mx-auto opacity-80" />
-      <p className="font-mono text-[9px] tracking-widest text-cream/40 mt-2 break-all px-2">
-        MARJORIE-AND-JOSEPH-12122026-MNL
-      </p>
-
-      <p className="font-serif italic text-cream/40 text-sm mt-10 sm:mt-12">
-        Cleared for take-off · {new Date().getFullYear()}
-      </p>
     </footer>
   );
 }
