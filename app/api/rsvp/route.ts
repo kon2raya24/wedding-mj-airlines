@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
-import { promises as fs } from "node:fs";
-import path from "node:path";
 import { guests } from "@/lib/guests";
-
-const LOG_PATH = path.join(process.cwd(), "data", "rsvps.json");
+import { appendRsvp, RsvpEntry } from "@/lib/rsvp-store";
+import { rateLimit } from "@/lib/rate-limit";
+import { sendRsvpConfirmation } from "@/lib/email";
 
 type RsvpPayload = {
   code?: string;
@@ -13,48 +12,33 @@ type RsvpPayload = {
   attending?: "yes" | "no";
   seatsAttending?: number;
   companions?: string[];
+  email?: string;
   note?: string;
   submittedAt?: string;
 };
 
-async function appendToLog(entry: Record<string, unknown>) {
-  // Vercel/serverless filesystems are read-only outside /tmp, and not
-  // persistent across invocations. We try a local write for dev convenience
-  // and always log to stdout so production submissions are captured in
-  // platform logs.
-  try {
-    await fs.mkdir(path.dirname(LOG_PATH), { recursive: true });
-    let existing: unknown[] = [];
-    try {
-      const raw = await fs.readFile(LOG_PATH, "utf8");
-      existing = JSON.parse(raw);
-      if (!Array.isArray(existing)) existing = [];
-    } catch {
-      existing = [];
-    }
-    existing.push(entry);
-    await fs.writeFile(LOG_PATH, JSON.stringify(existing, null, 2), "utf8");
-  } catch (err) {
-    // swallow — fall back to stdout-only logging
-    console.warn("[RSVP] could not persist to disk:", err);
-  }
-  console.log("[RSVP]", JSON.stringify(entry));
-}
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(req: Request) {
   try {
     const payload = (await req.json()) as RsvpPayload;
 
-    // Match the submission against the guest list — refuse if the code
-    // doesn't exist. This prevents random POSTs from polluting the log.
     const code = (payload.code ?? "").trim().toUpperCase();
-    const guest = guests.find(
-      (g) => g.code.trim().toUpperCase() === code
-    );
+    const guest = guests.find((g) => g.code.trim().toUpperCase() === code);
     if (!guest) {
       return NextResponse.json(
         { ok: false, error: "Unknown invitation code" },
         { status: 403 }
+      );
+    }
+
+    // Rate-limit per guest code so a hostile actor with one code can't
+    // spam-update endlessly.
+    const rl = rateLimit(`rsvp:${guest.code}`);
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { ok: false, error: "Too many submissions — please wait a moment and try again." },
+        { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } }
       );
     }
 
@@ -63,7 +47,10 @@ export async function POST(req: Request) {
       Math.min(guest.seatsReserved, Number(payload.seatsAttending ?? 0))
     );
 
-    const entry = {
+    const email = (payload.email ?? "").trim();
+    const validEmail = email && EMAIL_RE.test(email) ? email : "";
+
+    const entry: RsvpEntry = {
       submittedAt: payload.submittedAt ?? new Date().toISOString(),
       code: guest.code,
       firstName: guest.firstName,
@@ -72,12 +59,22 @@ export async function POST(req: Request) {
       attending: payload.attending === "no" ? "no" : "yes",
       seatsAttending: payload.attending === "no" ? 0 : seatsAttending,
       companions: Array.isArray(payload.companions)
-        ? payload.companions.filter((s) => typeof s === "string" && s.trim()).slice(0, guest.seatsReserved)
+        ? payload.companions
+            .filter((s) => typeof s === "string" && s.trim())
+            .map((s) => s.trim().slice(0, 80))
+            .slice(0, guest.seatsReserved)
         : [],
+      email: validEmail,
       note: typeof payload.note === "string" ? payload.note.slice(0, 1000) : "",
     };
 
-    await appendToLog(entry);
+    await appendRsvp(entry);
+
+    // Fire-and-forget the email — never block the response on it.
+    sendRsvpConfirmation(entry).catch((err) =>
+      console.warn("[RSVP] email send failed:", err)
+    );
+
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json(

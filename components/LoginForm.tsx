@@ -1,52 +1,39 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { wedding } from "@/lib/config";
-import { readAuth, writeAuth } from "@/lib/auth";
-import { findGuest } from "@/lib/guests";
+import { useState, useTransition } from "react";
 import { FlightArc, Barcode, PaperPlane } from "@/components/Decor";
 
-type Status = "idle" | "checking" | "error";
-
-export default function LoginGate({ children }: { children: React.ReactNode }) {
-  const [ready, setReady] = useState(false);
-  const [authed, setAuthed] = useState(false);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [code, setCode] = useState("");
-  const [status, setStatus] = useState<Status>("idle");
+export default function LoginForm({
+  next,
+  brideFirst,
+  groomFirst,
+  flightNumber,
+  shortDateCompact,
+  gate,
+  action,
+}: {
+  next: string;
+  brideFirst: string;
+  groomFirst: string;
+  flightNumber: string;
+  shortDateCompact: string;
+  gate: string;
+  action: (formData: FormData) => Promise<{ error?: string }>;
+}) {
+  const [error, setError] = useState<string | null>(null);
   const [shake, setShake] = useState(false);
+  const [pending, startTransition] = useTransition();
 
-  useEffect(() => {
-    setAuthed(!!readAuth());
-    setReady(true);
-  }, []);
-
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!firstName.trim() || !code.trim()) return;
-    setStatus("checking");
-
-    window.setTimeout(() => {
-      const guest = findGuest(firstName, lastName, code);
-      if (guest) {
-        writeAuth(guest);
-        setAuthed(true);
-        setStatus("idle");
-      } else {
-        setStatus("error");
+  function onSubmit(formData: FormData) {
+    setError(null);
+    startTransition(async () => {
+      const result = await action(formData);
+      if (result?.error) {
+        setError(result.error);
         setShake(true);
         window.setTimeout(() => setShake(false), 600);
       }
-    }, 450);
-  }
-
-  if (!ready) {
-    return <div className="fixed inset-0 bg-navy-deep" aria-hidden />;
-  }
-
-  if (authed) {
-    return <>{children}</>;
+    });
   }
 
   return (
@@ -67,7 +54,7 @@ export default function LoginGate({ children }: { children: React.ReactNode }) {
           <span className="flex items-center gap-2 shrink-0">
             <span className="text-gold">●</span> MJ Airways
           </span>
-          <span className="hidden md:inline">Flight {wedding.flightNumber} · {wedding.shortDateCompact}</span>
+          <span className="hidden md:inline">Flight {flightNumber} · {shortDateCompact}</span>
           <span className="shrink-0">Check-in</span>
         </div>
       </div>
@@ -78,7 +65,7 @@ export default function LoginGate({ children }: { children: React.ReactNode }) {
             Pre-flight check-in
           </p>
           <h1 className="font-script text-5xl sm:text-6xl text-cream leading-[0.9]">
-            {wedding.brideFirst} <span className="text-gold">&amp;</span> {wedding.groomFirst}
+            {brideFirst} <span className="text-gold">&amp;</span> {groomFirst}
           </h1>
           <p className="font-serif italic text-cream/70 text-sm sm:text-base mt-3">
             Please locate your reservation to view your invitation.
@@ -86,11 +73,13 @@ export default function LoginGate({ children }: { children: React.ReactNode }) {
         </div>
 
         <form
-          onSubmit={onSubmit}
+          action={onSubmit}
           className={`bg-cream text-navy rounded-md overflow-hidden shadow-2xl shadow-navy-deep/60 transition-transform ${
             shake ? "animate-[shake_0.45s_cubic-bezier(.36,.07,.19,.97)_both]" : ""
           }`}
         >
+          <input type="hidden" name="next" value={next} />
+
           {/* Top stub */}
           <div className="bg-navy text-cream px-5 py-4 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2 min-w-0">
@@ -101,8 +90,8 @@ export default function LoginGate({ children }: { children: React.ReactNode }) {
               </div>
             </div>
             <div className="font-sans text-[9px] sm:text-[10px] tracking-widest text-cream/70 text-right shrink-0">
-              <div>FLT {wedding.flightNumber}</div>
-              <div>{wedding.shortDateCompact}</div>
+              <div>FLT {flightNumber}</div>
+              <div>{shortDateCompact}</div>
             </div>
           </div>
 
@@ -131,11 +120,7 @@ export default function LoginGate({ children }: { children: React.ReactNode }) {
                 </span>
                 <input
                   type="text"
-                  value={firstName}
-                  onChange={(e) => {
-                    setFirstName(e.target.value);
-                    if (status === "error") setStatus("idle");
-                  }}
+                  name="firstName"
                   required
                   autoComplete="given-name"
                   placeholder="e.g. Marjorie"
@@ -148,11 +133,7 @@ export default function LoginGate({ children }: { children: React.ReactNode }) {
                 </span>
                 <input
                   type="text"
-                  value={lastName}
-                  onChange={(e) => {
-                    setLastName(e.target.value);
-                    if (status === "error") setStatus("idle");
-                  }}
+                  name="lastName"
                   autoComplete="family-name"
                   placeholder="e.g. Dela Cruz"
                   className="mt-1 w-full bg-sand/40 border border-navy/30 rounded px-3 py-2 font-serif focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/40"
@@ -166,13 +147,8 @@ export default function LoginGate({ children }: { children: React.ReactNode }) {
               </span>
               <input
                 type="text"
-                value={code}
-                onChange={(e) => {
-                  setCode(e.target.value);
-                  if (status === "error") setStatus("idle");
-                }}
+                name="code"
                 required
-                name="invitation-code"
                 autoComplete="off"
                 autoCapitalize="characters"
                 spellCheck={false}
@@ -183,15 +159,13 @@ export default function LoginGate({ children }: { children: React.ReactNode }) {
                 placeholder="From your invitation card"
                 maxLength={32}
                 className={`mt-1 w-full bg-sand/40 border rounded px-3 py-2 font-mono tracking-[0.25em] uppercase focus:outline-none focus:ring-1 ${
-                  status === "error"
+                  error
                     ? "border-rouge focus:border-rouge focus:ring-rouge/30"
                     : "border-navy/30 focus:border-gold focus:ring-gold/40"
                 }`}
               />
-              {status === "error" ? (
-                <span className="mt-1 block font-sans text-[11px] text-rouge">
-                  We couldn&apos;t find that reservation. Check the name and code on your invitation.
-                </span>
+              {error ? (
+                <span className="mt-1 block font-sans text-[11px] text-rouge">{error}</span>
               ) : (
                 <span className="mt-1 block font-sans text-[11px] text-navy/50">
                   Your unique code is printed on your invitation card.
@@ -201,24 +175,24 @@ export default function LoginGate({ children }: { children: React.ReactNode }) {
 
             <button
               type="submit"
-              disabled={status === "checking"}
+              disabled={pending}
               className="w-full font-sans uppercase tracking-[0.3em] text-[11px] px-6 py-4 bg-navy text-cream hover:bg-gold hover:text-navy transition-colors disabled:opacity-60 shadow-lg shadow-navy-deep/30 inline-flex items-center justify-center gap-2"
             >
               <PaperPlane className="w-4 h-4" />
-              {status === "checking" ? "Verifying…" : "Find my reservation"}
+              {pending ? "Verifying…" : "Find my reservation"}
             </button>
           </div>
 
           <div className="bg-navy text-cream px-5 py-3 flex items-center justify-between gap-3">
             <div className="font-sans text-[9px] sm:text-[10px] uppercase tracking-widest text-cream/60 truncate">
-              Gate · {wedding.gate}
+              Gate · {gate}
             </div>
             <Barcode className="w-24 h-7 text-cream shrink-0" />
           </div>
         </form>
 
         <p className="mt-6 text-center font-serif italic text-cream/55 text-xs sm:text-sm">
-          Lost your code? Message {wedding.brideFirst} or {wedding.groomFirst} and we&apos;ll
+          Lost your code? Message {brideFirst} or {groomFirst} and we&apos;ll
           re-issue your boarding pass.
         </p>
       </div>

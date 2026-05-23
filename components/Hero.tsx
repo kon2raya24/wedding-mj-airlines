@@ -1,14 +1,15 @@
 import { wedding } from "@/lib/config";
+import { weddingPhase } from "@/lib/day-of";
 import {
   PaperPlane,
   CalendarIcon,
   PinIcon,
   ClockIcon,
   Barcode,
-  FakeQR,
   PlayIcon,
   VideoIcon,
 } from "@/components/Decor";
+import QR from "@/components/QRCode";
 
 function InfoChip({
   icon,
@@ -148,7 +149,7 @@ function BoardingPassCard() {
           <Barcode className="w-full h-10" />
         </div>
         <div className="mt-4 bg-white p-1 rounded-sm self-start text-navy">
-          <FakeQR className="w-16 h-16 sm:w-20 sm:h-20" />
+          <QR text="/api/calendar.ics" size={80} />
         </div>
       </div>
     </div>
@@ -216,6 +217,13 @@ function PrenupCard() {
 }
 
 export default function Hero() {
+  const phase = weddingPhase();
+  const badge =
+    phase === "before"
+      ? "Boarding Soon"
+      : phase === "day-of"
+      ? "Now Boarding"
+      : "Thank you for flying with us";
   return (
     <section
       id="top"
@@ -239,7 +247,7 @@ export default function Hero() {
           <div className="lg:col-span-4">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 border border-cream/30 rounded-full font-sans uppercase tracking-[0.3em] text-[10px] text-cream/85 mb-6">
               <PaperPlane className="w-3.5 h-3.5 text-gold" />
-              Boarding Soon
+              {badge}
             </div>
 
             <h1 className="font-serif text-cream leading-[0.95]">
@@ -285,6 +293,14 @@ export default function Hero() {
                 View Flight Details
               </a>
             </div>
+
+            <a
+              href="/api/calendar.ics"
+              className="mt-4 inline-flex items-center gap-2 font-sans uppercase tracking-[0.3em] text-[10px] text-cream/70 hover:text-gold transition-colors"
+            >
+              <CalendarIcon className="w-3.5 h-3.5" />
+              Add to calendar
+            </a>
           </div>
 
           {/* CENTER — boarding pass */}

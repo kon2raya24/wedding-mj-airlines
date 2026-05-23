@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { wedding } from "@/lib/config";
 import { FloralDivider, PassportStamp } from "@/components/Decor";
 import Reveal from "@/components/Reveal";
@@ -43,17 +44,17 @@ export default function Gallery() {
               aria-label={`Open postcard ${i + 1}`}
             >
               <div className="relative aspect-[4/3] overflow-hidden bg-navy/10">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={img.src}
                   alt={img.alt}
-                  loading="lazy"
-                  className="w-full h-full object-cover sepia-[20%] group-hover:sepia-0 transition-all duration-700 group-hover:scale-110"
+                  fill
+                  sizes="(min-width: 1024px) 320px, (min-width: 640px) 50vw, 100vw"
+                  className="object-cover sepia-[20%] group-hover:sepia-0 transition-all duration-700 group-hover:scale-110"
                 />
                 <PassportStamp
                   text={stamps[i % stamps.length]}
                   rotate={-15 + (i % 3) * 12}
-                  className={`absolute -top-2 -right-2 w-20 h-20 ${stampColors[i % stampColors.length]}`}
+                  className={`absolute -top-2 -right-2 w-20 h-20 ${stampColors[i % stampColors.length]} z-10`}
                 />
               </div>
 
@@ -76,11 +77,14 @@ export default function Gallery() {
           role="dialog"
           aria-modal="true"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={wedding.gallery[active].src}
             alt={wedding.gallery[active].alt}
-            className="max-h-[90vh] max-w-[95vw] object-contain rounded-sm shadow-2xl"
+            width={1600}
+            height={1200}
+            sizes="95vw"
+            className="max-h-[90vh] max-w-[95vw] w-auto h-auto object-contain rounded-sm shadow-2xl"
+            priority
           />
           <button
             aria-label="Close"

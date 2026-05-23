@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
 import { Great_Vibes, Cormorant_Garamond, Inter } from "next/font/google";
+import { cookies } from "next/headers";
 import { wedding } from "@/lib/config";
-import Nav from "@/components/Nav";
-import Petals from "@/components/Petals";
-import MusicToggle from "@/components/MusicToggle";
-import CursorPlane from "@/components/CursorPlane";
-import LoginGate from "@/components/LoginGate";
+import { SESSION_COOKIE, decodeSession } from "@/lib/session";
+import { AuthProvider } from "@/components/AuthProvider";
 import "./globals.css";
 
 const script = Great_Vibes({
@@ -30,24 +28,21 @@ const sans = Inter({
 
 export const metadata: Metadata = {
   title: `${wedding.brideFirst} & ${wedding.groomFirst} — ${wedding.shortDate}`,
-  description: `Join us as we say "I do." ${wedding.shortDate} in Manila.`,
+  description: `Join us as we say "I do." ${wedding.shortDate} at ${wedding.destinationVenue}.`,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+  const session = await decodeSession(cookieStore.get(SESSION_COOKIE)?.value);
+
   return (
     <html lang="en" className={`${script.variable} ${serif.variable} ${sans.variable}`}>
       <body>
-        <LoginGate>
-          <Nav />
-          <Petals />
-          <CursorPlane />
-          {children}
-          <MusicToggle />
-        </LoginGate>
+        <AuthProvider initialSession={session}>{children}</AuthProvider>
       </body>
     </html>
   );

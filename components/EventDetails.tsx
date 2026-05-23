@@ -62,6 +62,16 @@ function EventCard({
           >
             Get directions →
           </a>
+
+          <div className="mt-5 sm:mt-6 aspect-[16/9] rounded overflow-hidden border border-navy/15 bg-sand/30">
+            <iframe
+              title={`${event.title} map`}
+              src={`https://www.google.com/maps?q=${encodeURIComponent(event.address)}&output=embed`}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="w-full h-full"
+            />
+          </div>
         </div>
       </div>
     </Reveal>

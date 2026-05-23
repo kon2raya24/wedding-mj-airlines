@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { wedding } from "@/lib/config";
-import { GuestAuth, readAuth } from "@/lib/auth";
+import { useAuth } from "@/components/AuthProvider";
 import { FloralDivider, Barcode, FlightArc, PaperPlane } from "@/components/Decor";
 
 type Status = "idle" | "submitting" | "success" | "error";
@@ -10,21 +10,21 @@ type Status = "idle" | "submitting" | "success" | "error";
 const CONFETTI_PIECES = Array.from({ length: 36 });
 
 export default function RSVP() {
+  const { session: auth } = useAuth();
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
 
-  const [auth, setAuth] = useState<GuestAuth | null>(null);
   const [attending, setAttending] = useState<"yes" | "no">("yes");
-  const [seatsAttending, setSeatsAttending] = useState<number>(1);
+  const [seatsAttending, setSeatsAttending] = useState<number>(auth?.seatsReserved ?? 1);
   const [companionNames, setCompanionNames] = useState<string[]>([]);
   const [note, setNote] = useState("");
+  const [email, setEmail] = useState("");
 
-  // Hydrate from localStorage on mount.
+  // When auth changes (e.g. on first render after hydration), sync the
+  // default attending count to the guest's reserved seat cap.
   useEffect(() => {
-    const a = readAuth();
-    setAuth(a);
-    if (a) setSeatsAttending(a.seatsReserved);
-  }, []);
+    if (auth) setSeatsAttending(auth.seatsReserved);
+  }, [auth]);
 
   // Resize companion names array whenever seatsAttending changes (keep typed values when possible).
   useEffect(() => {
@@ -56,6 +56,7 @@ export default function RSVP() {
       seatsAttending: attending === "yes" ? seatsAttending : 0,
       companions: attending === "yes" ? companionNames.map((n) => n.trim()).filter(Boolean) : [],
       note: note.trim(),
+      email: email.trim(),
       submittedAt: new Date().toISOString(),
     };
 
@@ -280,6 +281,20 @@ export default function RSVP() {
                     )}
                   </>
                 )}
+
+                <label className="block">
+                  <span className="font-sans uppercase tracking-[0.3em] text-[10px] text-navy/60">
+                    Email <span className="text-navy/40 normal-case tracking-normal">(optional — for confirmation)</span>
+                  </span>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    autoComplete="email"
+                    placeholder="you@example.com"
+                    className="mt-1 w-full bg-sand/40 border border-navy/30 rounded px-3 py-2 font-serif focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/40"
+                  />
+                </label>
 
                 <label className="block">
                   <span className="font-sans uppercase tracking-[0.3em] text-[10px] text-navy/60">

@@ -93,12 +93,12 @@ export const wedding = {
   },
 
   gallery: [
-    { src: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800", alt: "Engagement portrait" },
-    { src: "https://images.unsplash.com/photo-1525772764200-be829a350797?w=800", alt: "Holding hands" },
-    { src: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800", alt: "Beach sunset" },
-    { src: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800", alt: "Garden walk" },
-    { src: "https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=800", alt: "Studio shot" },
-    { src: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800", alt: "Candid laughter" },
+    { src: "https://images.unsplash.com/photo-1519741497674-611481863552", alt: "Engagement portrait" },
+    { src: "https://images.unsplash.com/photo-1525772764200-be829a350797", alt: "Holding hands" },
+    { src: "https://images.unsplash.com/photo-1606800052052-a08af7148866", alt: "Beach sunset" },
+    { src: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc", alt: "Garden walk" },
+    { src: "https://images.unsplash.com/photo-1591604466107-ec97de577aff", alt: "Studio shot" },
+    { src: "https://images.unsplash.com/photo-1519225421980-715cb0215aed", alt: "Candid laughter" },
   ],
 
   prenup: {
