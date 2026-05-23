@@ -5,6 +5,7 @@ import Nav from "@/components/Nav";
 import Petals from "@/components/Petals";
 import MusicToggle from "@/components/MusicToggle";
 import CursorPlane from "@/components/CursorPlane";
+import LoginGate from "@/components/LoginGate";
 import "./globals.css";
 
 const script = Great_Vibes({
@@ -40,11 +41,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${script.variable} ${serif.variable} ${sans.variable}`}>
       <body>
-        <Nav />
-        <Petals />
-        <CursorPlane />
-        {children}
-        <MusicToggle />
+        <LoginGate>
+          <Nav />
+          <Petals />
+          <CursorPlane />
+          {children}
+          <MusicToggle />
+        </LoginGate>
       </body>
     </html>
   );
