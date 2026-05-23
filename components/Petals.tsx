@@ -1,25 +1,41 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import { PaperPlane } from "@/components/Decor";
 
 const COUNT = 8;
 
+type Plane = {
+  top: number;
+  size: number;
+  duration: number;
+  delay: number;
+  tilt: number;
+  palette: string;
+  opacity: number;
+  key: number;
+};
+
 export default function Petals() {
-  const planes = useMemo(
-    () =>
-      Array.from({ length: COUNT }).map((_, i) => {
-        const top = 5 + Math.random() * 80;
-        const size = 22 + Math.random() * 28;
-        const duration = 22 + Math.random() * 18;
-        const delay = -Math.random() * duration;
-        const tilt = -6 + Math.random() * 12;
-        const palette = i % 2 === 0 ? "#c89b3c" : "#0e2a47";
-        const opacity = 0.4 + Math.random() * 0.45;
-        return { top, size, duration, delay, tilt, palette, opacity, key: i };
-      }),
-    []
-  );
+  const [planes, setPlanes] = useState<Plane[]>([]);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    setPlanes(
+      Array.from({ length: COUNT }).map((_, i) => ({
+        top: 5 + Math.random() * 80,
+        size: 22 + Math.random() * 28,
+        duration: 22 + Math.random() * 18,
+        delay: -Math.random() * (22 + Math.random() * 18),
+        tilt: -6 + Math.random() * 12,
+        palette: i % 2 === 0 ? "#c89b3c" : "#0e2a47",
+        opacity: 0.4 + Math.random() * 0.45,
+        key: i,
+      }))
+    );
+  }, []);
+
+  if (planes.length === 0) return null;
 
   return (
     <>

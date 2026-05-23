@@ -21,7 +21,10 @@ export default function Nav() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => {
+      // Show nav once we've cleared most of the hero
+      setScrolled(window.scrollY > Math.min(window.innerHeight - 120, 600));
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -29,22 +32,25 @@ export default function Nav() {
 
   return (
     <header
-      className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-cream/95 backdrop-blur shadow-sm border-b border-navy/10" : "bg-transparent"
+      className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ease-out ${
+        scrolled
+          ? "translate-y-0 bg-cream/95 backdrop-blur shadow-sm border-b border-navy/10"
+          : "-translate-y-full bg-transparent"
       }`}
+      aria-hidden={!scrolled}
     >
-      <nav className="max-w-6xl mx-auto px-6 md:px-12 h-16 flex items-center justify-between gap-4">
+      <nav className="max-w-6xl mx-auto px-6 md:px-12 h-16 flex items-center justify-between gap-6">
         <a
           href="#top"
-          className={`flex items-center gap-2 font-sans uppercase tracking-[0.35em] text-[11px] shrink-0 ${scrolled ? "text-navy" : "text-cream"}`}
+          className="flex items-center gap-2 font-sans uppercase tracking-[0.35em] text-[11px] shrink-0 text-navy"
         >
           <PaperPlane className="w-5 h-5 text-gold" />
           <span>M &amp; J</span>
         </a>
 
-        <AltitudeMeter light={!scrolled} />
+        <AltitudeMeter />
 
-        <ul className={`hidden lg:flex items-center gap-5 text-[10px] font-sans uppercase tracking-[0.3em] ${scrolled ? "text-navy/80" : "text-cream/85"}`}>
+        <ul className="hidden xl:flex items-center gap-5 text-[10px] font-sans uppercase tracking-[0.3em] text-navy/80">
           {links.map((l) => (
             <li key={l.href}>
               <a href={l.href} className="hover:text-gold transition-colors">
@@ -53,20 +59,21 @@ export default function Nav() {
             </li>
           ))}
         </ul>
+
         <button
           aria-label="Toggle menu"
           aria-expanded={open}
-          className="lg:hidden flex flex-col gap-1.5 p-2"
+          className="xl:hidden flex flex-col gap-1.5 p-2"
           onClick={() => setOpen((v) => !v)}
         >
-          <span className={`block h-0.5 w-6 transition-transform ${scrolled ? "bg-navy" : "bg-cream"} ${open ? "translate-y-2 rotate-45" : ""}`} />
-          <span className={`block h-0.5 w-6 transition-opacity ${scrolled ? "bg-navy" : "bg-cream"} ${open ? "opacity-0" : "opacity-100"}`} />
-          <span className={`block h-0.5 w-6 transition-transform ${scrolled ? "bg-navy" : "bg-cream"} ${open ? "-translate-y-2 -rotate-45" : ""}`} />
+          <span className={`block h-0.5 w-6 bg-navy transition-transform ${open ? "translate-y-2 rotate-45" : ""}`} />
+          <span className={`block h-0.5 w-6 bg-navy transition-opacity ${open ? "opacity-0" : "opacity-100"}`} />
+          <span className={`block h-0.5 w-6 bg-navy transition-transform ${open ? "-translate-y-2 -rotate-45" : ""}`} />
         </button>
       </nav>
 
       {open && (
-        <div className="lg:hidden bg-cream/98 border-t border-gold/30">
+        <div className="xl:hidden bg-cream/98 border-t border-gold/30">
           <ul className="flex flex-col px-6 py-4 gap-3 font-sans uppercase tracking-[0.3em] text-[11px] text-navy">
             {links.map((l) => (
               <li key={l.href}>
