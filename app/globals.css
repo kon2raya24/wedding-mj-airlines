@@ -6,6 +6,7 @@
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 5rem;
+    overflow-x: hidden;
   }
   body {
     @apply bg-cream text-navy font-serif antialiased;
@@ -14,6 +15,7 @@
       radial-gradient(ellipse 70% 50% at 90% 30%, rgba(122, 169, 201, 0.10), transparent 60%),
       radial-gradient(ellipse 70% 60% at 50% 100%, rgba(233, 220, 194, 0.6), transparent 60%);
     background-attachment: fixed;
+    overflow-x: hidden;
   }
   h1, h2, h3 {
     @apply font-serif;
@@ -29,16 +31,16 @@
     font-family: var(--font-script), cursive;
   }
   .section {
-    @apply py-24 px-6 md:px-12 max-w-6xl mx-auto;
+    @apply py-16 sm:py-20 md:py-24 px-4 sm:px-6 md:px-12 max-w-6xl mx-auto;
   }
   .section-title {
-    @apply text-center mb-14;
+    @apply text-center mb-10 sm:mb-14;
   }
   .section-eyebrow {
-    @apply uppercase tracking-[0.5em] text-[11px] text-gold mb-3 font-sans;
+    @apply uppercase tracking-[0.35em] sm:tracking-[0.5em] text-[10px] sm:text-[11px] text-gold mb-3 font-sans;
   }
   .section-heading {
-    @apply font-script text-6xl md:text-7xl text-navy leading-none;
+    @apply font-script text-5xl sm:text-6xl md:text-7xl text-navy leading-none;
   }
   .glass {
     background: rgba(246, 239, 224, 0.85);

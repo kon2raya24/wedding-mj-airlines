@@ -9,7 +9,7 @@ export default function Marquee() {
         {Array.from({ length: 6 }).map((_, i) => (
           <span
             key={i}
-            className="font-sans uppercase tracking-[0.4em] text-sm md:text-base shrink-0 flex items-center gap-8"
+            className="font-sans uppercase tracking-[0.25em] sm:tracking-[0.4em] text-xs sm:text-sm md:text-base shrink-0 flex items-center gap-6 sm:gap-8"
           >
             {phrase}
             <PaperPlane className="w-5 h-5 text-gold shrink-0" />

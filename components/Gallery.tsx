@@ -6,7 +6,14 @@ import { FloralDivider, PassportStamp } from "@/components/Decor";
 import Reveal from "@/components/Reveal";
 
 const stamps = ["BAGUIO", "EL NIDO", "BORACAY", "TOKYO", "BALI", "MANILA"];
-const tilts = ["-rotate-3", "rotate-2", "-rotate-2", "rotate-3", "-rotate-1", "rotate-1"];
+const tilts = [
+  "sm:-rotate-3",
+  "sm:rotate-2",
+  "sm:-rotate-2",
+  "sm:rotate-3",
+  "sm:-rotate-1",
+  "sm:rotate-1",
+];
 const stampColors = ["text-rouge/80", "text-navy/70", "text-gold", "text-sky", "text-rouge/70", "text-navy/60"];
 
 export default function Gallery() {
@@ -23,7 +30,7 @@ export default function Gallery() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6 md:gap-8 max-w-5xl mx-auto">
         {wedding.gallery.map((img, i) => (
           <Reveal
             key={i}

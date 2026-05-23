@@ -11,7 +11,7 @@ const seed: Entry[] = [
   { name: "Sarah", message: "Best layover crew ever. Can't wait to dance the night away with you both!", from: "Singapore" },
 ];
 
-const tilts = ["-rotate-2", "rotate-1", "-rotate-1", "rotate-2"];
+const tilts = ["sm:-rotate-2", "sm:rotate-1", "sm:-rotate-1", "sm:rotate-2"];
 
 export default function GuestBook() {
   const [entries, setEntries] = useState<Entry[]>(seed);
@@ -41,12 +41,12 @@ export default function GuestBook() {
 
       <form
         onSubmit={submit}
-        className="max-w-xl mx-auto bg-cream border border-navy/20 rounded-sm p-6 md:p-8 mb-14 relative grain"
+        className="max-w-xl mx-auto bg-cream border border-navy/20 rounded-sm p-5 sm:p-6 md:p-8 mb-12 sm:mb-14 relative grain"
       >
-        <div className="absolute top-3 right-3 font-mono uppercase tracking-[0.3em] text-[9px] text-navy/40">
+        <div className="absolute top-3 right-3 font-mono uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[9px] text-navy/40">
           POSTCARD · BLANK
         </div>
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 mt-6 sm:mt-0">
           <label className="block">
             <span className="font-sans uppercase tracking-[0.3em] text-[10px] text-navy/60">From</span>
             <input

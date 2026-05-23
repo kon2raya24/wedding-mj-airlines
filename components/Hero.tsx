@@ -23,16 +23,16 @@ export default function Hero() {
 
       {/* Airline header strip */}
       <div className="absolute top-0 inset-x-0 z-10 border-b border-cream/15 backdrop-blur-sm bg-navy-deep/30">
-        <div className="max-w-7xl mx-auto px-6 md:px-10 py-3 flex items-center justify-between font-mono uppercase tracking-[0.3em] text-[10px] text-cream/70">
-          <span className="flex items-center gap-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 py-3 flex items-center justify-between font-mono uppercase tracking-[0.18em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] text-cream/70 gap-2">
+          <span className="flex items-center gap-2 shrink-0">
             <span className="text-gold">●</span> M &amp; J AIRLINES
           </span>
           <span className="hidden md:inline">FLIGHT MJ · 12.12.26 · MNL → ∞</span>
-          <span>BOARDING PASS</span>
+          <span className="shrink-0">BOARDING PASS</span>
         </div>
       </div>
 
-      <div className="relative z-10 w-full max-w-6xl px-6 pt-24 pb-12 animate-fade-in">
+      <div className="relative z-10 w-full max-w-6xl px-4 sm:px-6 pt-24 pb-12 animate-fade-in">
         {/* Pre-title */}
         <div className="text-center mb-6">
           <p className="font-sans uppercase tracking-[0.6em] text-[10px] md:text-xs text-gold mb-3">
@@ -54,56 +54,56 @@ export default function Hero() {
             {/* Decorative corner sprig — removed in favor of clean stub */}
 
             {/* MAIN STUB */}
-            <div className="p-6 md:p-8 relative">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2">
-                  <Monogram className="w-10 h-10 text-gold" />
-                  <div className="font-sans uppercase tracking-[0.3em] text-[10px]">
-                    <div className="text-navy">M&amp;J Airlines</div>
-                    <div className="text-navy/60">Boarding Pass</div>
+            <div className="p-5 sm:p-6 md:p-8 relative">
+              <div className="flex items-center justify-between mb-5 sm:mb-6 gap-3">
+                <div className="flex items-center gap-2 min-w-0">
+                  <Monogram className="w-9 h-9 sm:w-10 sm:h-10 text-gold shrink-0" />
+                  <div className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] min-w-0">
+                    <div className="text-navy truncate">M&amp;J Airlines</div>
+                    <div className="text-navy/60 truncate">Boarding Pass</div>
                   </div>
                 </div>
-                <div className="font-mono text-[10px] tracking-widest text-navy/50">
+                <div className="font-mono text-[9px] sm:text-[10px] tracking-widest text-navy/50 shrink-0">
                   MJ · 12.12.26
                 </div>
               </div>
 
               {/* Route */}
-              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 mb-6">
-                <div>
-                  <div className="font-sans uppercase tracking-[0.3em] text-[10px] text-navy/55">From</div>
-                  <div className="font-serif text-3xl md:text-4xl mt-1 leading-none">MNL</div>
-                  <div className="font-sans text-xs text-navy/70 mt-1">Manila</div>
+              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-4 mb-6">
+                <div className="min-w-0">
+                  <div className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] text-navy/55">From</div>
+                  <div className="font-serif text-2xl sm:text-3xl md:text-4xl mt-1 leading-none">MNL</div>
+                  <div className="font-sans text-[11px] sm:text-xs text-navy/70 mt-1">Manila</div>
                 </div>
-                <div className="text-gold">
-                  <FlightArc className="w-32 md:w-44 h-12" />
+                <div className="text-gold shrink-0">
+                  <FlightArc className="w-14 sm:w-32 md:w-44 h-10 sm:h-12" />
                 </div>
-                <div className="text-right">
-                  <div className="font-sans uppercase tracking-[0.3em] text-[10px] text-navy/55">To</div>
-                  <div className="font-serif text-3xl md:text-4xl mt-1 leading-none">FOREVER</div>
-                  <div className="font-sans text-xs text-navy/70 mt-1">Together</div>
+                <div className="text-right min-w-0">
+                  <div className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] text-navy/55">To</div>
+                  <div className="font-serif text-xl sm:text-3xl md:text-4xl mt-1 leading-none">FOREVER</div>
+                  <div className="font-sans text-[11px] sm:text-xs text-navy/70 mt-1">Together</div>
                 </div>
               </div>
 
               <div className="perforation text-gold/60 my-6" />
 
               {/* Pass details */}
-              <dl className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-left">
+              <dl className="grid grid-cols-2 sm:grid-cols-4 gap-x-3 gap-y-4 sm:gap-4 text-left">
                 <div>
-                  <dt className="font-sans uppercase tracking-[0.25em] text-[9px] text-navy/55">Passenger</dt>
-                  <dd className="font-serif text-base mt-1">You + 1</dd>
+                  <dt className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[9px] text-navy/55">Passenger</dt>
+                  <dd className="font-serif text-sm sm:text-base mt-1">You + 1</dd>
                 </div>
                 <div>
-                  <dt className="font-sans uppercase tracking-[0.25em] text-[9px] text-navy/55">Date</dt>
-                  <dd className="font-serif text-base mt-1">12 Dec 2026</dd>
+                  <dt className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[9px] text-navy/55">Date</dt>
+                  <dd className="font-serif text-sm sm:text-base mt-1">12 Dec 2026</dd>
                 </div>
                 <div>
-                  <dt className="font-sans uppercase tracking-[0.25em] text-[9px] text-navy/55">Gate</dt>
-                  <dd className="font-serif text-base mt-1">San Agustin</dd>
+                  <dt className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[9px] text-navy/55">Gate</dt>
+                  <dd className="font-serif text-sm sm:text-base mt-1">San Agustin</dd>
                 </div>
                 <div>
-                  <dt className="font-sans uppercase tracking-[0.25em] text-[9px] text-navy/55">Boarding</dt>
-                  <dd className="font-serif text-base mt-1">14:00</dd>
+                  <dt className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[9px] text-navy/55">Boarding</dt>
+                  <dd className="font-serif text-sm sm:text-base mt-1">14:00</dd>
                 </div>
               </dl>
             </div>
@@ -116,7 +116,7 @@ export default function Hero() {
             </div>
 
             {/* RIGHT STUB */}
-            <div className="bg-navy text-cream p-6 md:p-8 relative flex flex-col">
+            <div className="bg-navy text-cream p-5 sm:p-6 md:p-8 relative flex flex-col">
               <div className="font-sans uppercase tracking-[0.3em] text-[9px] text-gold mb-2">Stub</div>
               <div className="font-script text-3xl text-cream leading-none mb-4">
                 M &amp; J
@@ -128,7 +128,7 @@ export default function Hero() {
               </div>
               <div className="mt-auto text-gold">
                 <Barcode className="w-full h-10" />
-                <div className="font-mono text-[9px] text-center mt-1 tracking-widest text-cream/70">
+                <div className="font-mono text-[9px] text-center mt-1 tracking-widest text-cream/70 truncate">
                   MARJORIE+JOSEPH-12122026
                 </div>
               </div>
@@ -140,17 +140,17 @@ export default function Hero() {
         </div>
 
         {/* CTAs */}
-        <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
           <MagneticLink
             href="#rsvp"
-            className="font-sans uppercase tracking-[0.4em] text-[10px] px-8 py-4 bg-gold text-navy hover:bg-cream transition-colors shadow-lg shadow-navy-deep/40"
+            className="font-sans uppercase tracking-[0.3em] sm:tracking-[0.4em] text-[10px] px-6 sm:px-8 py-4 bg-gold text-navy hover:bg-cream transition-colors shadow-lg shadow-navy-deep/40"
             strength={0.4}
           >
             Confirm boarding <span>→</span>
           </MagneticLink>
           <MagneticLink
             href="#story"
-            className="font-sans uppercase tracking-[0.4em] text-[10px] text-cream/80 hover:text-gold transition-colors"
+            className="font-sans uppercase tracking-[0.3em] sm:tracking-[0.4em] text-[10px] text-cream/80 hover:text-gold transition-colors"
             strength={0.3}
           >
             Read flight log

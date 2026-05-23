@@ -30,13 +30,13 @@ export default function FAQ() {
               <button
                 onClick={() => setOpen(isOpen ? null : i)}
                 aria-expanded={isOpen}
-                className="w-full flex items-center justify-between gap-4 py-5 px-6 text-left"
+                className="w-full flex items-center justify-between gap-3 sm:gap-4 py-4 sm:py-5 px-4 sm:px-6 text-left"
               >
-                <span className="flex items-center gap-4">
-                  <span className="font-mono text-base text-gold shrink-0 tracking-widest">
+                <span className="flex items-center gap-3 sm:gap-4 min-w-0">
+                  <span className="font-mono text-sm sm:text-base text-gold shrink-0 tracking-widest">
                     Q.{String(i + 1).padStart(2, "0")}
                   </span>
-                  <span className="font-serif text-lg md:text-xl text-navy">{item.q}</span>
+                  <span className="font-serif text-base sm:text-lg md:text-xl text-navy">{item.q}</span>
                 </span>
                 <span
                   className={`text-gold text-3xl transition-transform shrink-0 ${
@@ -53,7 +53,7 @@ export default function FAQ() {
                 }`}
               >
                 <div className="overflow-hidden">
-                  <p className="font-serif text-navy/80 leading-relaxed px-6 pb-6 pl-[88px] pr-12">
+                  <p className="font-serif text-sm sm:text-base text-navy/80 leading-relaxed px-4 sm:px-6 pb-5 sm:pb-6 sm:pl-[88px] sm:pr-12">
                     {item.a}
                   </p>
                 </div>

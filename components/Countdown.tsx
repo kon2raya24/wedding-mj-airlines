@@ -48,8 +48,8 @@ export default function Countdown() {
         <FloralDivider className="mt-6" />
       </div>
 
-      <div className="max-w-4xl mx-auto bg-navy text-cream rounded-md p-6 md:p-10 shadow-2xl shadow-navy-deep/40 relative grain border border-cream/10">
-        <div className="flex items-center justify-between mb-6 font-mono uppercase tracking-[0.3em] text-[10px] text-cream/60">
+      <div className="max-w-4xl mx-auto bg-navy text-cream rounded-md p-4 sm:p-6 md:p-10 shadow-2xl shadow-navy-deep/40 relative grain border border-cream/10">
+        <div className="flex items-center justify-between gap-2 mb-5 sm:mb-6 font-mono uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] text-cream/60">
           <span className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-rouge animate-pulse" />
             LIVE
@@ -58,16 +58,16 @@ export default function Countdown() {
           <span>MNL → ∞</span>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
           {items.map((it) => (
             <div
               key={it.label}
-              className="bg-navy-deep border border-cream/10 rounded text-center py-6 px-3 relative overflow-hidden"
+              className="bg-navy-deep border border-cream/10 rounded text-center py-4 sm:py-6 px-2 sm:px-3 relative overflow-hidden"
             >
-              <div className="font-mono text-6xl md:text-7xl text-gold leading-none">
+              <div className="font-mono text-4xl sm:text-6xl md:text-7xl text-gold leading-none">
                 <Odometer value={it.value} pad={it.pad} />
               </div>
-              <div className="font-sans uppercase tracking-[0.4em] text-[10px] text-cream/60 mt-3">
+              <div className="font-sans uppercase tracking-[0.3em] sm:tracking-[0.4em] text-[9px] sm:text-[10px] text-cream/60 mt-2 sm:mt-3">
                 {it.label}
               </div>
               <div className="absolute inset-x-0 top-1/2 h-px bg-cream/5" />
@@ -75,7 +75,7 @@ export default function Countdown() {
           ))}
         </div>
 
-        <div className="mt-6 flex items-center justify-between font-mono text-[10px] tracking-widest text-cream/50">
+        <div className="mt-5 sm:mt-6 flex items-center justify-between gap-2 font-mono text-[9px] sm:text-[10px] tracking-widest text-cream/50">
           <span>SCHED · 14:00 PHT</span>
           <span>STATUS · ON-TIME</span>
         </div>

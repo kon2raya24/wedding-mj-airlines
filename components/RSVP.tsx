@@ -100,34 +100,34 @@ export default function RSVP() {
           className="max-w-2xl mx-auto bg-cream text-navy rounded-sm overflow-hidden shadow-2xl shadow-navy-deep/50"
         >
           {/* Pass header */}
-          <div className="bg-navy text-cream px-6 md:px-8 py-5 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <PaperPlane className="w-6 h-6 text-gold" />
-              <div>
-                <div className="font-mono uppercase tracking-[0.3em] text-[10px] text-gold">M&amp;J Airlines</div>
-                <div className="font-serif text-lg">Boarding Pass · RSVP</div>
+          <div className="bg-navy text-cream px-4 sm:px-6 md:px-8 py-4 sm:py-5 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <PaperPlane className="w-6 h-6 text-gold shrink-0" />
+              <div className="min-w-0">
+                <div className="font-mono uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] text-gold truncate">M&amp;J Airlines</div>
+                <div className="font-serif text-base sm:text-lg truncate">Boarding Pass · RSVP</div>
               </div>
             </div>
-            <div className="font-mono text-[10px] uppercase tracking-widest text-cream/70 text-right">
+            <div className="font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-cream/70 text-right shrink-0">
               <div>FLT MJ1212</div>
               <div>12.12.26</div>
             </div>
           </div>
 
           {/* Route strip */}
-          <div className="bg-sand/50 px-6 md:px-8 py-5 flex items-center justify-between">
-            <div>
-              <div className="font-sans uppercase tracking-[0.3em] text-[10px] text-navy/55">From</div>
-              <div className="font-serif text-2xl">MNL</div>
+          <div className="bg-sand/50 px-4 sm:px-6 md:px-8 py-4 sm:py-5 flex items-center justify-between gap-2">
+            <div className="min-w-0">
+              <div className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] text-navy/55">From</div>
+              <div className="font-serif text-xl sm:text-2xl">MNL</div>
             </div>
-            <div className="text-gold flex-1 mx-4"><FlightArc className="w-full h-10" /></div>
-            <div className="text-right">
-              <div className="font-sans uppercase tracking-[0.3em] text-[10px] text-navy/55">To</div>
-              <div className="font-serif text-2xl">∞</div>
+            <div className="text-gold flex-1 mx-2 sm:mx-4"><FlightArc className="w-full h-8 sm:h-10" /></div>
+            <div className="text-right min-w-0">
+              <div className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] text-navy/55">To</div>
+              <div className="font-serif text-xl sm:text-2xl">∞</div>
             </div>
           </div>
 
-          <div className="p-6 md:p-8 space-y-5">
+          <div className="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-5">
             <label className="block">
               <span className="font-sans uppercase tracking-[0.3em] text-[10px] text-navy/60">Passenger name</span>
               <input
@@ -149,15 +149,15 @@ export default function RSVP() {
             </label>
 
             <fieldset>
-              <legend className="font-sans uppercase tracking-[0.3em] text-[10px] text-navy/60 mb-2">
+              <legend className="font-sans uppercase tracking-[0.25em] sm:tracking-[0.3em] text-[10px] text-navy/60 mb-2">
                 Are you boarding?
               </legend>
-              <div className="grid grid-cols-2 gap-3 font-serif">
-                <label className="flex items-center gap-2 px-4 py-3 border border-navy/30 rounded cursor-pointer hover:bg-sand/40 has-[:checked]:border-gold has-[:checked]:bg-gold/15">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3 font-serif text-sm sm:text-base">
+                <label className="flex items-center gap-2 px-3 sm:px-4 py-3 border border-navy/30 rounded cursor-pointer hover:bg-sand/40 has-[:checked]:border-gold has-[:checked]:bg-gold/15">
                   <input type="radio" name="attending" value="yes" required defaultChecked className="accent-gold" />
                   Yes, I'm flying
                 </label>
-                <label className="flex items-center gap-2 px-4 py-3 border border-navy/30 rounded cursor-pointer hover:bg-sand/40 has-[:checked]:border-gold has-[:checked]:bg-gold/15">
+                <label className="flex items-center gap-2 px-3 sm:px-4 py-3 border border-navy/30 rounded cursor-pointer hover:bg-sand/40 has-[:checked]:border-gold has-[:checked]:bg-gold/15">
                   <input type="radio" name="attending" value="no" className="accent-gold" />
                   Sadly, no
                 </label>
@@ -216,11 +216,11 @@ export default function RSVP() {
           </div>
 
           {/* Bottom barcode strip */}
-          <div className="bg-navy text-cream px-6 md:px-8 py-4 flex items-center justify-between">
-            <div className="font-mono text-[10px] uppercase tracking-widest text-cream/60">
+          <div className="bg-navy text-cream px-4 sm:px-6 md:px-8 py-4 flex items-center justify-between gap-3">
+            <div className="font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-cream/60 truncate">
               GATE · SAN AGUSTIN · MNL
             </div>
-            <Barcode className="w-32 h-8 text-cream" />
+            <Barcode className="w-24 sm:w-32 h-8 text-cream shrink-0" />
           </div>
         </form>
       )}
