@@ -255,6 +255,10 @@ function Badge({ children, color }: { children: React.ReactNode; color: "emerald
 
 function csvField(v: string): string {
   if (v == null) return "";
-  if (/[",\r\n]/.test(v)) return `"${v.replace(/"/g, '""')}"`;
-  return v;
+  // Neutralize spreadsheet formula injection: a cell starting with = + - @
+  // (or a tab/CR) is treated as a formula by Excel/Sheets. Prefix with a
+  // single quote so it's rendered as literal text.
+  let s = /^[=+\-@\t\r]/.test(v) ? `'${v}` : v;
+  if (/[",\r\n]/.test(s)) s = `"${s.replace(/"/g, '""')}"`;
+  return s;
 }

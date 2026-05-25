@@ -57,7 +57,7 @@ function EventCard({
           <a
             href={event.mapsUrl}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="mt-6 sm:mt-7 inline-flex items-center gap-2 font-sans uppercase tracking-[0.25em] sm:tracking-[0.3em] text-[10px] px-4 sm:px-5 py-3 border border-navy text-navy hover:bg-navy hover:text-cream transition-colors"
           >
             Get directions →

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { wedding } from "@/lib/config";
 import { FloralDivider, PassportStamp } from "@/components/Decor";
@@ -19,6 +19,22 @@ const stampColors = ["text-rouge/80", "text-navy/70", "text-gold", "text-sky", "
 
 export default function Gallery() {
   const [active, setActive] = useState<number | null>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (active === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setActive(null);
+    };
+    document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeRef.current?.focus();
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [active]);
 
   return (
     <section id="gallery" className="section">
@@ -83,10 +99,12 @@ export default function Gallery() {
             width={1600}
             height={1200}
             sizes="95vw"
+            onClick={(e) => e.stopPropagation()}
             className="max-h-[90vh] max-w-[95vw] w-auto h-auto object-contain rounded-sm shadow-2xl"
             priority
           />
           <button
+            ref={closeRef}
             aria-label="Close"
             onClick={() => setActive(null)}
             className="absolute top-6 right-6 text-cream text-4xl font-sans hover:text-gold"

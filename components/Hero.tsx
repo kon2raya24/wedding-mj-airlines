@@ -205,7 +205,7 @@ function PrenupCard() {
         <a
           href={wedding.prenup.videoUrl}
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           className="w-full inline-flex items-center justify-center gap-2 font-sans uppercase tracking-[0.3em] text-[10px] px-5 py-3 bg-cream/10 hover:bg-gold hover:text-navy text-cream rounded-sm transition-colors"
         >
           <PlayIcon className="w-3.5 h-3.5" />

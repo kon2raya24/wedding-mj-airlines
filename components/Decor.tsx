@@ -1,3 +1,5 @@
+import { wedding } from "@/lib/config";
+
 type SvgProps = React.SVGProps<SVGSVGElement> & { className?: string };
 
 export function PaperPlane({ className = "" }: SvgProps) {
@@ -144,7 +146,7 @@ export function PassportStamp({
         fill="currentColor"
         letterSpacing="3"
       >
-        NOV 26 2026
+        {wedding.shortDateCompact.replace(",", "")}
       </text>
     </svg>
   );

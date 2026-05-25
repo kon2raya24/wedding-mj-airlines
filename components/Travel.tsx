@@ -29,14 +29,16 @@ export default function Travel() {
                 {h.distance}
               </p>
               <p className="font-serif text-navy/80">{h.note}</p>
-              <a
-                href={h.link}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-5 inline-flex items-center gap-2 font-sans uppercase tracking-[0.3em] text-[10px] text-gold hover:text-navy transition-colors"
-              >
-                Reserve a room →
-              </a>
+              {h.link && h.link !== "#" && (
+                <a
+                  href={h.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-5 inline-flex items-center gap-2 font-sans uppercase tracking-[0.3em] text-[10px] text-gold hover:text-navy transition-colors"
+                >
+                  Reserve a room →
+                </a>
+              )}
             </div>
             <div className="px-7 pb-5">
               <div className="dotline text-navy/30" />

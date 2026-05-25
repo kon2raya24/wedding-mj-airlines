@@ -84,7 +84,9 @@ export default function Schedule() {
         {/* Footer */}
         <div className="bg-black/40 px-3 sm:px-4 md:px-8 py-3 flex items-center justify-between gap-2 border-t border-cream/15 font-mono uppercase tracking-[0.15em] sm:tracking-[0.2em] text-[9px] sm:text-[10px] text-cream/60">
           <span>FLT {wedding.flightNumber}</span>
-          <span className="hidden md:inline">PILOT IN COMMAND · J. SANTOS</span>
+          <span className="hidden md:inline">
+            PILOT IN COMMAND · {wedding.groomFirst[0]}. {wedding.groomLast}
+          </span>
           <span>SYS · OK</span>
         </div>
       </div>
