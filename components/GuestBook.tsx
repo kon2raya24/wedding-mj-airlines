@@ -124,7 +124,7 @@ export default function GuestBook() {
           <button
             type="submit"
             disabled={status === "submitting"}
-            className="inline-flex items-center gap-2 font-sans uppercase tracking-[0.3em] text-[10px] px-6 py-3 bg-navy text-cream hover:bg-gold hover:text-navy transition-colors disabled:opacity-60"
+            className="inline-flex items-center gap-2 font-sans uppercase tracking-[0.3em] text-[10px] px-6 py-3 bg-navy-deep text-cream hover:bg-gold hover:text-navy transition-colors disabled:opacity-60"
           >
             <PaperPlane className="w-4 h-4" />
             {status === "submitting" ? "Sending…" : "Send postcard"}

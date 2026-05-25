@@ -33,7 +33,7 @@ function CrewCard({
           style={{ backgroundImage: `url('${image}')` }}
           aria-hidden
         />
-        <span className="absolute top-1.5 left-1.5 font-mono uppercase tracking-[0.2em] text-[8px] text-cream bg-navy/80 px-1.5 py-0.5">
+        <span className="absolute top-1.5 left-1.5 font-mono uppercase tracking-[0.2em] text-[8px] text-cream bg-navy-deep/80 px-1.5 py-0.5">
           {rank}
         </span>
       </div>
@@ -61,14 +61,14 @@ export default function WeddingParty() {
 
       {/* Captain & First Officer (Groom & Bride) */}
       <Reveal className="grid md:grid-cols-2 gap-6 mb-14 max-w-4xl mx-auto">
-        <div className="relative bg-navy text-cream rounded-sm overflow-hidden shadow-2xl shadow-navy-deep/40">
+        <div className="relative bg-navy-deep text-cream rounded-sm overflow-hidden shadow-2xl shadow-navy-deep/40">
           <div className="aspect-[5/4] relative">
             <div
               className="absolute inset-0 bg-cover bg-center"
               style={{ backgroundImage: "url('https://images.unsplash.com/photo-1525772764200-be829a350797?w=900&q=85')" }}
               aria-hidden
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-navy-deep via-navy-deep/30 to-transparent" />
             <PassportStamp text="CAPTAIN" rotate={-8} className="absolute top-4 right-4 w-24 h-24 text-gold" />
             <div className="absolute bottom-4 left-4 right-4">
               <div className="font-mono uppercase tracking-[0.3em] text-[10px] text-gold">Captain</div>
@@ -77,14 +77,14 @@ export default function WeddingParty() {
             </div>
           </div>
         </div>
-        <div className="relative bg-navy text-cream rounded-sm overflow-hidden shadow-2xl shadow-navy-deep/40">
+        <div className="relative bg-navy-deep text-cream rounded-sm overflow-hidden shadow-2xl shadow-navy-deep/40">
           <div className="aspect-[5/4] relative">
             <div
               className="absolute inset-0 bg-cover bg-center"
               style={{ backgroundImage: "url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=900&q=85')" }}
               aria-hidden
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-navy-deep via-navy-deep/30 to-transparent" />
             <PassportStamp text="FIRST OFFICER" rotate={8} className="absolute top-4 right-4 w-24 h-24 text-gold" />
             <div className="absolute bottom-4 left-4 right-4">
               <div className="font-mono uppercase tracking-[0.3em] text-[10px] text-gold">First Officer</div>

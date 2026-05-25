@@ -37,7 +37,7 @@ export default function LoginForm({
   }
 
   return (
-    <div className="fixed inset-0 z-[100] overflow-y-auto bg-navy">
+    <div className="fixed inset-0 z-[100] overflow-y-auto bg-navy-deep">
       <div
         className="fixed inset-0 bg-cover bg-center opacity-45"
         style={{
@@ -81,7 +81,7 @@ export default function LoginForm({
           <input type="hidden" name="next" value={next} />
 
           {/* Top stub */}
-          <div className="bg-navy text-cream px-5 py-4 flex items-center justify-between gap-3">
+          <div className="bg-navy-deep text-cream px-5 py-4 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2 min-w-0">
               <PaperPlane className="w-5 h-5 text-gold shrink-0" />
               <div className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] min-w-0">
@@ -176,14 +176,14 @@ export default function LoginForm({
             <button
               type="submit"
               disabled={pending}
-              className="w-full font-sans uppercase tracking-[0.3em] text-[11px] px-6 py-4 bg-navy text-cream hover:bg-gold hover:text-navy transition-colors disabled:opacity-60 shadow-lg shadow-navy-deep/30 inline-flex items-center justify-center gap-2"
+              className="w-full font-sans uppercase tracking-[0.3em] text-[11px] px-6 py-4 bg-navy-deep text-cream hover:bg-gold hover:text-navy transition-colors disabled:opacity-60 shadow-lg shadow-navy-deep/30 inline-flex items-center justify-center gap-2"
             >
               <PaperPlane className="w-4 h-4" />
               {pending ? "Verifying…" : "Find my reservation"}
             </button>
           </div>
 
-          <div className="bg-navy text-cream px-5 py-3 flex items-center justify-between gap-3">
+          <div className="bg-navy-deep text-cream px-5 py-3 flex items-center justify-between gap-3">
             <div className="font-sans text-[9px] sm:text-[10px] uppercase tracking-widest text-cream/60 truncate">
               Gate · {gate}
             </div>

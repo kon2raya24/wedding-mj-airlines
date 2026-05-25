@@ -11,7 +11,7 @@ export default function Quote() {
         }}
         aria-hidden
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-navy-deep/70 via-navy/60 to-navy-deep/85" aria-hidden />
+      <div className="absolute inset-0 bg-gradient-to-b from-navy-deep/70 via-navy-deep/60 to-navy-deep/85" aria-hidden />
 
       <div className="relative z-10 max-w-4xl text-center px-4 sm:px-6 py-16 sm:py-24">
         <PaperPlane className="w-10 h-10 sm:w-12 sm:h-12 text-gold mx-auto mb-6 sm:mb-8 -rotate-12" />

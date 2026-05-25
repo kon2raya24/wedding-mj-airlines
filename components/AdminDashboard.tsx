@@ -103,7 +103,7 @@ export default function AdminDashboard({
             </button>
             <button
               onClick={downloadCsv}
-              className="font-sans uppercase tracking-[0.25em] text-[10px] px-4 py-2 bg-navy text-cream hover:bg-gold hover:text-navy rounded"
+              className="font-sans uppercase tracking-[0.25em] text-[10px] px-4 py-2 bg-navy-deep text-cream hover:bg-gold hover:text-navy rounded"
             >
               Export CSV
             </button>
@@ -136,7 +136,7 @@ export default function AdminDashboard({
               onClick={() => setFilter(f)}
               className={`px-3 py-1.5 rounded border ${
                 filter === f
-                  ? "bg-navy text-cream border-navy"
+                  ? "bg-navy-deep text-cream border-navy-deep"
                   : "border-navy/30 text-navy/70 hover:bg-navy/5"
               }`}
             >

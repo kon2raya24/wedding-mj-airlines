@@ -119,8 +119,8 @@ function BoardingPassCard() {
       {/* Tear line */}
       <div className="relative w-px">
         <div className="absolute inset-y-3 left-1/2 -translate-x-1/2 w-px border-l border-dashed border-navy/30" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 h-4 w-4 rounded-full bg-navy" />
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 h-4 w-4 rounded-full bg-navy" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 h-4 w-4 rounded-full bg-navy-deep" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 h-4 w-4 rounded-full bg-navy-deep" />
       </div>
 
       {/* RIGHT STUB */}
@@ -174,7 +174,7 @@ function PrenupCard() {
           }}
           aria-hidden
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/80 via-navy/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/80 via-navy-deep/30 to-transparent" />
 
         {/* Name overlay */}
         <div className="absolute inset-x-4 sm:inset-x-5 top-1/2 -translate-y-1/2 text-center">

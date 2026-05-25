@@ -86,7 +86,7 @@ export default function RSVP() {
         }}
         aria-hidden
       />
-      <div className="absolute inset-0 bg-navy/90 -z-10" aria-hidden />
+      <div className="absolute inset-0 bg-navy-deep/90 -z-10" aria-hidden />
 
       <div className="section">
       <div className="section-title">
@@ -129,7 +129,7 @@ export default function RSVP() {
                 ))}
             </div>
           </div>
-          <div className="bg-navy text-cream px-6 py-4 flex items-center justify-between">
+          <div className="bg-navy-deep text-cream px-6 py-4 flex items-center justify-between">
             <div className="font-mono text-[10px] uppercase tracking-widest text-cream/60">
               {wedding.gate} · {wedding.shortDateCompact} · {wedding.ceremonyTime}
             </div>
@@ -142,7 +142,7 @@ export default function RSVP() {
           className="max-w-2xl mx-auto bg-cream text-navy rounded-sm overflow-hidden shadow-2xl shadow-navy-deep/50"
         >
           {/* Pass header */}
-          <div className="bg-navy text-cream px-4 sm:px-6 md:px-8 py-4 sm:py-5 flex items-center justify-between gap-3">
+          <div className="bg-navy-deep text-cream px-4 sm:px-6 md:px-8 py-4 sm:py-5 flex items-center justify-between gap-3">
             <div className="flex items-center gap-3 min-w-0">
               <PaperPlane className="w-6 h-6 text-gold shrink-0" />
               <div className="min-w-0">
@@ -180,7 +180,7 @@ export default function RSVP() {
                 </p>
                 <a
                   href="/login?next=%2F%23rsvp"
-                  className="inline-flex items-center justify-center gap-2 font-sans uppercase tracking-[0.3em] text-[10px] px-5 py-3 bg-navy text-cream hover:bg-gold hover:text-navy transition-colors rounded-sm"
+                  className="inline-flex items-center justify-center gap-2 font-sans uppercase tracking-[0.3em] text-[10px] px-5 py-3 bg-navy-deep text-cream hover:bg-gold hover:text-navy transition-colors rounded-sm"
                 >
                   <PaperPlane className="w-3.5 h-3.5" />
                   Begin check-in
@@ -318,7 +318,7 @@ export default function RSVP() {
                 <button
                   type="submit"
                   disabled={status === "submitting"}
-                  className="w-full font-sans uppercase tracking-[0.3em] text-[11px] px-6 py-4 bg-navy text-cream hover:bg-gold hover:text-navy transition-colors disabled:opacity-60 shadow-lg shadow-navy-deep/30"
+                  className="w-full font-sans uppercase tracking-[0.3em] text-[11px] px-6 py-4 bg-navy-deep text-cream hover:bg-gold hover:text-navy transition-colors disabled:opacity-60 shadow-lg shadow-navy-deep/30"
                 >
                   {status === "submitting" ? "Reserving seat…" : "Confirm boarding ✈"}
                 </button>
@@ -331,7 +331,7 @@ export default function RSVP() {
           </div>
 
           {/* Bottom barcode strip */}
-          <div className="bg-navy text-cream px-4 sm:px-6 md:px-8 py-4 flex items-center justify-between gap-3">
+          <div className="bg-navy-deep text-cream px-4 sm:px-6 md:px-8 py-4 flex items-center justify-between gap-3">
             <div className="font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-cream/60 truncate">
               Gate · {wedding.gate}
             </div>

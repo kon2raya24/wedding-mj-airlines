@@ -26,7 +26,7 @@ export default function AdminLogin({
     <main className="min-h-screen bg-navy-deep text-cream grid place-items-center px-4">
       <form
         action={onSubmit}
-        className="w-full max-w-sm bg-navy text-cream rounded-md p-7 border border-cream/10 shadow-2xl shadow-navy-deep/40 space-y-5"
+        className="w-full max-w-sm bg-navy-deep/90 text-cream rounded-md p-7 border border-cream/15 shadow-2xl shadow-navy-deep/40 space-y-5"
       >
         <div>
           <p className="font-sans uppercase tracking-[0.4em] text-[10px] text-gold">Admin</p>

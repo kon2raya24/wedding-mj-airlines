@@ -5,7 +5,7 @@ export default function BoardingPassStub() {
   return (
     <aside className="relative bg-cream rounded-md border border-navy/15 shadow-lg overflow-hidden flex flex-col h-full">
       {/* Left rail with rotated text */}
-      <div className="absolute left-0 inset-y-0 w-9 bg-navy text-cream flex items-center justify-center">
+      <div className="absolute left-0 inset-y-0 w-9 bg-navy-deep text-cream flex items-center justify-center">
         <span className="rotate-180 [writing-mode:vertical-rl] font-sans uppercase tracking-[0.5em] text-[10px]">
           Boarding Pass
         </span>
