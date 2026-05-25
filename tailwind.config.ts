@@ -9,13 +9,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Vintage airline palette
-        navy: "#0e2a47",
-        "navy-deep": "#081a2e",
+        // Slate-blue airline palette (anchored on #8398B7)
+        navy: "#2f3e57",
+        "navy-deep": "#20293c",
         gold: "#c89b3c",
         "gold-soft": "#e6c98a",
-        sky: "#7aa9c9",
-        "sky-pale": "#cfe2ef",
+        sky: "#8398b7",
+        "sky-pale": "#c5d2e3",
         sand: "#e9dcc2",
         cream: "#f6efe0",
         kraft: "#cdb98a",
@@ -25,7 +25,7 @@ const config: Config = {
         blush: "#e9dcc2",
         "blush-deep": "#cdb98a",
         champagne: "#c89b3c",
-        sage: "#7aa9c9",
+        sage: "#8398b7",
       },
       fontFamily: {
         script: ["var(--font-script)", "cursive"],

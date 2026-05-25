@@ -28,7 +28,7 @@ export default function Petals() {
         duration: 22 + Math.random() * 18,
         delay: -Math.random() * (22 + Math.random() * 18),
         tilt: -6 + Math.random() * 12,
-        palette: i % 2 === 0 ? "#c89b3c" : "#0e2a47",
+        palette: i % 2 === 0 ? "#c89b3c" : "#8398b7",
         opacity: 0.4 + Math.random() * 0.45,
         key: i,
       }))
@@ -57,7 +57,7 @@ export default function Petals() {
             }}
           >
             <PaperPlane
-              className="drop-shadow-[0_2px_4px_rgba(14,42,71,0.18)]"
+              className="drop-shadow-[0_2px_4px_rgba(32,41,60,0.18)]"
               style={{ width: p.size, height: p.size }}
             />
           </span>

@@ -12,7 +12,7 @@
     @apply bg-cream text-navy font-serif antialiased;
     background-image:
       radial-gradient(ellipse 80% 50% at 10% 0%, rgba(200, 155, 60, 0.10), transparent 60%),
-      radial-gradient(ellipse 70% 50% at 90% 30%, rgba(122, 169, 201, 0.10), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 90% 30%, rgba(131, 152, 183, 0.12), transparent 60%),
       radial-gradient(ellipse 70% 60% at 50% 100%, rgba(233, 220, 194, 0.6), transparent 60%);
     background-attachment: fixed;
     overflow-x: hidden;
@@ -51,7 +51,7 @@
   .paper {
     background-color: #f6efe0;
     background-image:
-      radial-gradient(circle at 1px 1px, rgba(14, 42, 71, 0.06) 1px, transparent 0);
+      radial-gradient(circle at 1px 1px, rgba(47, 62, 87, 0.06) 1px, transparent 0);
     background-size: 22px 22px;
   }
   .grain {

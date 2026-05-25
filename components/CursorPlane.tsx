@@ -94,14 +94,14 @@ export default function CursorPlane() {
         className="absolute top-0 left-0 will-change-transform"
         style={{ transition: "filter 0.2s" }}
       >
-        <svg viewBox="0 0 32 32" className="w-7 h-7 drop-shadow-[0_2px_4px_rgba(14,42,71,0.45)]">
+        <svg viewBox="0 0 32 32" className="w-7 h-7 drop-shadow-[0_2px_4px_rgba(32,41,60,0.45)]">
           <path
             d="M1 16 L31 2 L20 30 L15 19 L1 16 Z"
             fill="#c89b3c"
-            stroke="#0e2a47"
+            stroke="#2f3e57"
             strokeWidth="1"
           />
-          <path d="M15 19 L31 2" stroke="#0e2a47" strokeWidth="0.8" opacity="0.6" />
+          <path d="M15 19 L31 2" stroke="#2f3e57" strokeWidth="0.8" opacity="0.6" />
         </svg>
       </div>
     </div>

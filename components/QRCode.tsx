@@ -25,7 +25,7 @@ export default function QR({
       type: "svg",
       margin: 1,
       width: size,
-      color: { dark: "#0e2a47", light: "#ffffff" },
+      color: { dark: "#2f3e57", light: "#ffffff" },
     })
       .then(setSvg)
       .catch(() => setSvg(null));
