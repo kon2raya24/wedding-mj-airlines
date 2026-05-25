@@ -52,7 +52,7 @@
   .paper {
     background-color: #f6efe0;
     background-image:
-      radial-gradient(circle at 1px 1px, rgba(47, 62, 87, 0.06) 1px, transparent 0);
+      radial-gradient(circle at 1px 1px, rgba(28, 41, 64, 0.06) 1px, transparent 0);
     background-size: 22px 22px;
   }
   .grain {

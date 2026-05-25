@@ -122,7 +122,7 @@ export default function RSVP() {
                     className="absolute top-0 w-2 h-3 animate-confetti"
                     style={{
                       left: `${(i * 2.8) % 100}%`,
-                      backgroundColor: ["#c89b3c", "#2f3e57", "#a23a2a", "#8398b7"][i % 4],
+                      backgroundColor: ["#c89b3c", "#1c2940", "#a23a2a", "#8398b7"][i % 4],
                       animationDelay: `${(i % 12) * 0.12}s`,
                     }}
                   />

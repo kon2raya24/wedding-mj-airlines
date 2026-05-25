@@ -14,7 +14,7 @@ const config: Config = {
         // WCAG AA (~5.5:1) while reading clearly as dusty-blue, not
         // gray-navy. `sky` keeps the exact chosen hue for accents,
         // borders, and highlights so #8398B7 stays visibly "the color."
-        navy: "#2f3e57",
+        navy: "#1c2940",
         "navy-deep": "#4c6385",
         gold: "#c89b3c",
         "gold-soft": "#e6c98a",
