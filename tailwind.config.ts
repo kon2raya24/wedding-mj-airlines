@@ -9,12 +9,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Dusty-blue palette: #8398B7 IS the dominant surface color.
-        // `navy` stays dark for body text + small panels (contrast); the
-        // big dark-section background `navy-deep` becomes the dusty blue
-        // itself so the color reads as "main" everywhere it lands.
+        // Dusty-blue palette anchored on #8398B7. Big dark sections use
+        // a deeper shade of the same hue (#4c6385) so cream text passes
+        // WCAG AA (~5.5:1) while reading clearly as dusty-blue, not
+        // gray-navy. `sky` keeps the exact chosen hue for accents,
+        // borders, and highlights so #8398B7 stays visibly "the color."
         navy: "#2f3e57",
-        "navy-deep": "#8398b7",
+        "navy-deep": "#4c6385",
         gold: "#c89b3c",
         "gold-soft": "#e6c98a",
         sky: "#8398b7",
