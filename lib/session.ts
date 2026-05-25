@@ -12,26 +12,34 @@ export const SESSION_COOKIE = "mj_pass";
 // stolen/replayed values past the same window.
 export const SESSION_MAX_MS = 30 * 24 * 60 * 60 * 1000;
 
-function loadSecret(): string {
+// Resolved lazily so this module can be imported during Next.js static
+// page-data collection (e.g. /_not-found) without SESSION_SECRET being
+// present in that build step. The check still fires before any cookie
+// is ever signed or verified at runtime.
+let _secret: string | null = null;
+function getSecret(): string {
+  if (_secret) return _secret;
   const s = process.env.SESSION_SECRET;
-  if (s && s.length >= 16) return s;
+  if (s && s.length >= 16) {
+    _secret = s;
+    return _secret;
+  }
   if (process.env.NODE_ENV === "production") {
     throw new Error(
       "SESSION_SECRET is required in production (>=16 chars). " +
-        "Set it in your Vercel project env vars.",
+        "Set it in your Vercel project env vars and redeploy.",
     );
   }
-  // Dev fallback only — never reached in a production build.
-  return "mj-airways-dev-secret-please-change-me";
+  _secret = "mj-airways-dev-secret-please-change-me";
+  return _secret;
 }
 
-const SECRET = loadSecret();
 const enc = new TextEncoder();
 
 async function hmac(payload: string): Promise<string> {
   const key = await crypto.subtle.importKey(
     "raw",
-    enc.encode(SECRET),
+    enc.encode(getSecret()),
     { name: "HMAC", hash: "SHA-256" },
     false,
     ["sign"],
