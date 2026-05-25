@@ -309,7 +309,7 @@ export default function Hero() {
           </div>
 
           {/* RIGHT — prenup video */}
-          <div className="lg:col-span-3">
+          <div id="prenup" className="lg:col-span-3 scroll-mt-24">
             <PrenupCard />
           </div>
         </div>

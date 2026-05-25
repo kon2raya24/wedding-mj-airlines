@@ -28,7 +28,16 @@ async function checkIn(formData: FormData): Promise<{ error?: string }> {
     maxAge: 60 * 60 * 24 * 30,
   });
 
-  redirect(next.startsWith("/") ? next : "/");
+  redirect(safeNext(next));
+}
+
+// Only accept absolute paths on our own origin. Reject schemes, hosts,
+// and protocol-relative URLs like "//evil.com/..." which `startsWith("/")`
+// would otherwise let through.
+function safeNext(next: string): string {
+  if (!next || !next.startsWith("/")) return "/";
+  if (next.startsWith("//") || next.startsWith("/\\")) return "/";
+  return next;
 }
 
 export default async function LoginPage({

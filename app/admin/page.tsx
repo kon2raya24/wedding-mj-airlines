@@ -1,17 +1,27 @@
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import {
   ADMIN_COOKIE,
   checkAdminPassword,
-  expectedAdminCookieValue,
   isAdminConfigured,
   isAdminCookieValid,
+  mintAdminCookieValue,
 } from "@/lib/admin-auth";
+import { rateLimit } from "@/lib/rate-limit";
 import { readRsvps } from "@/lib/rsvp-store";
 import { guests } from "@/lib/guests";
 import AdminDashboard from "@/components/AdminDashboard";
 import AdminLogin from "@/components/AdminLogin";
+
+async function clientIp(): Promise<string> {
+  const h = await headers();
+  return (
+    h.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    h.get("x-real-ip") ||
+    "unknown"
+  );
+}
 
 async function adminLogin(formData: FormData): Promise<{ error?: string }> {
   "use server";
@@ -19,11 +29,15 @@ async function adminLogin(formData: FormData): Promise<{ error?: string }> {
   if (!isAdminConfigured()) {
     return { error: "Admin is not configured. Set ADMIN_PASSWORD in your environment." };
   }
-  if (!checkAdminPassword(password)) {
+  const rl = rateLimit(`admin-login:${await clientIp()}`);
+  if (!rl.allowed) {
+    return { error: `Too many attempts — try again in ${rl.retryAfterSec}s.` };
+  }
+  if (!(await checkAdminPassword(password))) {
     return { error: "Incorrect password." };
   }
   const cookieStore = await cookies();
-  cookieStore.set(ADMIN_COOKIE, await expectedAdminCookieValue(), {
+  cookieStore.set(ADMIN_COOKIE, await mintAdminCookieValue(), {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",

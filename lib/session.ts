@@ -8,11 +8,24 @@ import type { Guest } from "./guests";
 
 export const SESSION_COOKIE = "mj_pass";
 
-// In production set SESSION_SECRET in Vercel project settings — anything
-// random and long. The dev fallback keeps local development working.
-const SECRET =
-  process.env.SESSION_SECRET ?? "mj-airways-dev-secret-please-change-me";
+// 30 days, matching the cookie's browser-side maxAge so we also reject
+// stolen/replayed values past the same window.
+export const SESSION_MAX_MS = 30 * 24 * 60 * 60 * 1000;
 
+function loadSecret(): string {
+  const s = process.env.SESSION_SECRET;
+  if (s && s.length >= 16) return s;
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "SESSION_SECRET is required in production (>=16 chars). " +
+        "Set it in your Vercel project env vars.",
+    );
+  }
+  // Dev fallback only — never reached in a production build.
+  return "mj-airways-dev-secret-please-change-me";
+}
+
+const SECRET = loadSecret();
 const enc = new TextEncoder();
 
 async function hmac(payload: string): Promise<string> {
@@ -63,6 +76,33 @@ function b64urlDecode(s: string): string {
   return new TextDecoder().decode(bytes);
 }
 
+// Labeled sign/verify — prefixing the HMAC input with a domain label gives
+// us key separation so an admin token forgery oracle can't be replayed as
+// a guest token (and vice versa), even though both use the same SECRET.
+export async function signLabeled(label: string, payload: unknown): Promise<string> {
+  const raw = b64urlEncode(JSON.stringify(payload));
+  const sig = await hmac(`${label}.${raw}`);
+  return `${raw}.${sig}`;
+}
+
+export async function verifyLabeled<T>(
+  label: string,
+  token: string | undefined,
+): Promise<T | null> {
+  if (!token) return null;
+  const dot = token.indexOf(".");
+  if (dot <= 0 || dot === token.length - 1) return null;
+  const raw = token.slice(0, dot);
+  const sig = token.slice(dot + 1);
+  const expected = await hmac(`${label}.${raw}`);
+  if (!safeEqual(sig, expected)) return null;
+  try {
+    return JSON.parse(b64urlDecode(raw)) as T;
+  } catch {
+    return null;
+  }
+}
+
 export type SessionPayload = {
   code: string;
   firstName: string;
@@ -79,24 +119,16 @@ export async function encodeSession(guest: Guest): Promise<string> {
     seatsReserved: guest.seatsReserved,
     ts: Date.now(),
   };
-  const raw = b64urlEncode(JSON.stringify(payload));
-  const sig = await hmac(raw);
-  return `${raw}.${sig}`;
+  return signLabeled("session", payload);
 }
 
 export async function decodeSession(
   token: string | undefined,
 ): Promise<SessionPayload | null> {
-  if (!token) return null;
-  const [raw, sig] = token.split(".");
-  if (!raw || !sig) return null;
-  const expected = await hmac(raw);
-  if (!safeEqual(sig, expected)) return null;
-  try {
-    const decoded = JSON.parse(b64urlDecode(raw)) as SessionPayload;
-    if (!decoded?.code || typeof decoded.seatsReserved !== "number") return null;
-    return decoded;
-  } catch {
+  const decoded = await verifyLabeled<SessionPayload>("session", token);
+  if (!decoded?.code || typeof decoded.seatsReserved !== "number") return null;
+  if (typeof decoded.ts !== "number" || Date.now() - decoded.ts > SESSION_MAX_MS) {
     return null;
   }
+  return decoded;
 }

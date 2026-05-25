@@ -55,7 +55,7 @@ export default function WeddingParty() {
         <h2 className="section-heading">The Crew</h2>
         <FloralDivider className="mt-6" />
         <p className="max-w-xl mx-auto font-serif italic text-navy/70 text-lg mt-6">
-          Meet the wonderful humans helping us take flight on December 12.
+          Meet the wonderful humans helping us take flight on {wedding.shortDate}.
         </p>
       </div>
 

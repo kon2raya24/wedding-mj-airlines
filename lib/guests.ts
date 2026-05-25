@@ -1,5 +1,7 @@
 // Guest list. This is the source of truth for who can log in to the site
 // and how many seats each guest has reserved.
+import "server-only";
+
 //
 // Replace this seed data with the real guest list before launch. Codes are
 // per-guest — print each one on that guest's physical invitation.
