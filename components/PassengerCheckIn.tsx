@@ -17,8 +17,38 @@ export default function PassengerCheckIn() {
   }
 
   if (!session) {
-    // Shouldn't happen — middleware redirects unauthed visitors to /login.
-    return null;
+    // Middleware normally redirects unauthed visitors to /login, but if a
+    // cookie expires mid-session we still want a clear way back instead of
+    // a blank column.
+    return (
+      <section
+        id="checkin"
+        className="bg-navy-deep text-cream rounded-md p-6 sm:p-8 lg:p-10 shadow-2xl shadow-navy-deep/40 border border-cream/10 relative overflow-hidden h-full flex flex-col items-center justify-center text-center gap-5"
+      >
+        <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-cream/5 blur-2xl" aria-hidden />
+        <div className="relative w-14 h-14 rounded-full bg-gold/15 grid place-items-center">
+          <PaperPlane className="w-6 h-6 text-gold" />
+        </div>
+        <div className="relative">
+          <p className="font-sans uppercase tracking-[0.3em] text-[10px] text-gold mb-2">
+            Check in to continue
+          </p>
+          <h2 className="font-serif text-2xl sm:text-3xl text-cream leading-tight">
+            Welcome aboard
+          </h2>
+          <p className="font-serif italic text-cream/70 text-sm mt-3 max-w-sm mx-auto">
+            Enter the name and code on your invitation to unlock your boarding pass and RSVP.
+          </p>
+        </div>
+        <a
+          href="/login?next=%2F%23checkin"
+          className="relative inline-flex items-center justify-center gap-2 font-sans uppercase tracking-[0.3em] text-[11px] px-6 py-3.5 bg-gold text-navy-deep hover:bg-cream rounded-sm transition-colors"
+        >
+          <PaperPlane className="w-4 h-4" />
+          Begin check-in
+        </a>
+      </section>
+    );
   }
 
   return (

@@ -27,11 +27,20 @@ export default function Nav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
   return (
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ease-out ${
-        scrolled
-          ? "bg-navy-deep/90 backdrop-blur-md border-b border-cream/10"
+        scrolled || open
+          ? "bg-navy-deep backdrop-blur-md border-b border-cream/10"
           : "bg-transparent"
       }`}
     >
@@ -82,7 +91,7 @@ export default function Nav() {
       </nav>
 
       {open && (
-        <div className="xl:hidden bg-navy-deep/98 border-t border-cream/10">
+        <div className="xl:hidden bg-navy-deep border-t border-cream/10 max-h-[calc(100vh-4rem)] sm:max-h-[calc(100vh-5rem)] overflow-y-auto">
           <ul className="flex flex-col px-6 py-4 gap-2 font-sans uppercase tracking-[0.3em] text-[11px] text-cream">
             {links.map((l) => (
               <li key={l.href}>

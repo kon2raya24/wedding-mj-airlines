@@ -171,13 +171,20 @@ export default function RSVP() {
 
           <div className="p-4 sm:p-6 md:p-8 space-y-5">
             {!auth ? (
-              <div className="rounded-md border border-gold/40 bg-gold/10 p-5 text-center">
+              <div className="rounded-md border border-gold/40 bg-gold/10 p-5 text-center space-y-3">
                 <p className="font-serif text-navy/90 text-base">
-                  Please sign in above to confirm your RSVP.
+                  Please check in to confirm your RSVP.
                 </p>
-                <p className="font-sans text-[12px] text-navy/65 mt-2">
-                  Your invitation code unlocks your seat reservation.
+                <p className="font-sans text-[12px] text-navy/65">
+                  Enter your invitation code to unlock your seat reservation.
                 </p>
+                <a
+                  href="/login?next=%2F%23rsvp"
+                  className="inline-flex items-center justify-center gap-2 font-sans uppercase tracking-[0.3em] text-[10px] px-5 py-3 bg-navy text-cream hover:bg-gold hover:text-navy transition-colors rounded-sm"
+                >
+                  <PaperPlane className="w-3.5 h-3.5" />
+                  Begin check-in
+                </a>
               </div>
             ) : (
               <>
