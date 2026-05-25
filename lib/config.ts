@@ -3,13 +3,13 @@ export const wedding = {
   brideLast: "Dela Cruz",
   groomFirst: "Joseph",
   groomLast: "Santos",
-  hashtag: "#MJ1126",
-  brand: "MJ Airways",
+  hashtag: "#JM1126",
+  brand: "JM Airways",
   tagline: "Flight to Forever",
-  flightNumber: "MJ1126",
+  flightNumber: "JM1126",
   seat: "26A",
   gate: "Forever Hall",
-  destinationVenue: "The Glass Garden",
+  destinationVenue: "Mariel's Garden",
   shortDate: "November 26, 2026",
   shortDateCompact: "NOV 26, 2026",
   // ISO with PH timezone offset (+08:00)
@@ -53,25 +53,25 @@ export const wedding = {
   ceremony: {
     title: "Ceremony",
     time: "3:00 PM",
-    venue: "The Glass Garden",
-    address: "Forever Hall, The Glass Garden, Manila",
+    venue: "Mariel's Garden",
+    address: "1881 Amuyong-Kaytitinga Road, Barangay Kaytitinga I, Alfonso, Cavite",
     dressCode: "Formal Attire",
-    mapsUrl: "https://maps.google.com/?q=The+Glass+Garden+Manila",
+    mapsUrl: "https://maps.google.com/?q=Mariel's+Garden+Alfonso+Cavite",
   },
   reception: {
     title: "Reception",
     time: "5:30 PM",
-    venue: "The Glass Garden — Forever Hall",
-    address: "Forever Hall, The Glass Garden, Manila",
+    venue: "Mariel's Garden",
+    address: "1881 Amuyong-Kaytitinga Road, Barangay Kaytitinga I, Alfonso, Cavite",
     dressCode: "Formal cocktail attire",
-    mapsUrl: "https://maps.google.com/?q=The+Glass+Garden+Forever+Hall+Manila",
+    mapsUrl: "https://maps.google.com/?q=Mariel's+Garden+Alfonso+Cavite",
   },
 
   schedule: [
     { time: "2:30 PM", title: "Guest Arrival", note: "Welcome drinks at the garden foyer" },
     { time: "3:00 PM", title: "Ceremony Begins", note: "Please be seated by 2:50 PM" },
     { time: "4:30 PM", title: "Photo Session", note: "Family & wedding party photos" },
-    { time: "5:30 PM", title: "Cocktail Hour", note: "Glass Garden terrace" },
+    { time: "5:30 PM", title: "Cocktail Hour", note: "Garden terrace" },
     { time: "7:00 PM", title: "Reception & Dinner", note: "Speeches, dinner, first dance" },
     { time: "9:30 PM", title: "Party & Dancing", note: "Open floor — wear comfy shoes!" },
     { time: "11:30 PM", title: "Send-off", note: "Sparkler exit — drive safe!" },
@@ -111,9 +111,9 @@ export const wedding = {
 
   travel: [
     {
-      name: "The Glass Garden Inn",
-      distance: "On-site (venue rooms)",
-      note: "Special block-rate available — mention 'Santos-Dela Cruz Wedding' when booking.",
+      name: "Mariel's Garden — On-site",
+      distance: "On-site (check availability with venue)",
+      note: "Mention 'Santos-Dela Cruz Wedding' when inquiring about on-site accommodation.",
       link: "#",
     },
     {
@@ -163,7 +163,7 @@ export const wedding = {
     },
     {
       q: "Is there parking?",
-      a: "Yes — the Glass Garden has ample parking on-site. Valet is available from 2:00 PM onward.",
+      a: "Yes — Mariel's Garden has ample parking on-site. Valet is available from 2:00 PM onward.",
     },
     {
       q: "What if I have a dietary restriction?",
@@ -184,7 +184,7 @@ export const wedding = {
   },
 
   contact: {
-    email: "hello@marjorieandjoseph.com",
+    email: "joseph.loves.jorie@gmail.com",
   },
 
   quote: {

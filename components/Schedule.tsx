@@ -27,7 +27,7 @@ export default function Schedule() {
           <div className="flex items-center gap-2 min-w-0">
             <span className="h-2 w-2 rounded-full bg-rouge animate-pulse shrink-0" />
             <span className="truncate">
-              <span className="hidden sm:inline">Live · MJ Airways Departures</span>
+              <span className="hidden sm:inline">Live · {wedding.brand} Departures</span>
               <span className="sm:hidden">Live · Departures</span>
             </span>
           </div>

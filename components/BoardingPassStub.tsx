@@ -18,7 +18,7 @@ export default function BoardingPassStub() {
             <PaperPlane className="w-5 h-5 text-gold shrink-0" />
             <div>
               <div className="font-serif text-base leading-none">
-                <span className="font-semibold">MJ</span>{" "}
+                <span className="font-semibold">JM</span>{" "}
                 <span className="font-sans uppercase tracking-[0.3em] text-[9px] text-navy/70 align-middle ml-1">
                   Airways
                 </span>

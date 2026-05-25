@@ -27,7 +27,7 @@ const sans = Inter({
 });
 
 export const metadata: Metadata = {
-  title: `${wedding.brideFirst} & ${wedding.groomFirst} — ${wedding.shortDate}`,
+  title: `${wedding.groomFirst} & ${wedding.brideFirst} — ${wedding.shortDate}`,
   description: `Join us as we say "I do." ${wedding.shortDate} at ${wedding.destinationVenue}.`,
 };
 

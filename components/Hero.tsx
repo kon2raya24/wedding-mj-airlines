@@ -37,7 +37,7 @@ function BoardingPassCard() {
             <PaperPlane className="w-5 h-5 text-gold shrink-0" />
             <div className="min-w-0">
               <div className="font-serif text-base sm:text-lg leading-none">
-                <span className="font-semibold">MJ</span>{" "}
+                <span className="font-semibold">JM</span>{" "}
                 <span className="font-sans uppercase tracking-[0.3em] text-[10px] text-navy/70 align-middle ml-1">
                   Airways
                 </span>
@@ -179,7 +179,7 @@ function PrenupCard() {
         {/* Name overlay */}
         <div className="absolute inset-x-4 sm:inset-x-5 top-1/2 -translate-y-1/2 text-center">
           <p className="font-script text-3xl sm:text-4xl text-cream leading-none">
-            {wedding.brideFirst} &amp; {wedding.groomFirst}
+            {wedding.groomFirst} &amp; {wedding.brideFirst}
           </p>
           <p className="font-sans uppercase tracking-[0.3em] text-[10px] text-gold mt-2">
             {wedding.prenup.tagline}
@@ -252,10 +252,10 @@ export default function Hero() {
 
             <h1 className="font-serif text-cream leading-[0.95]">
               <span className="block text-5xl sm:text-6xl md:text-7xl font-semibold uppercase tracking-tight">
-                {wedding.brideFirst}
+                {wedding.groomFirst}
               </span>
               <span className="block text-5xl sm:text-6xl md:text-7xl font-semibold uppercase tracking-tight">
-                <span className="text-gold">&amp;</span> {wedding.groomFirst}
+                <span className="text-gold">&amp;</span> {wedding.brideFirst}
               </span>
             </h1>
 

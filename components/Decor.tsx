@@ -60,7 +60,7 @@ export function Monogram({ className = "" }: SvgProps) {
       <text x="70" y="108" textAnchor="middle" fontSize="8" fontFamily="var(--font-sans), sans-serif" fill="currentColor" letterSpacing="2">S</text>
       <text x="40" y="74" textAnchor="middle" fontSize="8" fontFamily="var(--font-sans), sans-serif" fill="currentColor" letterSpacing="2">W</text>
       <text x="70" y="83" textAnchor="middle" fontSize="34" fontFamily="var(--font-script), cursive" fill="currentColor">
-        M &amp; J
+        J &amp; M
       </text>
     </svg>
   );
@@ -271,7 +271,7 @@ export function MJLogo({ className = "" }: SvgProps) {
         letterSpacing="2"
         fill="currentColor"
       >
-        M
+        J
       </text>
       <text
         x="52"
@@ -293,7 +293,7 @@ export function MJLogo({ className = "" }: SvgProps) {
         letterSpacing="2"
         fill="currentColor"
       >
-        J
+        M
       </text>
       <g transform="translate(98, 14) rotate(-8)">
         <path d="M0 6 L18 0 L13 18 L9 11 L0 6 Z" fill="currentColor" opacity="0.85" />

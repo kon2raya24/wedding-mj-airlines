@@ -27,12 +27,12 @@ export async function GET() {
   // Default duration: 6 hours covers ceremony + reception.
   const end = new Date(start.getTime() + 6 * 60 * 60 * 1000);
   const now = new Date();
-  const uid = `${wedding.flightNumber.toLowerCase()}-${start.getTime()}@marjorieandjoseph`;
+  const uid = `${wedding.flightNumber.toLowerCase()}-${start.getTime()}@josephandmarjorie`;
 
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//MJ Airways//Wedding Invitation//EN",
+    `PRODID:-//${wedding.brand}//Wedding Invitation//EN`,
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",
@@ -40,7 +40,7 @@ export async function GET() {
     `DTSTAMP:${fmtUtc(now)}`,
     `DTSTART:${fmtUtc(start)}`,
     `DTEND:${fmtUtc(end)}`,
-    `SUMMARY:${escapeIcs(`${wedding.brideFirst} & ${wedding.groomFirst} — Wedding`)}`,
+    `SUMMARY:${escapeIcs(`${wedding.groomFirst} & ${wedding.brideFirst} — Wedding`)}`,
     `DESCRIPTION:${escapeIcs(
       `Flight ${wedding.flightNumber} to Forever. Boarding ${wedding.boardingTime}. Ceremony ${wedding.ceremonyTime}. Dress code: ${wedding.dressCode}.`,
     )}`,
@@ -48,7 +48,7 @@ export async function GET() {
     "STATUS:CONFIRMED",
     "BEGIN:VALARM",
     "ACTION:DISPLAY",
-    `DESCRIPTION:${escapeIcs(`${wedding.brideFirst} & ${wedding.groomFirst} — 1 day to go!`)}`,
+    `DESCRIPTION:${escapeIcs(`${wedding.groomFirst} & ${wedding.brideFirst} — 1 day to go!`)}`,
     "TRIGGER:-P1D",
     "END:VALARM",
     "END:VEVENT",

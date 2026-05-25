@@ -15,12 +15,12 @@ export async function sendRsvpConfirmation(entry: RsvpEntry): Promise<void> {
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   const fromAddr =
-    process.env.EMAIL_FROM ?? `MJ Airways <onboarding@resend.dev>`;
+    process.env.EMAIL_FROM ?? `${wedding.brand} <onboarding@resend.dev>`;
 
   const subject =
     entry.attending === "yes"
-      ? `Your boarding pass is confirmed — ${wedding.brideFirst} & ${wedding.groomFirst}, ${wedding.shortDateCompact}`
-      : `We received your RSVP — ${wedding.brideFirst} & ${wedding.groomFirst}`;
+      ? `Your boarding pass is confirmed — ${wedding.groomFirst} & ${wedding.brideFirst}, ${wedding.shortDateCompact}`
+      : `We received your RSVP — ${wedding.groomFirst} & ${wedding.brideFirst}`;
 
   const html = renderEmail(entry);
 
@@ -52,7 +52,7 @@ function renderEmail(entry: RsvpEntry): string {
     <div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 8px 24px rgba(32,41,60,0.12);">
       <div style="background:#2f3e57;color:#f6efe0;padding:20px 28px;display:flex;align-items:center;justify-content:space-between;">
         <div>
-          <div style="font-family:Arial,sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#c89b3c;">MJ Airways</div>
+          <div style="font-family:Arial,sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#c89b3c;">${wedding.brand}</div>
           <div style="font-family:Georgia,serif;font-size:18px;margin-top:4px;">Boarding Pass · ${attending ? "Confirmed" : "Received"}</div>
         </div>
         <div style="text-align:right;font-family:'Courier New',monospace;font-size:11px;color:#f6efe0cc;letter-spacing:2px;">
@@ -104,7 +104,7 @@ function renderEmail(entry: RsvpEntry): string {
 
         <p style="margin:24px 0 0;font-style:italic;font-size:14px;color:#2f3e57aa;">
           Together is our favorite destination. ♡<br/>
-          — ${escapeHtml(wedding.brideFirst)} &amp; ${escapeHtml(wedding.groomFirst)}
+          — ${escapeHtml(wedding.groomFirst)} &amp; ${escapeHtml(wedding.brideFirst)}
         </p>
       </div>
 

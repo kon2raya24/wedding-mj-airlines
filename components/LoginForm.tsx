@@ -52,7 +52,7 @@ export default function LoginForm({
       <div className="fixed top-0 inset-x-0 z-10 border-b border-cream/15 backdrop-blur-sm bg-navy-deep/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 py-3 flex items-center justify-between gap-2 font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] text-cream/70">
           <span className="flex items-center gap-2 shrink-0">
-            <span className="text-gold">●</span> MJ Airways
+            <span className="text-gold">●</span> JM Airways
           </span>
           <span className="hidden md:inline">Flight {flightNumber} · {shortDateCompact}</span>
           <span className="shrink-0">Check-in</span>
@@ -65,7 +65,7 @@ export default function LoginForm({
             Pre-flight check-in
           </p>
           <h1 className="font-script text-5xl sm:text-6xl text-cream leading-[0.9]">
-            {brideFirst} <span className="text-gold">&amp;</span> {groomFirst}
+            {groomFirst} <span className="text-gold">&amp;</span> {brideFirst}
           </h1>
           <p className="font-serif italic text-cream/70 text-sm sm:text-base mt-3">
             Please locate your reservation to view your invitation.
@@ -85,7 +85,7 @@ export default function LoginForm({
             <div className="flex items-center gap-2 min-w-0">
               <PaperPlane className="w-5 h-5 text-gold shrink-0" />
               <div className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] min-w-0">
-                <div className="text-gold truncate">MJ Airways</div>
+                <div className="text-gold truncate">JM Airways</div>
                 <div className="text-cream/70 truncate">Flight to Forever</div>
               </div>
             </div>
@@ -192,7 +192,7 @@ export default function LoginForm({
         </form>
 
         <p className="mt-6 text-center font-serif italic text-cream/55 text-xs sm:text-sm">
-          Lost your code? Message {brideFirst} or {groomFirst} and we&apos;ll
+          Lost your code? Message {groomFirst} or {brideFirst} and we&apos;ll
           re-issue your boarding pass.
         </p>
       </div>

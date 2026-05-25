@@ -146,7 +146,7 @@ export default function RSVP() {
             <div className="flex items-center gap-3 min-w-0">
               <PaperPlane className="w-6 h-6 text-gold shrink-0" />
               <div className="min-w-0">
-                <div className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] text-gold truncate">MJ Airways</div>
+                <div className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] text-gold truncate">{wedding.brand}</div>
                 <div className="font-serif text-base sm:text-lg truncate">Boarding Pass · RSVP</div>
               </div>
             </div>

@@ -73,7 +73,7 @@ export default function Footer() {
             >
               Need Help? Contact Us
             </a>
-            © {new Date().getFullYear()} {wedding.brideFirst} &amp; {wedding.groomFirst}.
+            © {new Date().getFullYear()} {wedding.groomFirst} &amp; {wedding.brideFirst}.
             <br />
             All rights reserved.
           </div>

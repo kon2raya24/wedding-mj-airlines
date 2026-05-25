@@ -27,19 +27,19 @@ function CrewCard({
 }) {
   return (
     <TiltCard className="group bg-cream border border-navy/15 rounded-sm overflow-hidden shadow-sm hover:shadow-2xl" max={8}>
-      <div className="relative aspect-[4/5] overflow-hidden">
+      <div className="relative aspect-square overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center grayscale-[40%] group-hover:grayscale-0 transition-all duration-500 scale-105 group-hover:scale-110"
           style={{ backgroundImage: `url('${image}')` }}
           aria-hidden
         />
-        <span className="absolute top-2 left-2 font-mono uppercase tracking-[0.3em] text-[9px] text-cream bg-navy/80 px-2 py-1">
+        <span className="absolute top-1.5 left-1.5 font-mono uppercase tracking-[0.2em] text-[8px] text-cream bg-navy/80 px-1.5 py-0.5">
           {rank}
         </span>
       </div>
-      <div className="p-4 text-center">
-        <div className="font-serif text-lg text-navy leading-tight">{name}</div>
-        <div className="font-sans uppercase tracking-[0.3em] text-[10px] text-gold mt-1">
+      <div className="p-2.5 text-center">
+        <div className="font-serif text-sm text-navy leading-tight">{name}</div>
+        <div className="font-sans uppercase tracking-[0.2em] text-[9px] text-gold mt-0.5">
           {role}
         </div>
       </div>
@@ -59,7 +59,7 @@ export default function WeddingParty() {
         </p>
       </div>
 
-      {/* Captain & First Officer (Bride & Groom) */}
+      {/* Captain & First Officer (Groom & Bride) */}
       <Reveal className="grid md:grid-cols-2 gap-6 mb-14 max-w-4xl mx-auto">
         <div className="relative bg-navy text-cream rounded-sm overflow-hidden shadow-2xl shadow-navy-deep/40">
           <div className="aspect-[5/4] relative">
@@ -72,8 +72,8 @@ export default function WeddingParty() {
             <PassportStamp text="CAPTAIN" rotate={-8} className="absolute top-4 right-4 w-24 h-24 text-gold" />
             <div className="absolute bottom-4 left-4 right-4">
               <div className="font-mono uppercase tracking-[0.3em] text-[10px] text-gold">Captain</div>
-              <div className="font-script text-5xl text-cream leading-none mt-1">{wedding.brideFirst}</div>
-              <div className="font-serif italic text-cream/80 text-sm mt-1">{wedding.brideLast}</div>
+              <div className="font-script text-5xl text-cream leading-none mt-1">{wedding.groomFirst}</div>
+              <div className="font-serif italic text-cream/80 text-sm mt-1">{wedding.groomLast}</div>
             </div>
           </div>
         </div>
@@ -88,19 +88,19 @@ export default function WeddingParty() {
             <PassportStamp text="FIRST OFFICER" rotate={8} className="absolute top-4 right-4 w-24 h-24 text-gold" />
             <div className="absolute bottom-4 left-4 right-4">
               <div className="font-mono uppercase tracking-[0.3em] text-[10px] text-gold">First Officer</div>
-              <div className="font-script text-5xl text-cream leading-none mt-1">{wedding.groomFirst}</div>
-              <div className="font-serif italic text-cream/80 text-sm mt-1">{wedding.groomLast}</div>
+              <div className="font-script text-5xl text-cream leading-none mt-1">{wedding.brideFirst}</div>
+              <div className="font-serif italic text-cream/80 text-sm mt-1">{wedding.brideLast}</div>
             </div>
           </div>
         </div>
       </Reveal>
 
       {/* Crew grid */}
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-3xl mx-auto">
         <h3 className="text-center font-sans uppercase tracking-[0.5em] text-[11px] text-gold mb-8">
           The crew &amp; ground staff
         </h3>
-        <ul className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        <ul className="grid grid-cols-3 sm:grid-cols-4 gap-3 sm:gap-4">
           {[...wedding.party.bridesSide, ...wedding.party.groomsSide].map((m, i) => (
             <Reveal as="li" key={m.name} delay={i * 80}>
               <CrewCard

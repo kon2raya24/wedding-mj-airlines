@@ -19,15 +19,15 @@ export type Guest = {
 };
 
 export const guests: Guest[] = [
-  { firstName: "Marjorie", lastName: "Dela Cruz", code: "MJ-BRIDE", seatsReserved: 1 },
-  { firstName: "Joseph", lastName: "Santos", code: "MJ-GROOM", seatsReserved: 1 },
-  { firstName: "Lola", lastName: "Pacing", code: "MJ-1A2B", seatsReserved: 4 },
-  { firstName: "Tito", lastName: "Ben", code: "MJ-3C4D", seatsReserved: 2 },
-  { firstName: "Andrea", lastName: "Reyes", code: "MJ-5E6F", seatsReserved: 2 },
-  { firstName: "Mark", lastName: "Villanueva", code: "MJ-7G8H", seatsReserved: 1 },
-  { firstName: "Sarah", lastName: "Lim", code: "MJ-9J0K", seatsReserved: 3 },
+  { firstName: "Joseph", lastName: "Santos", code: "JM-GROOM", seatsReserved: 1 },
+  { firstName: "Marjorie", lastName: "Dela Cruz", code: "JM-BRIDE", seatsReserved: 1 },
+  { firstName: "Lola", lastName: "Pacing", code: "JM-1A2B", seatsReserved: 4 },
+  { firstName: "Tito", lastName: "Ben", code: "JM-3C4D", seatsReserved: 2 },
+  { firstName: "Andrea", lastName: "Reyes", code: "JM-5E6F", seatsReserved: 2 },
+  { firstName: "Mark", lastName: "Villanueva", code: "JM-7G8H", seatsReserved: 1 },
+  { firstName: "Sarah", lastName: "Lim", code: "JM-9J0K", seatsReserved: 3 },
   // Sandbox account for quick demos
-  { firstName: "Test", lastName: "Guest", code: "MJ1126", seatsReserved: 2 },
+  { firstName: "Test", lastName: "Guest", code: "JM1126", seatsReserved: 2 },
 ];
 
 function norm(s: string) {
