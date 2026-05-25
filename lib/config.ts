@@ -151,7 +151,7 @@ export const wedding = {
   faq: [
     {
       q: "What's the dress code?",
-      a: "Formal attire in blush, champagne, or sage tones. Please avoid pure white or ivory — those are reserved for the bride!",
+      a: "Formal attire. We'd love to see soft garden-inspired tones — dusty blue, sage, blush, or beige. Please avoid pure white or ivory, those are reserved for the bride!",
     },
     {
       q: "Can I bring a plus-one?",

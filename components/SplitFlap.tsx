@@ -41,7 +41,10 @@ function SplitFlapChar({
   delay: number;
   trigger: boolean;
 }) {
-  const [idx, setIdx] = useState(0);
+  // Initialize with the resolved target so the panel renders the real value
+  // on mount (no "▢▢▢▢" placeholder flash). When trigger fires we spin and
+  // land back on the same value, so the flap animation still plays.
+  const [idx, setIdx] = useState(() => indexOf(target));
   const settledRef = useRef(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const startTimer = useRef<ReturnType<typeof setTimeout> | null>(null);

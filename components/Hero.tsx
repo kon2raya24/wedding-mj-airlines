@@ -32,23 +32,23 @@ function BoardingPassCard() {
       {/* MAIN STUB */}
       <div className="p-5 sm:p-6 md:p-7">
         {/* Header strip */}
-        <div className="flex items-center justify-between gap-3 pb-4 border-b border-navy/10">
-          <div className="flex items-center gap-2 min-w-0">
-            <PaperPlane className="w-5 h-5 text-gold shrink-0" />
-            <div className="min-w-0">
-              <div className="font-serif text-base sm:text-lg leading-none">
+        <div className="pb-4 border-b border-navy/10">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 min-w-0">
+              <PaperPlane className="w-5 h-5 text-gold shrink-0" />
+              <span className="font-serif text-base sm:text-lg leading-none truncate">
                 <span className="font-semibold">JM</span>{" "}
                 <span className="font-sans uppercase tracking-[0.3em] text-[10px] text-navy/70 align-middle ml-1">
                   Airways
                 </span>
-              </div>
-              <div className="font-sans uppercase tracking-[0.3em] text-[9px] text-navy/55 mt-1">
-                Flight to Forever
-              </div>
+              </span>
+            </div>
+            <div className="font-sans uppercase tracking-[0.3em] text-[9px] sm:text-[10px] text-navy/55 shrink-0">
+              First Class
             </div>
           </div>
-          <div className="font-sans uppercase tracking-[0.3em] text-[9px] sm:text-[10px] text-navy/55 shrink-0">
-            First Class
+          <div className="font-sans uppercase tracking-[0.3em] text-[9px] text-navy/55 mt-2 pl-7">
+            Flight to Forever
           </div>
         </div>
 
@@ -278,7 +278,7 @@ export default function Hero() {
               />
             </div>
 
-            <div className="mt-8 flex flex-col sm:flex-row gap-3">
+            <div className="mt-8 flex flex-col gap-3">
               <a
                 href="#checkin"
                 className="inline-flex items-center justify-center gap-2 font-sans uppercase tracking-[0.3em] text-[11px] px-6 py-3.5 bg-cream text-navy-deep rounded-sm hover:bg-gold transition-colors shadow-lg shadow-navy-deep/40"

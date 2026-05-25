@@ -90,7 +90,7 @@ export default function EventDetails() {
       <div className="flex items-center justify-center gap-3 sm:gap-4 text-gold mb-8 sm:mb-10">
         <span className="font-mono uppercase tracking-[0.3em] sm:tracking-[0.4em] text-[10px] sm:text-[11px] text-navy">MNL</span>
         <FlightArcSmall className="w-24 sm:w-32 h-6" />
-        <span className="font-mono uppercase tracking-[0.3em] sm:tracking-[0.4em] text-[10px] sm:text-[11px] text-navy">MNL</span>
+        <span className="font-mono uppercase tracking-[0.3em] sm:tracking-[0.4em] text-[10px] sm:text-[11px] text-navy">ALF</span>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6 sm:gap-8 md:gap-10">
