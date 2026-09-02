@@ -102,6 +102,19 @@ function readGuests() {
     });
 }
 
+/** Replaces the whole guest list. Used to load the real list from the CLI. */
+function setGuests(list) {
+  const sh = sheet(TAB_GUESTS);
+  const last = sh.getLastRow();
+  if (last > 1) sh.getRange(2, 1, last - 1, HEADERS[TAB_GUESTS].length).clearContent();
+  if (!list.length) return { ok: true, count: 0 };
+  const rows = list.map(function (g) {
+    return [g.firstName, g.lastName, g.seatsReserved];
+  });
+  sh.getRange(2, 1, rows.length, 3).setValues(rows);
+  return { ok: true, count: rows.length };
+}
+
 function readRsvpRows() {
   return rows(TAB_RSVPS, HEADERS[TAB_RSVPS].length)
     .filter(function (r) { return r[1] || r[2]; });
@@ -191,6 +204,8 @@ function doPost(e) {
         return json({ ok: true, quota: MailApp.getRemainingDailyQuota() });
       case 'guests':
         return json({ ok: true, guests: readGuests() });
+      case 'guests.set':
+        return json(setGuests(body.guests || []));
       case 'rsvps':
         return json({ ok: true, rows: readRsvpRows() });
       case 'rsvp':
