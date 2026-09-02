@@ -131,6 +131,33 @@ export async function encodeSession(guest: Guest): Promise<string> {
   return signLabeled("session", payload);
 }
 
+// Invitation links emailed to guests carry a signed token so clicking
+// through logs them straight in — no name, no code, no re-typing.
+// Long-lived on purpose: invitations go out months before the day.
+export const INVITE_MAX_MS = 400 * 24 * 60 * 60 * 1000;
+
+export async function encodeInvite(guest: Guest): Promise<string> {
+  const payload: SessionPayload = {
+    code: INVITATION_CODE,
+    firstName: guest.firstName,
+    lastName: guest.lastName,
+    seatsReserved: guest.seatsReserved,
+    ts: Date.now(),
+  };
+  return signLabeled("invite", payload);
+}
+
+export async function decodeInvite(
+  token: string | undefined,
+): Promise<SessionPayload | null> {
+  const decoded = await verifyLabeled<SessionPayload>("invite", token);
+  if (!decoded?.code || typeof decoded.seatsReserved !== "number") return null;
+  if (typeof decoded.ts !== "number" || Date.now() - decoded.ts > INVITE_MAX_MS) {
+    return null;
+  }
+  return decoded;
+}
+
 export async function decodeSession(
   token: string | undefined,
 ): Promise<SessionPayload | null> {

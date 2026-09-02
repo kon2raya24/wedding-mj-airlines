@@ -4,6 +4,7 @@ import { SESSION_COOKIE, decodeSession } from "@/lib/session";
 // Public paths that don't require the guest cookie.
 const PUBLIC_PATHS = [
   "/login",
+  "/i",
   "/api/logout",
   "/api/calendar.ics",
 ];

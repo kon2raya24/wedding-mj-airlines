@@ -1,3 +1,14 @@
+// Absolute origin used for links in outgoing email. Vercel injects
+// VERCEL_PROJECT_PRODUCTION_URL automatically; SITE_URL overrides it (e.g.
+// once a custom domain is attached).
+export function siteUrl(): string {
+  const explicit = process.env.SITE_URL;
+  if (explicit) return explicit.replace(/\/$/, "");
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  if (vercel) return `https://${vercel}`;
+  return "http://localhost:3000";
+}
+
 // The one code printed on every invitation card. Lives here (not in
 // guests.ts) so Edge middleware can read it without pulling in the
 // server-only guest list.

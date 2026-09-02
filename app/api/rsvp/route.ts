@@ -6,7 +6,7 @@ import { findRsvpForGuest, submitRsvp, RsvpEntry } from "@/lib/rsvp-store";
 import { guestKey, type Companion } from "@/lib/rsvp-types";
 import { rateLimit } from "@/lib/rate-limit";
 import { buildRsvpEmails } from "@/lib/email";
-import { SESSION_COOKIE, decodeSession } from "@/lib/session";
+import { SESSION_COOKIE, decodeSession, encodeInvite } from "@/lib/session";
 import { isSameOrigin } from "@/lib/csrf";
 
 type RsvpPayload = {
@@ -138,7 +138,7 @@ export async function POST(req: Request) {
   // retry, rather than a success screen for an RSVP that was never saved.
   let result;
   try {
-    result = await submitRsvp(entry, buildRsvpEmails(entry));
+    result = await submitRsvp(entry, buildRsvpEmails(entry, await encodeInvite(guest)));
   } catch (err) {
     console.error("[RSVP] could not save:", err);
     return NextResponse.json(

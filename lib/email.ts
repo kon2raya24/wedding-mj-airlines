@@ -11,7 +11,7 @@
 // no flexbox/grid, no web fonts, no external images. That is what actually
 // renders in Gmail, Outlook and Apple Mail. The palette and layout mirror
 // the site's boarding pass; the script/serif faces degrade to Georgia.
-import { wedding } from "./config";
+import { siteUrl, wedding } from "./config";
 import type { Mail } from "./apps-script";
 import type { RsvpEntry } from "./rsvp-types";
 
@@ -72,7 +72,7 @@ function motifSwatches(): string {
 
 // The boarding pass itself. `forCouple` swaps the greeting for a summary
 // header so the couple can scan a full inbox quickly.
-function renderPass(entry: RsvpEntry, forCouple: boolean): string {
+function renderPass(entry: RsvpEntry, forCouple: boolean, inviteUrl: string): string {
   const attending = entry.attending === "yes";
   const fullName = `${entry.firstName} ${entry.lastName}`;
 
@@ -162,10 +162,27 @@ function renderPass(entry: RsvpEntry, forCouple: boolean): string {
                   )}
                   ${field("Companions", companionList(entry))}
                   ${entry.note ? field("Note", `<em>${escapeHtml(entry.note)}</em>`) : ""}
-                  ${forCouple && entry.email ? field("Reply to", escapeHtml(entry.email)) : ""}
                 </table>
               </td></tr>
             </table>
+          </td>
+        </tr>
+
+        <!-- open the invitation: signed link, no re-login -->
+        <tr>
+          <td align="center" style="padding:20px 26px 2px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td align="center" bgcolor="${NAVY}" style="border-radius:3px;">
+                  <a href="${inviteUrl}" style="display:inline-block;padding:14px 30px;font-family:${SANS};font-size:11px;letter-spacing:3px;text-transform:uppercase;color:${CREAM};text-decoration:none;">
+                    ${forCouple ? "Open the manifest" : "View your invitation"}
+                  </a>
+                </td>
+              </tr>
+            </table>
+            <div style="font-family:${SANS};font-size:11px;color:${NAVY}8c;padding-top:10px;">
+              ${forCouple ? "Opens the site signed in as this guest." : "Opens straight to your invitation \u2014 no code needed."}
+            </div>
           </td>
         </tr>
 
@@ -219,10 +236,11 @@ function renderPass(entry: RsvpEntry, forCouple: boolean): string {
 
 // Every message this RSVP should produce: the couple's copy, plus the
 // guest's own if they left an address.
-export function buildRsvpEmails(entry: RsvpEntry): Mail[] {
+export function buildRsvpEmails(entry: RsvpEntry, inviteToken: string): Mail[] {
   const attending = entry.attending === "yes";
   const who = `${entry.firstName} ${entry.lastName}`;
   const fromName = wedding.brand;
+  const inviteUrl = `${siteUrl()}/i?t=${encodeURIComponent(inviteToken)}`;
 
   const mails: Mail[] = [
     {
@@ -232,7 +250,7 @@ export function buildRsvpEmails(entry: RsvpEntry): Mail[] {
       subject: attending
         ? `RSVP: ${who} is boarding (${entry.seatsAttending} of ${entry.seatsReserved})`
         : `RSVP: ${who} can't make it`,
-      html: renderPass(entry, true),
+      html: renderPass(entry, true, inviteUrl),
     },
   ];
 
@@ -243,7 +261,7 @@ export function buildRsvpEmails(entry: RsvpEntry): Mail[] {
       subject: attending
         ? `Your boarding pass is confirmed — ${wedding.groomFirst} & ${wedding.brideFirst}, ${wedding.shortDateCompact}`
         : `We received your RSVP — ${wedding.groomFirst} & ${wedding.brideFirst}`,
-      html: renderPass(entry, false),
+      html: renderPass(entry, false, inviteUrl),
     });
   }
 
