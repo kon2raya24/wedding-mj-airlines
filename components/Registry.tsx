@@ -24,32 +24,21 @@ function GiftTag({ gift, index }: { gift: Gift; index: number }) {
           }
         }}
         aria-pressed={flipped}
-        aria-label={`${gift.title} — show ${flipped ? "details" : "QR code"}`}
+        aria-label={`${gift.title} — show ${flipped ? "QR code" : "details"}`}
         className="relative block w-full min-h-[440px] cursor-pointer rounded-sm transition-transform duration-500 [transform-style:preserve-3d] focus:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-navy-deep"
         style={{ transform: flipped ? "rotateY(180deg)" : undefined }}
       >
-        {/* FRONT */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-cream border-2 border-dashed border-navy/30 rounded-sm p-7 text-center shadow-sm [backface-visibility:hidden]">
+        {/* FRONT — the QR is what guests actually need, so it faces up. */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-cream border-2 border-dashed border-navy/30 rounded-sm p-7 text-center shadow-sm [backface-visibility:hidden]">
           {/* Luggage-tag string */}
           <span aria-hidden className="absolute -top-3 left-1/2 -translate-x-1/2 w-3 h-6 bg-navy rounded-full" />
           <span aria-hidden className="absolute -top-9 left-1/2 -translate-x-1/2 w-px h-6 bg-navy" />
 
-          <PaperPlane className="w-7 h-7 text-gold mb-3" />
           <span className="block font-mono uppercase tracking-[0.4em] text-[10px] text-navy/55 mb-2">
             Tag · {String(index + 1).padStart(2, "0")}
           </span>
-          <span className="block font-script text-4xl text-navy mb-3">{gift.title}</span>
-          <span className="block font-serif font-medium text-navy mb-3 break-words">{gift.handle}</span>
-          <span className="block font-serif text-sm text-navy/70 italic">{gift.note}</span>
-          <span className="mt-5 block font-sans uppercase tracking-[0.3em] text-[9px] text-gold">
-            Tap to view QR
-          </span>
-        </div>
-
-        {/* BACK */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-navy-deep border-2 border-dashed border-gold/50 rounded-sm p-7 text-center shadow-sm [backface-visibility:hidden] [transform:rotateY(180deg)]">
-          <span className="block font-script text-3xl text-cream mb-4">{gift.title}</span>
-          <div className="bg-white p-3 rounded-sm text-navy">
+          <span className="block font-script text-4xl text-navy mb-4">{gift.title}</span>
+          <div className="bg-white p-2 rounded-sm ring-1 ring-navy/10 text-navy">
             {gift.qr ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={gift.qr} alt={`${gift.title} QR code`} className="w-[230px] h-[230px] object-contain" />
@@ -57,8 +46,19 @@ function GiftTag({ gift, index }: { gift: Gift; index: number }) {
               <QR text={gift.handle} size={230} />
             )}
           </div>
-          <span className="mt-5 block font-serif text-sm text-cream/80 break-words">{gift.handle}</span>
+          <span className="mt-4 block font-serif font-medium text-navy break-words">{gift.handle}</span>
           <span className="mt-3 block font-sans uppercase tracking-[0.3em] text-[9px] text-gold">
+            Tap for details
+          </span>
+        </div>
+
+        {/* BACK */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-navy-deep border-2 border-dashed border-gold/50 rounded-sm p-7 text-center shadow-sm [backface-visibility:hidden] [transform:rotateY(180deg)]">
+          <PaperPlane className="w-7 h-7 text-gold mb-4" />
+          <span className="block font-script text-4xl text-cream mb-4">{gift.title}</span>
+          <span className="block font-serif font-medium text-cream mb-3 break-words">{gift.handle}</span>
+          <span className="block font-serif text-sm text-cream/75 italic">{gift.note}</span>
+          <span className="mt-6 block font-sans uppercase tracking-[0.3em] text-[9px] text-gold">
             Tap to go back
           </span>
         </div>
