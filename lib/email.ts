@@ -1,5 +1,6 @@
-// Resend integration. Skips silently when RESEND_API_KEY isn't set so the
-// site stays functional even without the email service wired up.
+// Builds the RSVP emails. It does not send them — the Apps Script backend
+// does that from the couple's own Gmail (see apps-script/Code.gs), which is
+// why no mail provider, API key or verified domain is needed anywhere.
 //
 // Two emails go out per RSVP:
 //   - a boarding-pass confirmation to the guest (if they left an address)
@@ -11,6 +12,7 @@
 // renders in Gmail, Outlook and Apple Mail. The palette and layout mirror
 // the site's boarding pass; the script/serif faces degrade to Georgia.
 import { wedding } from "./config";
+import type { Mail } from "./apps-script";
 import type { RsvpEntry } from "./rsvp-types";
 
 // Site palette (tailwind.config.ts)
@@ -27,17 +29,6 @@ function notifyAddresses(): string[] {
   const raw = process.env.RSVP_NOTIFY_EMAIL;
   if (raw) return raw.split(",").map((s) => s.trim()).filter(Boolean);
   return wedding.notifyEmails;
-}
-
-function fromAddress(): string {
-  return process.env.EMAIL_FROM ?? `${wedding.brand} <onboarding@resend.dev>`;
-}
-
-async function getResend() {
-  if (!process.env.RESEND_API_KEY) return null;
-  // Lazy import keeps the dependency out of the cold-start path when unused.
-  const { Resend } = await import("resend");
-  return new Resend(process.env.RESEND_API_KEY);
 }
 
 function escapeHtml(s: string): string {
@@ -226,57 +217,35 @@ function renderPass(entry: RsvpEntry, forCouple: boolean): string {
 </html>`;
 }
 
-// Notifies the couple that an RSVP landed. Always sent, regardless of
-// whether the guest supplied their own address.
-export async function sendRsvpNotification(entry: RsvpEntry): Promise<void> {
-  const to = notifyAddresses();
-  const resend = await getResend();
-  if (!resend) {
-    console.log("[Email] RESEND_API_KEY not set, skipping notification to", to.join(", "));
-    return;
-  }
-
+// Every message this RSVP should produce: the couple's copy, plus the
+// guest's own if they left an address.
+export function buildRsvpEmails(entry: RsvpEntry): Mail[] {
   const attending = entry.attending === "yes";
   const who = `${entry.firstName} ${entry.lastName}`;
-  const subject = attending
-    ? `RSVP: ${who} is boarding (${entry.seatsAttending} of ${entry.seatsReserved})`
-    : `RSVP: ${who} can't make it`;
+  const fromName = wedding.brand;
 
-  // Resend resolves with { data, error } instead of rejecting on API
-  // errors, so an unverified sender or bad key would otherwise fail
-  // completely silently. Surface it to the caller.
-  const { error } = await resend.emails.send({
-    from: fromAddress(),
-    to,
-    replyTo: entry.email || undefined,
-    subject,
-    html: renderPass(entry, true),
-  });
-  if (error) {
-    throw new Error(`Resend rejected the notification: ${error.name} — ${error.message}`);
-  }
-}
+  const mails: Mail[] = [
+    {
+      to: notifyAddresses().join(","),
+      fromName,
+      replyTo: entry.email || undefined,
+      subject: attending
+        ? `RSVP: ${who} is boarding (${entry.seatsAttending} of ${entry.seatsReserved})`
+        : `RSVP: ${who} can't make it`,
+      html: renderPass(entry, true),
+    },
+  ];
 
-export async function sendRsvpConfirmation(entry: RsvpEntry): Promise<void> {
-  if (!entry.email) return;
-  const resend = await getResend();
-  if (!resend) {
-    console.log("[Email] RESEND_API_KEY not set, skipping confirmation for", entry.email);
-    return;
+  if (entry.email) {
+    mails.push({
+      to: entry.email,
+      fromName,
+      subject: attending
+        ? `Your boarding pass is confirmed — ${wedding.groomFirst} & ${wedding.brideFirst}, ${wedding.shortDateCompact}`
+        : `We received your RSVP — ${wedding.groomFirst} & ${wedding.brideFirst}`,
+      html: renderPass(entry, false),
+    });
   }
 
-  const subject =
-    entry.attending === "yes"
-      ? `Your boarding pass is confirmed — ${wedding.groomFirst} & ${wedding.brideFirst}, ${wedding.shortDateCompact}`
-      : `We received your RSVP — ${wedding.groomFirst} & ${wedding.brideFirst}`;
-
-  const { error } = await resend.emails.send({
-    from: fromAddress(),
-    to: entry.email,
-    subject,
-    html: renderPass(entry, false),
-  });
-  if (error) {
-    throw new Error(`Resend rejected the confirmation: ${error.name} — ${error.message}`);
-  }
+  return mails;
 }

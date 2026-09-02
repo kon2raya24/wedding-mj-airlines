@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { INVITATION_CODE } from "@/lib/config";
 import { getGuests } from "@/lib/guests";
-import { appendRsvp, findRsvpForGuest, RsvpEntry } from "@/lib/rsvp-store";
+import { findRsvpForGuest, submitRsvp, RsvpEntry } from "@/lib/rsvp-store";
 import { guestKey, type Companion } from "@/lib/rsvp-types";
 import { rateLimit } from "@/lib/rate-limit";
-import { sendRsvpConfirmation, sendRsvpNotification } from "@/lib/email";
+import { buildRsvpEmails } from "@/lib/email";
 import { SESSION_COOKIE, decodeSession } from "@/lib/session";
 import { isSameOrigin } from "@/lib/csrf";
 
@@ -133,11 +133,12 @@ export async function POST(req: Request) {
     note: typeof payload.note === "string" ? payload.note.slice(0, 1000) : "",
   };
 
-  // The sheet IS the store, so this must succeed before we tell the guest
-  // they are booked. If it fails they see an error and can retry, rather
-  // than a success screen for an RSVP that was never recorded.
+  // One backend call: it takes a lock, refuses a duplicate, appends the
+  // row and sends the mail. If it fails the guest sees an error and can
+  // retry, rather than a success screen for an RSVP that was never saved.
+  let result;
   try {
-    await appendRsvp(entry);
+    result = await submitRsvp(entry, buildRsvpEmails(entry));
   } catch (err) {
     console.error("[RSVP] could not save:", err);
     return NextResponse.json(
@@ -150,19 +151,24 @@ export async function POST(req: Request) {
     );
   }
 
-  // Emails are awaited rather than fired-and-forgotten (a serverless
-  // function can be frozen the moment it responds), but a mail failure
-  // must never cost the guest their RSVP — it is already saved above.
-  const results = await Promise.allSettled([
-    sendRsvpNotification(entry),
-    sendRsvpConfirmation(entry),
-  ]);
-  const labels = ["notify", "confirm"];
-  results.forEach((r, i) => {
-    if (r.status === "rejected") {
-      console.warn(`[RSVP] ${labels[i]} failed:`, r.reason);
-    }
-  });
+  // Lost a race with another tab between the check above and the write.
+  if (!result.ok) {
+    return NextResponse.json(
+      {
+        ok: false,
+        alreadySubmitted: true,
+        rsvp: result.rsvp,
+        error:
+          "You've already confirmed your RSVP. Message Joseph or Marjorie if you need to change it.",
+      },
+      { status: 409 },
+    );
+  }
+
+  // The RSVP is saved either way; a mail problem must not fail the request.
+  result.mail
+    .filter((m) => !m.sent)
+    .forEach((m) => console.warn(`[RSVP] email to ${m.to} not sent:`, m.error ?? "—"));
 
   return NextResponse.json({ ok: true });
 }

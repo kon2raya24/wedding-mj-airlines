@@ -1,14 +1,14 @@
 // Guest book storage. Mirrors lib/rsvp-store.ts — the "Guestbook" tab of
-// the Google Sheet is the store. Columns:
+// the Google Sheet, via the Apps Script backend. Columns:
 //
 //   A: Submitted at  B: Name  C: From  D: Message
 //
-// Falls back to a JSON file under /data when the Sheets env vars are
-// absent, so `npm run dev` works without credentials.
+// Falls back to a JSON file under /data when the backend env vars are
+// absent, so `npm run dev` works with no setup.
 import "server-only";
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import { appendRow, isSheetsConfigured, readRows, TABS } from "./sheets";
+import { callBackend, isBackendConfigured } from "./apps-script";
 
 export type GuestBookEntry = {
   submittedAt: string;
@@ -17,8 +17,6 @@ export type GuestBookEntry = {
   from: string;
   code: string;
 };
-
-export const GUESTBOOK_HEADERS = ["Submitted at", "Name", "From", "Message"];
 
 const LOG_PATH = path.join(process.cwd(), "data", "guestbook.json");
 
@@ -35,13 +33,10 @@ async function readFromFile(): Promise<GuestBookEntry[]> {
 export async function appendGuestBook(entry: GuestBookEntry): Promise<void> {
   console.log("[GUESTBOOK]", JSON.stringify(entry));
 
-  if (isSheetsConfigured()) {
-    await appendRow(TABS.guestbook, [
-      entry.submittedAt,
-      entry.name,
-      entry.from,
-      entry.message,
-    ]);
+  if (isBackendConfigured()) {
+    await callBackend("guestbook.add", {
+      row: [entry.submittedAt, entry.name, entry.from, entry.message],
+    });
     return;
   }
 
@@ -52,17 +47,11 @@ export async function appendGuestBook(entry: GuestBookEntry): Promise<void> {
 }
 
 export async function readGuestBook(): Promise<GuestBookEntry[]> {
-  if (isSheetsConfigured()) {
-    const rows = await readRows(TABS.guestbook, GUESTBOOK_HEADERS.length);
-    return rows
-      .filter((r) => r[1] && r[3])
-      .map((r) => ({
-        submittedAt: r[0],
-        name: r[1],
-        from: r[2],
-        message: r[3],
-        code: "",
-      }));
+  if (isBackendConfigured()) {
+    const { entries } = await callBackend<{
+      entries: { submittedAt: string; name: string; from: string; message: string }[];
+    }>("guestbook");
+    return entries.map((e) => ({ ...e, code: "" }));
   }
   return readFromFile();
 }

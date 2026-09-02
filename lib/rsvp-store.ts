@@ -1,12 +1,14 @@
-// RSVP storage. The "RSVPs" tab of the Google Sheet is the store — see
-// lib/sheets.ts. Columns are RSVP_HEADERS, in order.
+// RSVP storage. The "RSVPs" tab of the Google Sheet is the store, reached
+// through the Apps Script backend (lib/apps-script.ts). Columns are
+// RSVP_HEADERS, in order.
 //
-// The tab is append-only: a correction made by hand in the sheet leaves
-// both rows, and `readRsvps` takes the later one. The API refuses a second
-// submission from the same guest, so in normal use there is one row each.
+// `submitRsvp` is a single backend call that takes a script lock, refuses a
+// duplicate, appends the row and sends the emails — so two guests
+// submitting at the same instant cannot race, and a guest cannot end up
+// with two rows.
 //
-// Without the Sheets env vars (local dev) this falls back to a JSON file
-// under /data so `npm run dev` works without credentials.
+// Without the backend env vars (local dev) this falls back to a JSON file
+// under /data so `npm run dev` works with no setup.
 import "server-only";
 import { promises as fs } from "node:fs";
 import path from "node:path";
@@ -18,7 +20,7 @@ import {
   RSVP_HEADERS,
   type RsvpEntry,
 } from "./rsvp-types";
-import { appendRow, isSheetsConfigured, readRows, TABS } from "./sheets";
+import { callBackend, isBackendConfigured, type Mail } from "./apps-script";
 
 export type { RsvpEntry };
 export { RSVP_HEADERS };
@@ -35,30 +37,61 @@ async function readFromFile(): Promise<RsvpEntry[]> {
   }
 }
 
-export async function appendRsvp(entry: RsvpEntry): Promise<void> {
+async function writeToFile(entries: RsvpEntry[]): Promise<void> {
+  await fs.mkdir(path.dirname(LOG_PATH), { recursive: true });
+  await fs.writeFile(LOG_PATH, JSON.stringify(entries, null, 2), "utf8");
+}
+
+export type SubmitResult =
+  | { ok: true; mail: { to: string; sent: boolean; error?: string }[] }
+  | { ok: false; alreadySubmitted: true; rsvp: RsvpEntry };
+
+/** Saves the RSVP and sends its emails. Refuses a second submission. */
+export async function submitRsvp(
+  entry: RsvpEntry,
+  emails: Mail[],
+): Promise<SubmitResult> {
   // Always log to stdout — a durable trail even if the write below fails.
   console.log("[RSVP]", JSON.stringify(entry));
 
-  if (isSheetsConfigured()) {
-    await appendRow(TABS.rsvps, toRow(entry));
-    return;
+  if (isBackendConfigured()) {
+    const res = await callBackend<{
+      ok: boolean;
+      alreadySubmitted?: boolean;
+      row?: string[];
+      mail?: { to: string; sent: boolean; error?: string }[];
+    }>("rsvp", { row: toRow(entry), emails });
+
+    if (res.alreadySubmitted && res.row) {
+      return { ok: false, alreadySubmitted: true, rsvp: fromRow(res.row, "") };
+    }
+    return { ok: true, mail: res.mail ?? [] };
   }
 
+  // Local dev: same duplicate rule, against the JSON file.
   const existing = await readFromFile();
+  const key = guestKey(entry.firstName, entry.lastName);
+  const dupe = existing.find((e) => guestKey(e.firstName, e.lastName) === key);
+  if (dupe) return { ok: false, alreadySubmitted: true, rsvp: dupe };
+
   existing.push(entry);
-  await fs.mkdir(path.dirname(LOG_PATH), { recursive: true });
-  await fs.writeFile(LOG_PATH, JSON.stringify(existing, null, 2), "utf8");
+  await writeToFile(existing);
+  console.log(
+    "[Email] backend not configured, would have sent to:",
+    emails.map((m) => m.to).join(", "),
+  );
+  return { ok: true, mail: emails.map((m) => ({ to: m.to, sent: false })) };
 }
 
 export async function readRsvps(): Promise<RsvpEntry[]> {
-  if (isSheetsConfigured()) {
-    const rows = await readRows(TABS.rsvps, RSVP_HEADERS.length);
-    return latestPerGuest(rows.filter((r) => r[1] || r[2]).map((r) => fromRow(r, "")));
+  if (isBackendConfigured()) {
+    const { rows } = await callBackend<{ rows: string[][] }>("rsvps");
+    return latestPerGuest(rows.map((r) => fromRow(r, "")));
   }
   return latestPerGuest(await readFromFile());
 }
 
-// The guest's existing answer, or null if they haven't responded yet.
+/** The guest's existing answer, or null if they haven't responded yet. */
 export async function findRsvpForGuest(
   firstName: string,
   lastName: string,

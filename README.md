@@ -32,10 +32,15 @@ To swap photos, edit the `gallery` array in `lib/config.ts` (any URL works). For
 12. **RSVP** — Form with confetti success state
 13. **Footer** — Hashtag, social, sign-off
 
-## The Google Sheet is the database
+## The Google Sheet is the whole backend
 
-One spreadsheet drives the whole site — no separate database. Three tabs,
-each with a header row in row 1:
+One spreadsheet plus one Apps Script hold everything — guest list, RSVPs,
+guest book and outgoing email. There is **no database, no mail provider, no
+API key and no domain to verify**, because the script runs inside your own
+Google account: it edits the sheet as you, and sends mail from your Gmail.
+
+Three tabs, each with a header row in row 1 (the `setup` function creates
+them for you):
 
 **`Guests`** — your real guest list. This is what check-in reads.
 
@@ -44,71 +49,77 @@ each with a header row in row 1:
 | First name | Last name | Seats reserved |
 
 `Seats reserved` includes the guest themselves, so `2` means guest + 1
-companion. Adding a guest here lets them check in within a minute (the list
-is cached for 60s).
+companion. A guest added here can check in within a minute (the list is
+cached for 60s).
 
-**`RSVPs`** — written by the site, one row per response.
+**`RSVPs`** — written by the site, one row per guest.
 
 | A | B | C | D | E | F | G | H | I |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Submitted at | First name | Last name | Seats reserved | Attending | Seats attending | Companions | Email | Note |
 
-**`Guestbook`** — written by the site.
+**`Guestbook`**
 
 | A | B | C | D |
 | --- | --- | --- | --- |
 | Submitted at | Name | From | Message |
 
-You can safely edit these by hand. If a guest needs their RSVP changed,
-add a corrected row at the bottom — the later row wins.
+## Setup
+
+1. Create a Google Sheet.
+2. **Extensions ▸ Apps Script**, and replace `Code.gs` with the contents of
+   [`apps-script/Code.gs`](apps-script/Code.gs) from this repo.
+3. Change `SECRET` at the top of that file to a long random string.
+4. **Run ▸ setup** once and grant the permissions it asks for. This creates
+   the three tabs. (Google will warn the app is unverified — it is your own
+   script; choose *Advanced ▸ Go to project*.)
+5. **Deploy ▸ New deployment ▸ Web app**, with:
+   - **Execute as:** Me
+   - **Who has access:** Anyone
+6. Copy the `/exec` URL.
+7. In Vercel set `APPS_SCRIPT_URL` and `APPS_SCRIPT_TOKEN`, then redeploy.
+
+After editing `Code.gs` later, you must **Deploy ▸ Manage deployments ▸
+edit ▸ New version** for the live URL to pick up the change.
+
+> The web app URL is reachable by anyone who has it, which is why every
+> request carries `APPS_SCRIPT_TOKEN` and the script rejects anything else.
+> Treat the URL and token as secrets.
+
+### Email limits
+
+Mail is sent by `MailApp` from your Gmail. A consumer Gmail account allows
+about **100 recipients per day**; Google Workspace allows 1,500. Each RSVP
+sends up to two messages (the couple's copy, plus the guest's own if they
+left an address). `setup` logs your remaining quota.
 
 ### One RSVP per guest
 
-The site refuses a second submission: a guest who returns sees their
-existing answer instead of a blank form, and the API rejects a replay with
-409. To let someone re-submit, delete their row from the `RSVPs` tab.
+The script takes a lock, checks for an existing row, and refuses a second
+submission. A returning guest sees their existing answer instead of a blank
+form, and a replayed request gets a 409. To let someone re-submit, delete
+their row from the `RSVPs` tab.
 
-### If the sheet write fails
+### If the write fails
 
 The guest sees an error and can retry, rather than a false success screen.
 Every submission is also written to the Vercel logs as an `[RSVP]` line, so
 nothing is ever truly lost.
-
-### Emails
-
-Each RSVP sends a boarding-pass email — styled like the site — to the guest
-(if they left an address) and to everyone in `notifyEmails` in
-`lib/config.ts`. Both include the main guest's name and every companion,
-with who is and isn't boarding. Mail failures are logged but never cost the
-guest their RSVP.
 
 ## Environment variables
 
 | Variable | Needed for | Notes |
 | --- | --- | --- |
 | `SESSION_SECRET` | **required in production** | 16+ chars. Signs the guest cookie. |
-| `GOOGLE_SHEETS_ID` | everything | The long id in the spreadsheet URL. |
-| `GOOGLE_SERVICE_ACCOUNT_EMAIL` | everything | `...@....iam.gserviceaccount.com` |
-| `GOOGLE_PRIVATE_KEY` | everything | The `private_key` from the service-account JSON. Pasting it with literal `\n` is fine. |
+| `APPS_SCRIPT_URL` | everything | The `/exec` URL from the web-app deployment. |
+| `APPS_SCRIPT_TOKEN` | everything | Must match `SECRET` in `Code.gs`. |
 | `ADMIN_PASSWORD` | `/admin` | Without it the admin page is disabled. |
-| `RESEND_API_KEY` | emails | From resend.com. |
-| `EMAIL_FROM` | emails | e.g. `JM Airways <rsvp@yourdomain.com>`. Must be a Resend-verified domain — the default `onboarding@resend.dev` only delivers to the Resend account owner. |
-| `RSVP_NOTIFY_EMAIL` | emails | Optional, comma-separated. Overrides `notifyEmails` in config. |
+| `RSVP_NOTIFY_EMAIL` | emails | Optional, comma-separated. Overrides `notifyEmails` in `lib/config.ts`. |
 
-**Without the Google vars the site falls back to a seed guest list and a
-local JSON file** so `npm run dev` works with no credentials. That fallback
-is for development — never rely on it in production.
-
-## Google Sheets setup
-
-1. Google Cloud console → new (or existing) project → **enable the Google
-   Sheets API**.
-2. Create a **service account**, then add a **JSON key** and download it.
-3. Open your spreadsheet and **share it with the service account's email
-   address as an Editor** — this is the step people miss; without it every
-   read and write returns 403.
-4. Create the three tabs above with their header rows.
-5. Set the three `GOOGLE_*` vars in Vercel and redeploy.
+**Without `APPS_SCRIPT_URL` / `APPS_SCRIPT_TOKEN` the site falls back to a
+seed guest list and a local JSON file**, and logs the emails it would have
+sent instead of sending them. That fallback exists so `npm run dev` works
+with no setup — never rely on it in production.
 
 ## Guest check-in
 
