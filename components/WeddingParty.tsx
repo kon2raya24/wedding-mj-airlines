@@ -26,7 +26,8 @@ function NamePanel({
 }
 
 export default function WeddingParty() {
-  const { parents, principalSponsors, secondarySponsors } = wedding.party;
+  const { officiant, parents, attendants, principalSponsors, secondarySponsors } =
+    wedding.party;
 
   return (
     <section id="party" className="relative section">
@@ -55,6 +56,14 @@ export default function WeddingParty() {
         </div>
       </Reveal>
 
+      {/* Officiant */}
+      <Reveal className="max-w-4xl mx-auto mb-14 text-center">
+        <h3 className="font-sans uppercase tracking-[0.5em] text-[11px] text-gold mb-4">
+          Officiating Minister
+        </h3>
+        <p className="font-serif text-navy text-xl sm:text-2xl">{officiant}</p>
+      </Reveal>
+
       {/* Parents */}
       <div className="max-w-4xl mx-auto mb-14">
         <h3 className="text-center font-sans uppercase tracking-[0.5em] text-[11px] text-gold mb-8">
@@ -63,6 +72,18 @@ export default function WeddingParty() {
         <div className="grid sm:grid-cols-2 gap-6">
           <NamePanel label={parents.groom.label} names={parents.groom.names} delay={0} />
           <NamePanel label={parents.bride.label} names={parents.bride.names} delay={100} />
+        </div>
+      </div>
+
+      {/* Best men & maids of honor */}
+      <div className="max-w-4xl mx-auto mb-14">
+        <h3 className="text-center font-sans uppercase tracking-[0.5em] text-[11px] text-gold mb-8">
+          Standing beside us
+        </h3>
+        <div className="grid sm:grid-cols-2 gap-6">
+          {attendants.map((a, i) => (
+            <NamePanel key={a.role} label={a.role} names={a.names} delay={i * 100} />
+          ))}
         </div>
       </div>
 

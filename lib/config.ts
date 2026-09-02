@@ -16,9 +16,9 @@ export const INVITATION_CODE = "JM1126";
 
 export const wedding = {
   brideFirst: "Marjorie",
-  brideLast: "Dela Cruz",
+  brideLast: "Teñido",
   groomFirst: "Joseph",
-  groomLast: "Santos",
+  groomLast: "Castañeda",
   hashtag: "#JM1126",
   brand: "JM Airways",
   tagline: "Flight to Forever",
@@ -120,31 +120,37 @@ export const wedding = {
     { time: "11:30 PM", title: "Send-off", note: "Sparkler exit — drive safe!" },
   ],
 
-  // TODO: replace every "TBA" below with the real names before launch.
+  // From the ENTOURAGE LIST tab of the couple's guest-list spreadsheet.
   party: {
+    officiant: "Bishop Rence De Guzman",
     parents: {
       groom: {
         label: "Parents of the Groom",
-        names: ["TBA — Father of the Groom", "TBA — Mother of the Groom"],
+        names: ["Mr. Constantino Castañeda", "Mrs. Teresita Castañeda"],
       },
       bride: {
         label: "Parents of the Bride",
-        names: ["TBA — Father of the Bride", "TBA — Mother of the Bride"],
+        names: ["Mr. Maximo Teñido", "Mrs. Annalyn Teñido"],
       },
     },
+    attendants: [
+      { role: "Best Men", names: ["Johncel Castañeda", "Ejay Antonio"] },
+      { role: "Maids of Honor", names: ["Monique Teñido", "April Rose Gonzales"] },
+    ],
     principalSponsors: [
-      { name: "TBA", partner: "TBA" },
-      { name: "TBA", partner: "TBA" },
-      { name: "TBA", partner: "TBA" },
+      { name: "Bishop Rence De Guzman", partner: "Pastora Charmie De Guzman" },
+      { name: "Mr. Rafael Fernando", partner: "Mrs. Marites Fernando" },
+      { name: "Pastor Ronnie Loja", partner: "Mrs. Nilda Loja" },
+      { name: "Mr. Norbert Palma", partner: "Mrs. Nida Palma" },
+      { name: "Mr. Almario Susano", partner: "Mrs. Mhalen Susano" },
     ],
     secondarySponsors: [
-      { task: "Candle", names: ["TBA", "TBA"] },
-      { task: "Veil", names: ["TBA", "TBA"] },
-      { task: "Cord", names: ["TBA", "TBA"] },
-      { task: "Ring Bearer", names: ["TBA"] },
-      { task: "Coin Bearer", names: ["TBA"] },
-      { task: "Bible Bearer", names: ["TBA"] },
-      { task: "Flower Girls", names: ["TBA", "TBA"] },
+      { task: "Candle", names: ["Karl De Guzman", "Mary Lhen Susano"] },
+      { task: "Veil", names: ["Justine Castañeda", "Anna Marie Torres-Ligo", "Mark Gayo", "Princess"] },
+      { task: "Cord", names: ["Joshua Rodelas", "Kayla Zamudio", "Joshua Moreno", "Regine Ibañez"] },
+      { task: "Bible Bearer", names: ["Alwyn Alfonso"] },
+      { task: "Coin Bearer", names: ["Jash Andrei Tolentino"] },
+      { task: "Ring Bearer", names: ["Zane Emmanuel Capunitan"] },
     ],
   },
 
@@ -178,7 +184,7 @@ export const wedding = {
     {
       name: "Mariel's Garden — On-site",
       distance: "On-site (check availability with venue)",
-      note: "Mention 'Santos-Dela Cruz Wedding' when inquiring about on-site accommodation.",
+      note: "Mention 'Castañeda-Teñido Wedding' when inquiring about on-site accommodation.",
       link: "#",
     },
   ],

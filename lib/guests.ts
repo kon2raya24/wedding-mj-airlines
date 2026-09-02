@@ -24,11 +24,10 @@ export type Guest = {
 
 // Local-development stand-in. Never used when the backend is configured.
 export const devGuests: Guest[] = [
-  { firstName: "Joseph", lastName: "Santos", seatsReserved: 1 },
-  { firstName: "Marjorie", lastName: "Dela Cruz", seatsReserved: 1 },
-  { firstName: "Lola", lastName: "Pacing", seatsReserved: 4 },
-  { firstName: "Tito", lastName: "Ben", seatsReserved: 2 },
-  { firstName: "Sarah", lastName: "Lim", seatsReserved: 3 },
+  { firstName: "Joseph", lastName: "Castañeda", seatsReserved: 1 },
+  { firstName: "Marjorie", lastName: "Teñido", seatsReserved: 1 },
+  { firstName: "Johncel", lastName: "Castañeda", seatsReserved: 1 },
+  { firstName: "Rence", lastName: "De Guzman", seatsReserved: 1 },
   { firstName: "Test", lastName: "Guest", seatsReserved: 2 },
 ];
 
