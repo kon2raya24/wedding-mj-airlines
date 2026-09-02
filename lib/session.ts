@@ -4,6 +4,7 @@
 //
 // Uses Web Crypto API so this module can run in both Edge (middleware) and
 // Node (server actions / route handlers).
+import { INVITATION_CODE } from "./config";
 import type { Guest } from "./guests";
 
 export const SESSION_COOKIE = "mj_pass";
@@ -121,7 +122,7 @@ export type SessionPayload = {
 
 export async function encodeSession(guest: Guest): Promise<string> {
   const payload: SessionPayload = {
-    code: guest.code,
+    code: INVITATION_CODE,
     firstName: guest.firstName,
     lastName: guest.lastName,
     seatsReserved: guest.seatsReserved,

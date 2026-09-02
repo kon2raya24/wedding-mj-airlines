@@ -1,21 +1,95 @@
 // Resend integration. Skips silently when RESEND_API_KEY isn't set so the
 // site stays functional even without the email service wired up.
+//
+// Two emails go out per RSVP:
+//   - a confirmation to the guest (only if they left an address)
+//   - a notification to the couple at wedding.contact.email, so they see
+//     every response without opening the admin page
 import { wedding } from "./config";
 import type { RsvpEntry } from "./rsvp-store";
+import { formatCompanion } from "./rsvp-types";
+
+// Where the couple get notified. Overridable so they can point it at a
+// shared inbox without editing config.
+function notifyAddress(): string {
+  return process.env.RSVP_NOTIFY_EMAIL || wedding.contact.email;
+}
+
+function fromAddress(): string {
+  return process.env.EMAIL_FROM ?? `${wedding.brand} <onboarding@resend.dev>`;
+}
+
+async function getResend() {
+  if (!process.env.RESEND_API_KEY) return null;
+  // Lazy import keeps the dependency out of the cold-start path when unused.
+  const { Resend } = await import("resend");
+  return new Resend(process.env.RESEND_API_KEY);
+}
+
+// Notifies the couple that an RSVP landed. Always sent, regardless of
+// whether the guest supplied their own address.
+export async function sendRsvpNotification(entry: RsvpEntry): Promise<void> {
+  const resend = await getResend();
+  if (!resend) {
+    console.log("[Email] RESEND_API_KEY not set, skipping notification to", notifyAddress());
+    return;
+  }
+
+  const attending = entry.attending === "yes";
+  const who = `${entry.firstName} ${entry.lastName}`;
+  const subject = attending
+    ? `RSVP: ${who} is boarding (${entry.seatsAttending} of ${entry.seatsReserved})`
+    : `RSVP: ${who} can't make it`;
+
+  const rows: [string, string][] = [
+    ["Passenger", who],
+    ["Attending", attending ? `Yes — ${entry.seatsAttending} of ${entry.seatsReserved} seats` : "No"],
+    ["Companions", entry.companions.length ? entry.companions.map(formatCompanion).join(", ") : "—"],
+    ["Guest email", entry.email || "—"],
+    ["Note", entry.note || "—"],
+    ["Submitted", new Date(entry.submittedAt).toLocaleString("en-PH", { timeZone: "Asia/Manila" })],
+  ];
+
+  const html = `
+<div style="font-family:Arial,Helvetica,sans-serif;color:#1c2940;max-width:520px;">
+  <h2 style="margin:0 0 4px;font-size:18px;">${escapeHtml(subject)}</h2>
+  <p style="margin:0 0 16px;color:#1c2940aa;font-size:13px;">${escapeHtml(wedding.brand)} · Flight ${escapeHtml(wedding.flightNumber)}</p>
+  <table style="width:100%;border-collapse:collapse;font-size:14px;">
+    ${rows
+      .map(
+        ([k, v]) => `<tr>
+      <td style="padding:6px 12px 6px 0;color:#1c2940aa;white-space:nowrap;vertical-align:top;">${escapeHtml(k)}</td>
+      <td style="padding:6px 0;">${escapeHtml(v)}</td>
+    </tr>`,
+      )
+      .join("")}
+  </table>
+</div>`;
+
+  // Resend resolves with { data, error } instead of rejecting on API
+  // errors, so an unverified sender or bad key would otherwise fail
+  // completely silently. Surface it to the caller.
+  const { error } = await resend.emails.send({
+    from: fromAddress(),
+    to: notifyAddress(),
+    replyTo: entry.email || undefined,
+    subject,
+    html,
+  });
+  if (error) {
+    throw new Error(`Resend rejected the notification: ${error.name} — ${error.message}`);
+  }
+}
 
 export async function sendRsvpConfirmation(entry: RsvpEntry): Promise<void> {
   if (!entry.email) return;
-  if (!process.env.RESEND_API_KEY) {
+  const resend = await getResend();
+  if (!resend) {
     console.log("[Email] RESEND_API_KEY not set, skipping confirmation for", entry.email);
     return;
   }
 
-  // Lazy import keeps the dependency out of the cold-start path when unused.
-  const { Resend } = await import("resend");
-  const resend = new Resend(process.env.RESEND_API_KEY);
-
-  const fromAddr =
-    process.env.EMAIL_FROM ?? `${wedding.brand} <onboarding@resend.dev>`;
+  const fromAddr = fromAddress();
 
   const subject =
     entry.attending === "yes"
@@ -24,22 +98,21 @@ export async function sendRsvpConfirmation(entry: RsvpEntry): Promise<void> {
 
   const html = renderEmail(entry);
 
-  try {
-    await resend.emails.send({
-      from: fromAddr,
-      to: entry.email,
-      subject,
-      html,
-    });
-  } catch (err) {
-    console.warn("[Email] failed to send:", err);
+  const { error } = await resend.emails.send({
+    from: fromAddr,
+    to: entry.email,
+    subject,
+    html,
+  });
+  if (error) {
+    throw new Error(`Resend rejected the confirmation: ${error.name} — ${error.message}`);
   }
 }
 
 function renderEmail(entry: RsvpEntry): string {
   const attending = entry.attending === "yes";
   const companions = entry.companions.length
-    ? `<p style="margin:8px 0 0;font-size:14px;color:#1c2940cc;">Companions: ${escapeHtml(entry.companions.join(", "))}</p>`
+    ? `<p style="margin:8px 0 0;font-size:14px;color:#1c2940cc;">Companions: ${escapeHtml(entry.companions.map(formatCompanion).join(", "))}</p>`
     : "";
   const note = entry.note
     ? `<p style="margin:16px 0 0;font-size:14px;color:#1c2940cc;"><em>Your note:</em> ${escapeHtml(entry.note)}</p>`

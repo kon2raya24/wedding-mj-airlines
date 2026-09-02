@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import type { Guest } from "@/lib/guests";
+import { formatCompanion } from "@/lib/rsvp-types";
 import type { RsvpEntry } from "@/lib/rsvp-store";
 
 type Row = { guest: Guest; rsvp: RsvpEntry | null };
@@ -45,7 +46,6 @@ export default function AdminDashboard({
 
   function downloadCsv() {
     const header = [
-      "code",
       "firstName",
       "lastName",
       "seatsReserved",
@@ -59,13 +59,12 @@ export default function AdminDashboard({
     const lines = rows.map((r) => {
       const v = r.rsvp;
       return [
-        r.guest.code,
         r.guest.firstName,
         r.guest.lastName,
         String(r.guest.seatsReserved),
         v?.attending ?? "",
         v?.seatsAttending != null ? String(v.seatsAttending) : "",
-        v?.companions?.join("; ") ?? "",
+        v?.companions?.map(formatCompanion).join("; ") ?? "",
         v?.email ?? "",
         v?.note ?? "",
         v?.submittedAt ?? "",
@@ -149,7 +148,6 @@ export default function AdminDashboard({
           <table className="min-w-full text-sm">
             <thead className="bg-sand/40 text-navy/60 text-[11px] uppercase tracking-[0.2em]">
               <tr>
-                <Th>Code</Th>
                 <Th>Name</Th>
                 <Th className="text-center">Reserved</Th>
                 <Th>Status</Th>
@@ -162,8 +160,10 @@ export default function AdminDashboard({
             </thead>
             <tbody>
               {filteredRows.map((r) => (
-                <tr key={r.guest.code} className="border-t border-navy/10 align-top">
-                  <Td className="font-mono text-[12px]">{r.guest.code}</Td>
+                <tr
+                  key={`${r.guest.firstName}-${r.guest.lastName}`}
+                  className="border-t border-navy/10 align-top"
+                >
                   <Td>
                     {r.guest.firstName} {r.guest.lastName}
                   </Td>
@@ -182,8 +182,11 @@ export default function AdminDashboard({
                   <Td className="text-center">
                     {r.rsvp?.attending === "yes" ? r.rsvp.seatsAttending : "—"}
                   </Td>
-                  <Td className="max-w-[180px] truncate" title={r.rsvp?.companions?.join(", ") ?? ""}>
-                    {r.rsvp?.companions?.join(", ") || "—"}
+                  <Td
+                    className="max-w-[180px] truncate"
+                    title={r.rsvp?.companions?.map(formatCompanion).join(", ") ?? ""}
+                  >
+                    {r.rsvp?.companions?.map(formatCompanion).join(", ") || "—"}
                   </Td>
                   <Td className="max-w-[200px] truncate" title={r.rsvp?.email ?? ""}>
                     {r.rsvp?.email || "—"}

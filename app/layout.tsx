@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Great_Vibes, Cormorant_Garamond, Inter } from "next/font/google";
-import { cookies } from "next/headers";
 import { wedding } from "@/lib/config";
-import { SESSION_COOKIE, decodeSession } from "@/lib/session";
-import { AuthProvider } from "@/components/AuthProvider";
 import "./globals.css";
 
 const script = Great_Vibes({
@@ -31,19 +28,14 @@ export const metadata: Metadata = {
   description: `Join us as we say "I do." ${wedding.shortDate} at ${wedding.destinationVenue}.`,
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const session = await decodeSession(cookieStore.get(SESSION_COOKIE)?.value);
-
   return (
     <html lang="en" className={`${script.variable} ${serif.variable} ${sans.variable}`}>
-      <body>
-        <AuthProvider initialSession={session}>{children}</AuthProvider>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

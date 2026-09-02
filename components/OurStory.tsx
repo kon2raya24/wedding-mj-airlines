@@ -20,10 +20,16 @@ export default function OurStory() {
       <ol className="relative mx-auto max-w-4xl">
         {wedding.story.map((s, i) => (
           <Reveal as="li" key={i} delay={i * 130} className="relative">
-            <div className={`grid md:grid-cols-[140px_1fr] gap-4 md:gap-10 items-start py-8 sm:py-10 ${i !== wedding.story.length - 1 ? "border-b border-dashed border-gold/40" : ""}`}>
+            <div className={`grid md:grid-cols-[190px_1fr] gap-4 md:gap-10 items-start py-8 sm:py-10 ${i !== wedding.story.length - 1 ? "border-b border-dashed border-gold/40" : ""}`}>
               {/* Left: airport code + year */}
               <div className="md:text-right">
-                <div className="font-mono text-4xl sm:text-5xl md:text-6xl font-bold text-navy leading-none tabular-nums">
+                <div
+                  className={`font-mono font-bold text-navy leading-none whitespace-nowrap ${
+                    s.code.length <= 2
+                      ? "text-4xl sm:text-5xl md:text-6xl"
+                      : "text-2xl sm:text-3xl"
+                  }`}
+                >
                   {s.code}
                 </div>
                 <div className="font-sans uppercase tracking-[0.3em] sm:tracking-[0.4em] text-[10px] text-gold mt-2">

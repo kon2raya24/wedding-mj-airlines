@@ -44,7 +44,7 @@ export default function BoardingPassStub() {
               <div className="font-sans uppercase tracking-[0.25em] text-[9px] text-navy/55">
                 From
               </div>
-              <div className="font-serif text-base mt-1">Here</div>
+              <div className="font-serif text-base mt-1">{wedding.origin}</div>
             </div>
             <div className="text-right">
               <PaperPlane className="w-4 h-4 text-gold inline-block" />
@@ -53,7 +53,7 @@ export default function BoardingPassStub() {
               <div className="font-sans uppercase tracking-[0.25em] text-[9px] text-navy/55">
                 To
               </div>
-              <div className="font-serif text-base mt-1">Forever</div>
+              <div className="font-serif text-base mt-1">{wedding.destination}</div>
             </div>
           </div>
 

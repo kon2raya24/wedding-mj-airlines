@@ -4,6 +4,7 @@ import Nav from "@/components/Nav";
 import Petals from "@/components/Petals";
 import MusicToggle from "@/components/MusicToggle";
 import CursorPlane from "@/components/CursorPlane";
+import { AuthProvider } from "@/components/AuthProvider";
 import { SESSION_COOKIE, decodeSession } from "@/lib/session";
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
@@ -11,12 +12,12 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   if (!session) redirect("/login");
 
   return (
-    <>
+    <AuthProvider initialSession={session}>
       <Nav />
       <Petals />
       <CursorPlane />
       {children}
       <MusicToggle />
-    </>
+    </AuthProvider>
   );
 }

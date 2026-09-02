@@ -10,6 +10,8 @@ export default function LoginForm({
   flightNumber,
   shortDateCompact,
   gate,
+  origin,
+  destination,
   action,
 }: {
   next: string;
@@ -18,6 +20,8 @@ export default function LoginForm({
   flightNumber: string;
   shortDateCompact: string;
   gate: string;
+  origin: string;
+  destination: string;
   action: (formData: FormData) => Promise<{ error?: string }>;
 }) {
   const [error, setError] = useState<string | null>(null);
@@ -67,7 +71,7 @@ export default function LoginForm({
           <h1 className="font-script text-5xl sm:text-6xl text-cream leading-[0.9]">
             {groomFirst} <span className="text-gold">&amp;</span> {brideFirst}
           </h1>
-          <p className="font-serif italic text-cream/70 text-sm sm:text-base mt-3">
+          <p className="font-serif italic text-cream/90 text-base sm:text-lg mt-3">
             Please locate your reservation to view your invitation.
           </p>
         </div>
@@ -98,15 +102,15 @@ export default function LoginForm({
           {/* Route */}
           <div className="bg-sand/50 px-5 py-4 grid grid-cols-[1fr_auto_1fr] items-center gap-2">
             <div className="min-w-0">
-              <div className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] text-navy/55">From</div>
-              <div className="font-serif text-xl sm:text-2xl">Here</div>
+              <div className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[10px] sm:text-[11px] text-navy/70">From</div>
+              <div className="font-serif text-2xl sm:text-3xl font-semibold text-navy">{origin}</div>
             </div>
             <div className="text-gold shrink-0">
               <FlightArc className="w-16 sm:w-24 h-8" />
             </div>
             <div className="text-right min-w-0">
-              <div className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] text-navy/55">To</div>
-              <div className="font-serif text-xl sm:text-2xl">Forever</div>
+              <div className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[10px] sm:text-[11px] text-navy/70">To</div>
+              <div className="font-serif text-2xl sm:text-3xl font-semibold text-navy">{destination}</div>
             </div>
           </div>
 
@@ -115,7 +119,7 @@ export default function LoginForm({
           <div className="p-5 sm:p-6 space-y-4">
             <div className="grid grid-cols-2 gap-3">
               <label className="block">
-                <span className="font-sans uppercase tracking-[0.3em] text-[10px] text-navy/60">
+                <span className="font-sans uppercase tracking-[0.25em] text-[11px] font-medium text-navy/80">
                   First name
                 </span>
                 <input
@@ -124,11 +128,11 @@ export default function LoginForm({
                   required
                   autoComplete="given-name"
                   placeholder="e.g. Marjorie"
-                  className="mt-1 w-full bg-sand/40 border border-navy/30 rounded px-3 py-2 font-serif focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/40"
+                  className="mt-1 w-full bg-white border border-navy/40 rounded px-3 py-2.5 font-serif text-base text-navy placeholder:text-navy/45 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/40"
                 />
               </label>
               <label className="block">
-                <span className="font-sans uppercase tracking-[0.3em] text-[10px] text-navy/60">
+                <span className="font-sans uppercase tracking-[0.25em] text-[11px] font-medium text-navy/80">
                   Last name
                 </span>
                 <input
@@ -136,13 +140,13 @@ export default function LoginForm({
                   name="lastName"
                   autoComplete="family-name"
                   placeholder="e.g. Dela Cruz"
-                  className="mt-1 w-full bg-sand/40 border border-navy/30 rounded px-3 py-2 font-serif focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/40"
+                  className="mt-1 w-full bg-white border border-navy/40 rounded px-3 py-2.5 font-serif text-base text-navy placeholder:text-navy/45 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/40"
                 />
               </label>
             </div>
 
             <label className="block">
-              <span className="font-sans uppercase tracking-[0.3em] text-[10px] text-navy/60">
+              <span className="font-sans uppercase tracking-[0.25em] text-[11px] font-medium text-navy/80">
                 Invitation code
               </span>
               <input
@@ -156,19 +160,19 @@ export default function LoginForm({
                 data-lpignore="true"
                 data-bwignore="true"
                 data-form-type="other"
-                placeholder="From your invitation card"
+                placeholder="Code on your invitation"
                 maxLength={32}
-                className={`mt-1 w-full bg-sand/40 border rounded px-3 py-2 font-mono tracking-[0.25em] uppercase focus:outline-none focus:ring-1 ${
+                className={`mt-1 w-full bg-white border rounded px-3 py-2.5 font-mono text-base tracking-[0.25em] uppercase text-navy placeholder:text-navy/45 placeholder:tracking-[0.15em] focus:outline-none focus:ring-1 ${
                   error
                     ? "border-rouge focus:border-rouge focus:ring-rouge/30"
-                    : "border-navy/30 focus:border-gold focus:ring-gold/40"
+                    : "border-navy/40 focus:border-gold focus:ring-gold/40"
                 }`}
               />
               {error ? (
-                <span className="mt-1 block font-sans text-[11px] text-rouge">{error}</span>
+                <span className="mt-1 block font-sans text-[12px] font-medium text-rouge">{error}</span>
               ) : (
-                <span className="mt-1 block font-sans text-[11px] text-navy/50">
-                  Your unique code is printed on your invitation card.
+                <span className="mt-1 block font-sans text-[12px] text-navy/65">
+                  The code is printed on your invitation card — it&apos;s the same for everyone.
                 </span>
               )}
             </label>
@@ -191,7 +195,7 @@ export default function LoginForm({
           </div>
         </form>
 
-        <p className="mt-6 text-center font-serif italic text-cream/55 text-xs sm:text-sm">
+        <p className="mt-6 text-center font-serif italic text-cream/75 text-sm">
           Lost your code? Message {groomFirst} or {brideFirst} and we&apos;ll
           re-issue your boarding pass.
         </p>

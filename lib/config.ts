@@ -1,3 +1,8 @@
+// The one code printed on every invitation card. Lives here (not in
+// guests.ts) so Edge middleware can read it without pulling in the
+// server-only guest list.
+export const INVITATION_CODE = "JM1126";
+
 export const wedding = {
   brideFirst: "Marjorie",
   brideLast: "Dela Cruz",
@@ -19,36 +24,62 @@ export const wedding = {
   rsvpCloseDate: "November 1, 2026",
   dressCode: "Formal Attire",
 
+  // Where the guests fly from / to on every boarding pass in the site.
+  origin: "Today",
+  destination: "Forever",
+
+  // Wedding colour motif, shown as swatches beside the dress code.
+  motif: [
+    { name: "Silver Gray", hex: "#b9bec6" },
+    { name: "Dusty Blue", hex: "#8398b7" },
+    { name: "Navy Blue", hex: "#1c2940" },
+    { name: "Warm Gray", hex: "#b3a89b" },
+  ],
+
+  // Attire guidance by role — shown under the motif swatches.
+  attire: {
+    image: "/images/attire-guide.jpg",
+    palette: "Dusty Blue · Navy Blue · Silvery or Gray",
+    roles: [
+      { role: "Principal Sponsors", guidance: "Gray or silver gray", hex: "#b9bec6" },
+      { role: "Secondary Sponsors", guidance: "Dusty blue", hex: "#8398b7" },
+      { role: "Guests", guidance: "Any shades of blue or warm gray", hex: "#6f86a8" },
+    ],
+  },
+
   story: [
     {
-      year: "2018",
-      title: "Departure · Manila",
-      body: "A rainy afternoon in a Manila coffee shop. He spilled his latte; she lent him her napkins. Our first connection had no boarding pass — just two strangers and a sudden detour.",
-      city: "Manila, PH",
-      code: "MNL",
-    },
-    {
-      year: "2019",
-      title: "Layover · Baguio",
-      body: "Three days, two umbrellas, one shared playlist. Up in the cool mountains we realized this was not a short hop — it was the start of a much longer journey.",
-      city: "Baguio, PH",
-      code: "BAG",
-    },
-    {
       year: "2024",
-      title: "Stopover · El Nido",
-      body: "Sunset at Nacpan Beach. A handwritten letter, a ring hidden in a seashell, and a very enthusiastic yes. Best inflight surprise of our lives.",
-      city: "El Nido, PH",
-      code: "ENI",
+      code: "PEN - MNL",
+      title: "Penang - Manila",
+      body: "We first met beneath a mall lamppost—its glow timid beside the brilliance of her smile. That smile made the flowers on her skirt bloom, and with each chocolate kiss, my heart melted a little more. From that night's sweetness to today's promise, our love has been a confection of laughter, light, and kisses that taste like forever.",
+      city: "Penang MY to Manila PHL",
+    },
+    {
+      year: "2025",
+      code: "MNL - HAN",
+      title: "Manila - Hanoi",
+      body: "Four days apart, and I was left holding sweet kisses that melted like chocolate—bittersweet, playful, and proof that even distance can't dim the smile that first lit my world.",
+      city: "Manila PHL to Hanoi VNM",
     },
     {
       year: "2026",
-      title: "Final destination · Forever",
-      body: "Manila, November 26. The runway is clear, the cabin is full of our favorite people, and we finally take off — for good. Thank you for flying with us.",
-      city: "Manila, PH",
+      code: "HAN - DMK",
+      title: "Hanoi - Bangkok",
+      body: "On the shore, with waves whispering to the sand, the breeze carried my half-nervous words: “Would you do me the honor of accompanying me?” More than a question, it was a promise wrapped in laughter and the daring spark of a journey together.",
+      city: "Hanoi VNM to Bangkok THA",
+    },
+    {
+      year: "2026",
       code: "∞",
+      title: "Bangkok - Tagaytay · The Start of our Forever",
+      body: "On November 26, the day of our promise, our vows will rise like music to the hearts of our loved ones. And as we embark on this journey—our hearts forever intertwined—it shall be not just a beginning, but the eternal embrace of our “forever.”",
+      city: "Our Landing Place",
     },
   ],
+
+  // Route shown above the two venue cards in "Where we land".
+  route: { from: "Laguna", to: "Cavite" },
 
   ceremony: {
     title: "Ceremony",
@@ -57,14 +88,18 @@ export const wedding = {
     address: "1881 Amuyong-Kaytitinga Road, Barangay Kaytitinga I, Alfonso, Cavite",
     dressCode: "Formal Attire",
     mapsUrl: "https://maps.google.com/?q=Mariel's+Garden+Alfonso+Cavite",
+    // TODO: replace with a real photo of Mariel's Garden (drop it in public/images/).
+    image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=1400&q=80",
   },
   reception: {
     title: "Reception",
     time: "5:30 PM",
-    venue: "Mariel's Garden",
+    venue: "Mariel's Pavilion",
     address: "1881 Amuyong-Kaytitinga Road, Barangay Kaytitinga I, Alfonso, Cavite",
     dressCode: "Formal cocktail attire",
     mapsUrl: "https://maps.google.com/?q=Mariel's+Garden+Alfonso+Cavite",
+    // TODO: replace with a real photo of Mariel's Pavilion (drop it in public/images/).
+    image: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1400&q=80",
   },
 
   schedule: [
@@ -73,22 +108,34 @@ export const wedding = {
     { time: "4:30 PM", title: "Photo Session", note: "Family & wedding party photos" },
     { time: "5:30 PM", title: "Cocktail Hour", note: "Garden terrace" },
     { time: "7:00 PM", title: "Reception & Dinner", note: "Speeches, dinner, first dance" },
-    { time: "9:30 PM", title: "Party & Dancing", note: "Open floor — wear comfy shoes!" },
     { time: "11:30 PM", title: "Send-off", note: "Sparkler exit — drive safe!" },
   ],
 
+  // TODO: replace every "TBA" below with the real names before launch.
   party: {
-    bridesSide: [
-      { name: "Andrea Reyes", role: "Maid of Honor" },
-      { name: "Bea Cruz", role: "Bridesmaid" },
-      { name: "Camille Lim", role: "Bridesmaid" },
-      { name: "Danica Tan", role: "Bridesmaid" },
+    parents: {
+      groom: {
+        label: "Parents of the Groom",
+        names: ["TBA — Father of the Groom", "TBA — Mother of the Groom"],
+      },
+      bride: {
+        label: "Parents of the Bride",
+        names: ["TBA — Father of the Bride", "TBA — Mother of the Bride"],
+      },
+    },
+    principalSponsors: [
+      { name: "TBA", partner: "TBA" },
+      { name: "TBA", partner: "TBA" },
+      { name: "TBA", partner: "TBA" },
     ],
-    groomsSide: [
-      { name: "Mark Villanueva", role: "Best Man" },
-      { name: "Nico Garcia", role: "Groomsman" },
-      { name: "Owen Mendoza", role: "Groomsman" },
-      { name: "Paolo Reyes", role: "Groomsman" },
+    secondarySponsors: [
+      { task: "Candle", names: ["TBA", "TBA"] },
+      { task: "Veil", names: ["TBA", "TBA"] },
+      { task: "Cord", names: ["TBA", "TBA"] },
+      { task: "Ring Bearer", names: ["TBA"] },
+      { task: "Coin Bearer", names: ["TBA"] },
+      { task: "Bible Bearer", names: ["TBA"] },
+      { task: "Flower Girls", names: ["TBA", "TBA"] },
     ],
   },
 
@@ -101,11 +148,14 @@ export const wedding = {
     { src: "https://images.unsplash.com/photo-1519225421980-715cb0215aed", alt: "Candid laughter" },
   ],
 
+  // Background music. Empty = the player is off entirely. To enable it,
+  // drop an mp3 in public/audio/ and set this to e.g. "/audio/song.mp3".
+  music: "",
+
   prenup: {
-    coverImage:
-      "https://images.unsplash.com/photo-1519741497674-611481863552?w=1600&q=85",
-    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    duration: "4:52",
+    coverImage: "/images/prenup-cover.jpg",
+    videoUrl: "/video/save-the-date.mp4",
+    duration: "1:02",
     tagline: "Our Journey to Forever",
   },
 
@@ -116,18 +166,6 @@ export const wedding = {
       note: "Mention 'Santos-Dela Cruz Wedding' when inquiring about on-site accommodation.",
       link: "#",
     },
-    {
-      name: "Bayleaf Intramuros",
-      distance: "12 minutes from venue",
-      note: "Boutique hotel with rooftop bar. Great for smaller groups.",
-      link: "#",
-    },
-    {
-      name: "Diamond Hotel Philippines",
-      distance: "15 minutes from venue",
-      note: "Family-friendly with pool — good for guests with kids.",
-      link: "#",
-    },
   ],
 
   registry: [
@@ -135,23 +173,27 @@ export const wedding = {
       title: "GCash",
       handle: "Marjorie D. — 09XX-XXX-1126",
       note: "Quick & easy — just scan our QR at the reception entrance.",
+      // TODO: swap for the real GCash QR image (drop it in public/images/).
+      qr: "",
     },
     {
       title: "Bank Transfer",
       handle: "BPI 1234-5678-90 — Joseph Santos",
       note: "For larger gifts or international guests.",
+      qr: "",
     },
     {
       title: "Honeymoon Fund",
       handle: "honeymoon.marjorieandjoseph.com",
       note: "Help us explore Japan in spring 2027. Every peso means a memory.",
+      qr: "",
     },
   ],
 
   faq: [
     {
       q: "What's the dress code?",
-      a: "Formal attire. We'd love to see soft garden-inspired tones — dusty blue, sage, blush, or beige. Please avoid pure white or ivory, those are reserved for the bride!",
+      a: "Formal attire in our motif — dusty blue, navy blue, silvery or gray. Principal sponsors in gray or silver gray, secondary sponsors in dusty blue, and guests in any shade of blue or warm gray. Please avoid pure white or ivory, those are reserved for the bride!",
     },
     {
       q: "Can I bring a plus-one?",
@@ -188,8 +230,8 @@ export const wedding = {
   },
 
   quote: {
-    text: "In all the world, there is no heart for me like yours. In all the world, there is no love for you like mine.",
-    author: "Maya Angelou",
+    text: "With you beside me, every path becomes home.",
+    author: "For two travelers in love",
     image:
       "https://images.unsplash.com/photo-1525772764200-be829a350797?w=2000&q=85",
   },

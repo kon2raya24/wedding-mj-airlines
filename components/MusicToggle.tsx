@@ -1,19 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-
-const AUDIO_SRC = "/audio/song.mp3"; // place an mp3 in public/audio/song.mp3
+import { useRef, useState } from "react";
+import { wedding } from "@/lib/config";
 
 export default function MusicToggle() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playing, setPlaying] = useState(false);
-  const [available, setAvailable] = useState(false);
-
-  useEffect(() => {
-    fetch(AUDIO_SRC, { method: "HEAD" })
-      .then((r) => setAvailable(r.ok))
-      .catch(() => setAvailable(false));
-  }, []);
+  const src = wedding.music;
 
   async function toggle() {
     const a = audioRef.current;
@@ -31,11 +24,11 @@ export default function MusicToggle() {
     }
   }
 
-  if (!available) return null;
+  if (!src) return null;
 
   return (
     <>
-      <audio ref={audioRef} src={AUDIO_SRC} loop preload="none" />
+      <audio ref={audioRef} src={src} loop preload="none" />
       <button
         onClick={toggle}
         aria-label={playing ? "Pause music" : "Play music"}

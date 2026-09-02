@@ -14,7 +14,7 @@ async function checkIn(formData: FormData): Promise<{ error?: string }> {
 
   const guest = findGuest(firstName, lastName, code);
   if (!guest) {
-    return { error: "We couldn't find that reservation. Check the name and code on your invitation." };
+    return { error: "We couldn't find that reservation. Check the spelling of your name and the code on your invitation." };
   }
 
   const token = await encodeSession(guest);
@@ -54,6 +54,8 @@ export default async function LoginPage({
       flightNumber={wedding.flightNumber}
       shortDateCompact={wedding.shortDateCompact}
       gate={wedding.gate}
+      origin={wedding.origin}
+      destination={wedding.destination}
       action={checkIn}
     />
   );

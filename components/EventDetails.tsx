@@ -88,22 +88,22 @@ export default function EventDetails() {
       </div>
 
       <div className="flex items-center justify-center gap-3 sm:gap-4 text-gold mb-8 sm:mb-10">
-        <span className="font-mono uppercase tracking-[0.3em] sm:tracking-[0.4em] text-[10px] sm:text-[11px] text-navy">MNL</span>
+        <span className="font-mono uppercase tracking-[0.3em] sm:tracking-[0.4em] text-[10px] sm:text-[11px] text-navy">{wedding.route.from}</span>
         <FlightArcSmall className="w-24 sm:w-32 h-6" />
-        <span className="font-mono uppercase tracking-[0.3em] sm:tracking-[0.4em] text-[10px] sm:text-[11px] text-navy">ALF</span>
+        <span className="font-mono uppercase tracking-[0.3em] sm:tracking-[0.4em] text-[10px] sm:text-[11px] text-navy">{wedding.route.to}</span>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6 sm:gap-8 md:gap-10">
         <EventCard
           event={wedding.ceremony}
-          image="https://images.unsplash.com/photo-1519741497674-611481863552?w=1400&q=80"
+          image={wedding.ceremony.image}
           label="Stop 1 · Ceremony"
           stamp="CEREMONY"
           delay={0}
         />
         <EventCard
           event={wedding.reception}
-          image="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1400&q=80"
+          image={wedding.reception.image}
           label="Stop 2 · Reception"
           stamp="RECEPTION"
           delay={150}

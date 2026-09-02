@@ -1,10 +1,14 @@
 // Guest list. This is the source of truth for who can log in to the site
 // and how many seats each guest has reserved.
 import "server-only";
+import { INVITATION_CODE } from "./config";
 
 //
-// Replace this seed data with the real guest list before launch. Codes are
-// per-guest — print each one on that guest's physical invitation.
+// Replace this seed data with the real guest list before launch.
+//
+// Every invitation card carries the SAME code (INVITATION_CODE below) — a
+// guest still has to be on this list by name to check in, so seat counts
+// and per-guest RSVP tracking keep working.
 //
 // Editing tips:
 // - `firstName` + `lastName` matching is case-insensitive and trims spaces.
@@ -14,20 +18,19 @@ import "server-only";
 export type Guest = {
   firstName: string;
   lastName: string;
-  code: string;
   seatsReserved: number;
 };
 
 export const guests: Guest[] = [
-  { firstName: "Joseph", lastName: "Santos", code: "JM-GROOM", seatsReserved: 1 },
-  { firstName: "Marjorie", lastName: "Dela Cruz", code: "JM-BRIDE", seatsReserved: 1 },
-  { firstName: "Lola", lastName: "Pacing", code: "JM-1A2B", seatsReserved: 4 },
-  { firstName: "Tito", lastName: "Ben", code: "JM-3C4D", seatsReserved: 2 },
-  { firstName: "Andrea", lastName: "Reyes", code: "JM-5E6F", seatsReserved: 2 },
-  { firstName: "Mark", lastName: "Villanueva", code: "JM-7G8H", seatsReserved: 1 },
-  { firstName: "Sarah", lastName: "Lim", code: "JM-9J0K", seatsReserved: 3 },
+  { firstName: "Joseph", lastName: "Santos", seatsReserved: 1 },
+  { firstName: "Marjorie", lastName: "Dela Cruz", seatsReserved: 1 },
+  { firstName: "Lola", lastName: "Pacing", seatsReserved: 4 },
+  { firstName: "Tito", lastName: "Ben", seatsReserved: 2 },
+  { firstName: "Andrea", lastName: "Reyes", seatsReserved: 2 },
+  { firstName: "Mark", lastName: "Villanueva", seatsReserved: 1 },
+  { firstName: "Sarah", lastName: "Lim", seatsReserved: 3 },
   // Sandbox account for quick demos
-  { firstName: "Test", lastName: "Guest", code: "JM1126", seatsReserved: 2 },
+  { firstName: "Test", lastName: "Guest", seatsReserved: 2 },
 ];
 
 function norm(s: string) {
@@ -47,12 +50,10 @@ export function findGuest(
   const ln = norm(lastName);
   const c = normCode(code);
   if (!fn || !c) return null;
+  if (c !== normCode(INVITATION_CODE)) return null;
   return (
     guests.find(
-      (g) =>
-        norm(g.firstName) === fn &&
-        norm(g.lastName) === ln &&
-        normCode(g.code) === c
+      (g) => norm(g.firstName) === fn && norm(g.lastName) === ln
     ) ?? null
   );
 }

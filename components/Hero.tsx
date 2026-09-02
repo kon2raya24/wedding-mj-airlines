@@ -28,9 +28,9 @@ function InfoChip({
 
 function BoardingPassCard() {
   return (
-    <div className="relative bg-cream/95 text-navy rounded-md shadow-2xl shadow-navy-deep/60 overflow-hidden grid grid-cols-[1fr_auto_180px] sm:grid-cols-[1fr_auto_200px]">
+    <div className="relative h-full bg-cream/95 text-navy rounded-md shadow-2xl shadow-navy-deep/60 overflow-hidden grid grid-cols-[1fr_auto_180px] sm:grid-cols-[1fr_auto_200px]">
       {/* MAIN STUB */}
-      <div className="p-5 sm:p-6 md:p-7">
+      <div className="p-5 sm:p-6 md:p-7 flex flex-col">
         {/* Header strip */}
         <div className="pb-4 border-b border-navy/10">
           <div className="flex items-center justify-between gap-3">
@@ -65,7 +65,7 @@ function BoardingPassCard() {
               From
             </dt>
             <dd className="font-serif text-sm sm:text-base mt-1 flex items-center gap-2">
-              Here
+              {wedding.origin}
               <PaperPlane className="w-4 h-4 text-gold" />
             </dd>
           </div>
@@ -80,7 +80,7 @@ function BoardingPassCard() {
             <dt className="font-sans uppercase tracking-[0.25em] text-[9px] text-navy/55">
               To
             </dt>
-            <dd className="font-serif text-sm sm:text-base mt-1">Forever</dd>
+            <dd className="font-serif text-sm sm:text-base mt-1">{wedding.destination}</dd>
           </div>
 
           <div>
@@ -107,11 +107,21 @@ function BoardingPassCard() {
               Dress Code
             </dt>
             <dd className="font-serif text-sm sm:text-base mt-1">{wedding.dressCode}</dd>
+            <dd className="mt-2 flex items-center gap-1.5" aria-label={`Colour motif: ${wedding.motif.map((m) => m.name).join(", ")}`}>
+              {wedding.motif.map((m) => (
+                <span
+                  key={m.hex}
+                  title={m.name}
+                  className="w-5 h-5 rounded-full ring-1 ring-navy/25 shadow-sm"
+                  style={{ backgroundColor: m.hex }}
+                />
+              ))}
+            </dd>
           </div>
         </div>
 
         {/* Footer line */}
-        <div className="mt-6 pt-4 border-t border-dashed border-navy/20 text-center font-sans uppercase tracking-[0.35em] text-[10px] text-navy/65">
+        <div className="mt-auto pt-6 border-t border-dashed border-navy/20 text-center font-sans uppercase tracking-[0.35em] text-[10px] text-navy/65">
           Together is our favorite destination ♡
         </div>
       </div>
@@ -124,7 +134,7 @@ function BoardingPassCard() {
       </div>
 
       {/* RIGHT STUB */}
-      <div className="bg-cream/95 p-5 sm:p-6 flex flex-col">
+      <div className="bg-cream/95 p-5 sm:p-6 flex flex-col h-full">
         <div>
           <div className="font-sans uppercase tracking-[0.25em] text-[9px] text-navy/55">
             Seat / Table
@@ -145,7 +155,7 @@ function BoardingPassCard() {
           </div>
         </div>
 
-        <div className="mt-5 text-navy">
+        <div className="mt-auto pt-5 text-navy">
           <Barcode className="w-full h-10" />
         </div>
         <div className="mt-4 bg-white p-1 rounded-sm self-start text-navy">
@@ -158,47 +168,24 @@ function BoardingPassCard() {
 
 function PrenupCard() {
   return (
-    <div className="relative bg-navy-deep/40 backdrop-blur-sm border border-cream/15 rounded-md overflow-hidden shadow-2xl shadow-navy-deep/50">
+    <div className="relative h-full flex flex-col bg-navy-deep/40 backdrop-blur-sm border border-cream/15 rounded-md overflow-hidden shadow-2xl shadow-navy-deep/50">
       <div className="flex items-center gap-2 px-4 sm:px-5 py-3 border-b border-cream/10">
         <VideoIcon className="w-4 h-4 text-gold" />
         <span className="font-sans uppercase tracking-[0.3em] text-[10px] text-cream/85">
-          Our Prenup Video
+          Save the Date
         </span>
       </div>
 
-      <div className="relative aspect-[16/10]">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `url('${wedding.prenup.coverImage}')`,
-          }}
-          aria-hidden
+      <div className="relative flex-1 min-h-[220px] bg-navy-deep">
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          src={wedding.prenup.videoUrl}
+          poster={wedding.prenup.coverImage}
+          controls
+          playsInline
+          preload="metadata"
+          aria-label={`${wedding.groomFirst} and ${wedding.brideFirst} — ${wedding.prenup.tagline}`}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/80 via-navy-deep/30 to-transparent" />
-
-        {/* Name overlay */}
-        <div className="absolute inset-x-4 sm:inset-x-5 top-1/2 -translate-y-1/2 text-center">
-          <p className="font-script text-3xl sm:text-4xl text-cream leading-none">
-            {wedding.groomFirst} &amp; {wedding.brideFirst}
-          </p>
-          <p className="font-sans uppercase tracking-[0.3em] text-[10px] text-gold mt-2">
-            {wedding.prenup.tagline}
-          </p>
-        </div>
-
-        {/* Mock video controls */}
-        <div className="absolute inset-x-0 bottom-0 px-4 py-3 flex items-center gap-3 bg-navy-deep/60 text-cream/90 font-mono text-[10px]">
-          <button
-            aria-label="Play preview"
-            className="w-7 h-7 rounded-full grid place-items-center bg-cream/10 hover:bg-gold hover:text-navy transition-colors"
-          >
-            <PlayIcon className="w-3.5 h-3.5" />
-          </button>
-          <span className="shrink-0">0:00 / {wedding.prenup.duration}</span>
-          <div className="flex-1 h-1 bg-cream/15 rounded-full overflow-hidden">
-            <div className="h-full w-[3%] bg-gold" />
-          </div>
-        </div>
       </div>
 
       <div className="px-4 sm:px-5 py-4">
@@ -209,7 +196,7 @@ function PrenupCard() {
           className="w-full inline-flex items-center justify-center gap-2 font-sans uppercase tracking-[0.3em] text-[10px] px-5 py-3 bg-cream/10 hover:bg-gold hover:text-navy text-cream rounded-sm transition-colors"
         >
           <PlayIcon className="w-3.5 h-3.5" />
-          Watch Full Video
+          Open full screen
         </a>
       </div>
     </div>
@@ -242,10 +229,10 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-r from-navy-deep via-navy-deep/40 to-transparent" aria-hidden />
 
       <div className="relative z-10 w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 py-10 lg:py-14 animate-fade-in">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
           {/* LEFT — names + chips + CTAs */}
-          <div className="lg:col-span-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 border border-cream/30 rounded-full font-sans uppercase tracking-[0.3em] text-[10px] text-cream/85 mb-6">
+          <div className="lg:col-span-4 flex flex-col justify-center">
+            <div className="self-start inline-flex items-center gap-2 px-3 py-1.5 border border-cream/30 rounded-full font-sans uppercase tracking-[0.3em] text-[10px] text-cream/85 mb-6">
               <PaperPlane className="w-3.5 h-3.5 text-gold" />
               {badge}
             </div>
@@ -296,7 +283,7 @@ export default function Hero() {
 
             <a
               href="/api/calendar.ics"
-              className="mt-4 inline-flex items-center gap-2 font-sans uppercase tracking-[0.3em] text-[10px] text-cream/70 hover:text-gold transition-colors"
+              className="mt-4 self-start inline-flex items-center gap-2 font-sans uppercase tracking-[0.3em] text-[10px] text-cream/70 hover:text-gold transition-colors"
             >
               <CalendarIcon className="w-3.5 h-3.5" />
               Add to calendar

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { wedding } from "@/lib/config";
+import type { Companion } from "@/lib/rsvp-types";
 import { useAuth } from "@/components/AuthProvider";
 import { FloralDivider, Barcode, FlightArc, PaperPlane } from "@/components/Decor";
 
@@ -15,27 +16,27 @@ export default function RSVP() {
   const [error, setError] = useState<string | null>(null);
 
   const [attending, setAttending] = useState<"yes" | "no">("yes");
-  const [seatsAttending, setSeatsAttending] = useState<number>(auth?.seatsReserved ?? 1);
-  const [companionNames, setCompanionNames] = useState<string[]>([]);
+  const [companions, setCompanions] = useState<Companion[]>([]);
   const [note, setNote] = useState("");
   const [email, setEmail] = useState("");
 
-  // When auth changes (e.g. on first render after hydration), sync the
-  // default attending count to the guest's reserved seat cap.
+  // One companion row per reserved seat beyond the guest's own, created
+  // once the session is known. Everyone defaults to boarding.
   useEffect(() => {
-    if (auth) setSeatsAttending(auth.seatsReserved);
-  }, [auth]);
-
-  // Resize companion names array whenever seatsAttending changes (keep typed values when possible).
-  useEffect(() => {
-    const need = Math.max(0, seatsAttending - 1);
-    setCompanionNames((prev) => {
+    const need = Math.max(0, (auth?.seatsReserved ?? 1) - 1);
+    setCompanions((prev) => {
       if (prev.length === need) return prev;
       const next = prev.slice(0, need);
-      while (next.length < need) next.push("");
+      while (next.length < need) next.push({ name: "", attending: true });
       return next;
     });
-  }, [seatsAttending]);
+  }, [auth]);
+
+  // Seats used = the guest (if boarding) plus each companion who is boarding.
+  const seatsAttending =
+    attending === "no"
+      ? 0
+      : 1 + companions.filter((c) => c.attending).length;
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -47,14 +48,16 @@ export default function RSVP() {
     setStatus("submitting");
     setError(null);
 
+    // Identity and seat count come from the signed session server-side,
+    // so they are deliberately not sent here.
     const payload = {
-      code: auth.code,
-      firstName: auth.firstName,
-      lastName: auth.lastName,
-      seatsReserved: auth.seatsReserved,
       attending,
-      seatsAttending: attending === "yes" ? seatsAttending : 0,
-      companions: attending === "yes" ? companionNames.map((n) => n.trim()).filter(Boolean) : [],
+      companions:
+        attending === "yes"
+          ? companions
+              .map((c) => ({ name: c.name.trim(), attending: c.attending }))
+              .filter((c) => c.name)
+          : [],
       note: note.trim(),
       email: email.trim(),
       submittedAt: new Date().toISOString(),
@@ -160,12 +163,12 @@ export default function RSVP() {
           <div className="bg-sand/50 px-4 sm:px-6 md:px-8 py-4 sm:py-5 flex items-center justify-between gap-2">
             <div className="min-w-0">
               <div className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] text-navy/55">From</div>
-              <div className="font-serif text-xl sm:text-2xl">Here</div>
+              <div className="font-serif text-xl sm:text-2xl">{wedding.origin}</div>
             </div>
             <div className="text-gold flex-1 mx-2 sm:mx-4"><FlightArc className="w-full h-8 sm:h-10" /></div>
             <div className="text-right min-w-0">
               <div className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[9px] sm:text-[10px] text-navy/55">To</div>
-              <div className="font-serif text-xl sm:text-2xl">Forever</div>
+              <div className="font-serif text-xl sm:text-2xl">{wedding.destination}</div>
             </div>
           </div>
 
@@ -232,61 +235,83 @@ export default function RSVP() {
                   </div>
                 </fieldset>
 
-                {attending === "yes" && (
-                  <>
-                    <label className="block">
-                      <span className="font-sans uppercase tracking-[0.3em] text-[10px] text-navy/60">
-                        How many seats will attend?
-                      </span>
-                      <div className="mt-2 flex items-center gap-3">
-                        <button
-                          type="button"
-                          onClick={() => setSeatsAttending((n) => Math.max(0, n - 1))}
-                          className="w-10 h-10 rounded border border-navy/30 hover:bg-sand/40 font-serif text-xl"
-                          aria-label="Fewer seats"
-                        >
-                          −
-                        </button>
-                        <span className="font-serif text-3xl tabular-nums w-10 text-center">
-                          {seatsAttending}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => setSeatsAttending((n) => Math.min(cap, n + 1))}
-                          className="w-10 h-10 rounded border border-navy/30 hover:bg-sand/40 font-serif text-xl"
-                          aria-label="More seats"
-                        >
-                          +
-                        </button>
-                        <span className="font-sans text-[12px] text-navy/55">
-                          of {cap} reserved
-                        </span>
-                      </div>
-                    </label>
+                {attending === "yes" && cap > 1 && (
+                  <fieldset>
+                    <legend className="font-sans uppercase tracking-[0.25em] sm:tracking-[0.3em] text-[10px] text-navy/60 mb-1">
+                      Who is flying with you?
+                    </legend>
+                    <p className="font-sans text-[12px] text-navy/55 mb-3">
+                      Name each companion and mark whether they&apos;re boarding.
+                    </p>
 
-                    {companionNames.length > 0 && (
-                      <div>
-                        <span className="font-sans uppercase tracking-[0.3em] text-[10px] text-navy/60">
-                          Companion names <span className="text-navy/40 normal-case tracking-normal">(optional)</span>
+                    <ul className="space-y-2">
+                      {/* The guest themselves — always seat 1 */}
+                      <li className="flex flex-col sm:flex-row sm:items-center gap-2 bg-sand/40 border border-navy/20 rounded px-3 py-2.5">
+                        <span className="flex-1 font-serif text-base text-navy">
+                          {auth.firstName} {auth.lastName}
+                          <span className="ml-2 font-sans uppercase tracking-[0.2em] text-[9px] text-navy/45">
+                            You
+                          </span>
                         </span>
-                        <div className="mt-2 space-y-2">
-                          {companionNames.map((n, i) => (
-                            <input
-                              key={i}
-                              type="text"
-                              value={n}
-                              onChange={(e) => {
-                                const v = e.target.value;
-                                setCompanionNames((prev) => prev.map((p, idx) => (idx === i ? v : p)));
-                              }}
-                              placeholder={`Companion ${i + 1}`}
-                              className="w-full bg-sand/40 border border-navy/30 rounded px-3 py-2 font-serif focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/40"
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </>
+                        <span className="font-sans uppercase tracking-[0.2em] text-[10px] text-gold shrink-0">
+                          Boarding
+                        </span>
+                      </li>
+
+                      {companions.map((c, i) => (
+                        <li
+                          key={i}
+                          className="flex flex-col sm:flex-row sm:items-center gap-2 border border-navy/20 rounded px-3 py-2.5"
+                        >
+                          <input
+                            type="text"
+                            value={c.name}
+                            onChange={(e) => {
+                              const v = e.target.value;
+                              setCompanions((prev) =>
+                                prev.map((p, idx) => (idx === i ? { ...p, name: v } : p)),
+                              );
+                            }}
+                            placeholder={`Companion ${i + 1} — full name`}
+                            aria-label={`Companion ${i + 1} name`}
+                            className="flex-1 min-w-0 bg-white border border-navy/30 rounded px-3 py-2 font-serif text-base text-navy placeholder:text-navy/45 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/40"
+                          />
+                          <div className="flex self-start shrink-0 rounded overflow-hidden border border-navy/25">
+                            {([true, false] as const).map((val) => (
+                              <button
+                                key={String(val)}
+                                type="button"
+                                aria-pressed={c.attending === val}
+                                onClick={() =>
+                                  setCompanions((prev) =>
+                                    prev.map((p, idx) =>
+                                      idx === i ? { ...p, attending: val } : p,
+                                    ),
+                                  )
+                                }
+                                className={`px-3 py-2 font-sans uppercase tracking-[0.2em] text-[10px] transition-colors ${
+                                  c.attending === val
+                                    ? val
+                                      ? "bg-gold text-navy"
+                                      : "bg-navy-deep text-cream"
+                                    : "bg-sand/50 text-navy/55 hover:bg-sand"
+                                }`}
+                              >
+                                {val ? "Boarding" : "Not"}
+                              </button>
+                            ))}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <p className="mt-3 font-sans text-[12px] text-navy/60">
+                      <span className="font-serif text-lg text-navy tabular-nums">
+                        {seatsAttending}
+                      </span>{" "}
+                      of {cap} reserved seat{cap === 1 ? "" : "s"} boarding.
+                    </p>
+                  </fieldset>
                 )}
 
                 <label className="block">

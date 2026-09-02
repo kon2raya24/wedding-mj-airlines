@@ -11,6 +11,7 @@ import {
 import { rateLimit } from "@/lib/rate-limit";
 import { readRsvps } from "@/lib/rsvp-store";
 import { guests } from "@/lib/guests";
+import { guestKey } from "@/lib/rsvp-types";
 import AdminDashboard from "@/components/AdminDashboard";
 import AdminLogin from "@/components/AdminLogin";
 
@@ -74,10 +75,12 @@ export default async function AdminPage() {
   }
 
   const rsvps = await readRsvps();
-  // Index by code for joining with the guest list
-  const byCode = new Map(rsvps.map((r) => [r.code.toUpperCase(), r]));
+  // The invitation code is shared, so join on the guest's name instead.
+  const byName = new Map(
+    rsvps.map((r) => [guestKey(r.firstName, r.lastName), r]),
+  );
   const rows = guests.map((g) => {
-    const r = byCode.get(g.code.toUpperCase()) ?? null;
+    const r = byName.get(guestKey(g.firstName, g.lastName)) ?? null;
     return { guest: g, rsvp: r };
   });
 

@@ -10,6 +10,7 @@ import WeddingParty from "@/components/WeddingParty";
 import Gallery from "@/components/Gallery";
 import Travel from "@/components/Travel";
 import Registry from "@/components/Registry";
+import AttireGuide from "@/components/AttireGuide";
 import FAQ from "@/components/FAQ";
 import GuestBook from "@/components/GuestBook";
 import RSVP from "@/components/RSVP";
@@ -58,6 +59,7 @@ export default function Home() {
       <Travel />
       <Marquee />
       <Registry />
+      <AttireGuide />
       <FAQ />
       <GuestBook />
       {phase !== "after" && <RSVP />}

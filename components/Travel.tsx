@@ -11,7 +11,11 @@ export default function Travel() {
         <FloralDivider className="mt-6" />
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div
+        className={`grid gap-6 mx-auto ${
+          wedding.travel.length > 1 ? "md:grid-cols-3" : "max-w-md"
+        }`}
+      >
         {wedding.travel.map((h, i) => (
           <Reveal
             key={h.name}

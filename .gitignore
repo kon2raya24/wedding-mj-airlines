@@ -36,5 +36,6 @@ next-env.d.ts
 
 .vercel
 
-# local RSVP submissions log (dev only — serverless can't persist this)
-/data/rsvps.json
+# local RSVP + guest book store (dev only — serverless can't persist this,
+# and it holds real guest data once the site is live)
+/data/

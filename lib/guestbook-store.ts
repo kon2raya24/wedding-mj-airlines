@@ -1,7 +1,10 @@
 // Guest book storage adapter. Mirrors lib/rsvp-store.ts: prefers Vercel
 // KV when configured, falls back to /data on disk, then to an in-memory
-// list. The whole list is small (a few dozen entries at most), so we
-// read/write it whole.
+// list.
+//
+// On KV this is a Redis list: appends are a single atomic RPUSH, so two
+// guests signing at the same moment can't overwrite each other the way a
+// read-modify-write of one whole array could.
 import "server-only";
 import { promises as fs } from "node:fs";
 import path from "node:path";
@@ -48,9 +51,7 @@ export async function appendGuestBook(entry: GuestBookEntry): Promise<void> {
   if (hasKv()) {
     try {
       const { kv } = await import("@vercel/kv");
-      const existing = ((await kv.get<GuestBookEntry[]>(KV_KEY)) ?? []) as GuestBookEntry[];
-      existing.push(entry);
-      await kv.set(KV_KEY, existing);
+      await kv.rpush(KV_KEY, entry);
       return;
     } catch (err) {
       console.warn("[GUESTBOOK] KV write failed, falling back:", err);
@@ -67,8 +68,7 @@ export async function readGuestBook(): Promise<GuestBookEntry[]> {
   if (hasKv()) {
     try {
       const { kv } = await import("@vercel/kv");
-      const existing = ((await kv.get<GuestBookEntry[]>(KV_KEY)) ?? []) as GuestBookEntry[];
-      return existing;
+      return await kv.lrange<GuestBookEntry>(KV_KEY, 0, -1);
     } catch (err) {
       console.warn("[GUESTBOOK] KV read failed, falling back:", err);
     }

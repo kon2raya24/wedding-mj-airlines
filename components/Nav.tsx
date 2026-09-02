@@ -10,7 +10,8 @@ const links = [
   { href: "#details", label: "Destination" },
   { href: "#checkin", label: "Check-in" },
   { href: "#gallery", label: "Gallery" },
-  { href: "#prenup", label: "Prenup Video" },
+  { href: "#prenup", label: "Save the Date" },
+  { href: "#attire", label: "Attire" },
   { href: "#faq", label: "FAQ" },
 ];
 

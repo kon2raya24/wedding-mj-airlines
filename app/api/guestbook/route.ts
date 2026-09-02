@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { SESSION_COOKIE, decodeSession } from "@/lib/session";
 import { isSameOrigin } from "@/lib/csrf";
+import { guestKey } from "@/lib/rsvp-types";
 import { rateLimit } from "@/lib/rate-limit";
 import {
   appendGuestBook,
@@ -65,7 +66,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const rl = rateLimit(`guestbook:${session.code}`);
+  const rl = rateLimit(`guestbook:${guestKey(session.firstName, session.lastName)}`);
   if (!rl.allowed) {
     return NextResponse.json(
       { ok: false, error: "Too many submissions — please wait." },

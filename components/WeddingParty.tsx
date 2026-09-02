@@ -1,53 +1,33 @@
 import { wedding } from "@/lib/config";
 import { FloralDivider, PassportStamp } from "@/components/Decor";
 import Reveal from "@/components/Reveal";
-import TiltCard from "@/components/TiltCard";
 
-const portraits = [
-  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80",
-  "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80",
-  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&q=80",
-  "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&q=80",
-  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80",
-  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
-  "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=400&q=80",
-  "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80",
-];
-
-function CrewCard({
-  name,
-  role,
-  rank,
-  image,
+function NamePanel({
+  label,
+  names,
+  delay,
 }: {
-  name: string;
-  role: string;
-  rank: string;
-  image: string;
+  label: string;
+  names: string[];
+  delay: number;
 }) {
   return (
-    <TiltCard className="group bg-cream border border-navy/15 rounded-sm overflow-hidden shadow-sm hover:shadow-2xl" max={8}>
-      <div className="relative aspect-square overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center grayscale-[40%] group-hover:grayscale-0 transition-all duration-500 scale-105 group-hover:scale-110"
-          style={{ backgroundImage: `url('${image}')` }}
-          aria-hidden
-        />
-        <span className="absolute top-1.5 left-1.5 font-mono uppercase tracking-[0.2em] text-[8px] text-cream bg-navy-deep/80 px-1.5 py-0.5">
-          {rank}
-        </span>
-      </div>
-      <div className="p-2.5 text-center">
-        <div className="font-serif text-sm text-navy leading-tight">{name}</div>
-        <div className="font-sans uppercase tracking-[0.2em] text-[9px] text-gold mt-0.5">
-          {role}
-        </div>
-      </div>
-    </TiltCard>
+    <Reveal delay={delay} className="bg-cream border border-navy/15 rounded-sm p-6 shadow-sm">
+      <h4 className="font-sans uppercase tracking-[0.3em] text-[10px] text-gold mb-4">
+        {label}
+      </h4>
+      <ul className="space-y-1.5 font-serif text-navy text-base sm:text-lg">
+        {names.map((n) => (
+          <li key={n}>{n}</li>
+        ))}
+      </ul>
+    </Reveal>
   );
 }
 
 export default function WeddingParty() {
+  const { parents, principalSponsors, secondarySponsors } = wedding.party;
+
   return (
     <section id="party" className="relative section">
       <div className="section-title">
@@ -60,55 +40,74 @@ export default function WeddingParty() {
       </div>
 
       {/* Captain & First Officer (Groom & Bride) */}
-      <Reveal className="grid md:grid-cols-2 gap-6 mb-14 max-w-4xl mx-auto">
-        <div className="relative bg-navy-deep text-cream rounded-sm overflow-hidden shadow-2xl shadow-navy-deep/40">
-          <div className="aspect-[5/4] relative">
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: "url('https://images.unsplash.com/photo-1525772764200-be829a350797?w=900&q=85')" }}
-              aria-hidden
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-navy-deep via-navy-deep/30 to-transparent" />
-            <PassportStamp text="CAPTAIN" rotate={-8} className="absolute top-4 right-4 w-24 h-24 text-gold" />
-            <div className="absolute bottom-4 left-4 right-4">
-              <div className="font-mono uppercase tracking-[0.3em] text-[10px] text-gold">Captain</div>
-              <div className="font-script text-5xl text-cream leading-none mt-1">{wedding.groomFirst}</div>
-              <div className="font-serif italic text-cream/80 text-sm mt-1">{wedding.groomLast}</div>
-            </div>
-          </div>
+      <Reveal className="grid sm:grid-cols-2 gap-6 mb-14 max-w-4xl mx-auto">
+        <div className="relative bg-navy-deep text-cream rounded-sm overflow-hidden shadow-2xl shadow-navy-deep/40 p-8 sm:p-10">
+          <PassportStamp text="CAPTAIN" rotate={-8} className="absolute top-4 right-4 w-24 h-24 text-gold/70" />
+          <div className="font-mono uppercase tracking-[0.3em] text-[10px] text-gold">Captain</div>
+          <div className="font-script text-5xl text-cream leading-none mt-2">{wedding.groomFirst}</div>
+          <div className="font-serif italic text-cream/80 text-sm mt-1">{wedding.groomLast}</div>
         </div>
-        <div className="relative bg-navy-deep text-cream rounded-sm overflow-hidden shadow-2xl shadow-navy-deep/40">
-          <div className="aspect-[5/4] relative">
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: "url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=900&q=85')" }}
-              aria-hidden
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-navy-deep via-navy-deep/30 to-transparent" />
-            <PassportStamp text="FIRST OFFICER" rotate={8} className="absolute top-4 right-4 w-24 h-24 text-gold" />
-            <div className="absolute bottom-4 left-4 right-4">
-              <div className="font-mono uppercase tracking-[0.3em] text-[10px] text-gold">First Officer</div>
-              <div className="font-script text-5xl text-cream leading-none mt-1">{wedding.brideFirst}</div>
-              <div className="font-serif italic text-cream/80 text-sm mt-1">{wedding.brideLast}</div>
-            </div>
-          </div>
+        <div className="relative bg-navy-deep text-cream rounded-sm overflow-hidden shadow-2xl shadow-navy-deep/40 p-8 sm:p-10">
+          <PassportStamp text="FIRST OFFICER" rotate={8} className="absolute top-4 right-4 w-24 h-24 text-gold/70" />
+          <div className="font-mono uppercase tracking-[0.3em] text-[10px] text-gold">First Officer</div>
+          <div className="font-script text-5xl text-cream leading-none mt-2">{wedding.brideFirst}</div>
+          <div className="font-serif italic text-cream/80 text-sm mt-1">{wedding.brideLast}</div>
         </div>
       </Reveal>
 
-      {/* Crew grid */}
-      <div className="max-w-3xl mx-auto">
+      {/* Parents */}
+      <div className="max-w-4xl mx-auto mb-14">
         <h3 className="text-center font-sans uppercase tracking-[0.5em] text-[11px] text-gold mb-8">
-          The crew &amp; ground staff
+          With the blessing of our parents
         </h3>
-        <ul className="grid grid-cols-3 sm:grid-cols-4 gap-3 sm:gap-4">
-          {[...wedding.party.bridesSide, ...wedding.party.groomsSide].map((m, i) => (
-            <Reveal as="li" key={m.name} delay={i * 80}>
-              <CrewCard
-                name={m.name}
-                role={m.role}
-                rank={i < 4 ? "Cabin · A" : "Cabin · B"}
-                image={portraits[i % portraits.length]}
-              />
+        <div className="grid sm:grid-cols-2 gap-6">
+          <NamePanel label={parents.groom.label} names={parents.groom.names} delay={0} />
+          <NamePanel label={parents.bride.label} names={parents.bride.names} delay={100} />
+        </div>
+      </div>
+
+      {/* Principal sponsors */}
+      <div className="max-w-4xl mx-auto mb-14">
+        <h3 className="text-center font-sans uppercase tracking-[0.5em] text-[11px] text-gold mb-8">
+          Principal Sponsors
+        </h3>
+        <ul className="grid sm:grid-cols-2 gap-x-10 gap-y-3">
+          {principalSponsors.map((p, i) => (
+            <Reveal
+              as="li"
+              key={`${p.name}-${i}`}
+              delay={i * 60}
+              className="grid grid-cols-[1fr_auto_1fr] items-baseline gap-3 font-serif text-navy text-base sm:text-lg border-b border-dashed border-gold/40 pb-2"
+            >
+              <span>{p.name}</span>
+              <span className="font-sans text-[10px] uppercase tracking-[0.25em] text-navy/45">&amp;</span>
+              <span className="text-right">{p.partner}</span>
+            </Reveal>
+          ))}
+        </ul>
+      </div>
+
+      {/* Secondary sponsors */}
+      <div className="max-w-4xl mx-auto">
+        <h3 className="text-center font-sans uppercase tracking-[0.5em] text-[11px] text-gold mb-8">
+          Secondary Sponsors
+        </h3>
+        <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {secondarySponsors.map((s, i) => (
+            <Reveal
+              as="li"
+              key={s.task}
+              delay={i * 60}
+              className="bg-cream border border-navy/15 rounded-sm p-5 shadow-sm"
+            >
+              <div className="font-sans uppercase tracking-[0.3em] text-[10px] text-gold mb-3">
+                {s.task}
+              </div>
+              <ul className="space-y-1 font-serif text-navy text-base">
+                {s.names.map((n, j) => (
+                  <li key={`${n}-${j}`}>{n}</li>
+                ))}
+              </ul>
             </Reveal>
           ))}
         </ul>
