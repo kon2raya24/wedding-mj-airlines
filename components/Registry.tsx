@@ -25,7 +25,7 @@ function GiftTag({ gift, index }: { gift: Gift; index: number }) {
         }}
         aria-pressed={flipped}
         aria-label={`${gift.title} — show ${flipped ? "details" : "QR code"}`}
-        className="relative block w-full min-h-[380px] cursor-pointer rounded-sm transition-transform duration-500 [transform-style:preserve-3d] focus:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-navy-deep"
+        className="relative block w-full min-h-[440px] cursor-pointer rounded-sm transition-transform duration-500 [transform-style:preserve-3d] focus:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-navy-deep"
         style={{ transform: flipped ? "rotateY(180deg)" : undefined }}
       >
         {/* FRONT */}
@@ -48,13 +48,13 @@ function GiftTag({ gift, index }: { gift: Gift; index: number }) {
 
         {/* BACK */}
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-navy-deep border-2 border-dashed border-gold/50 rounded-sm p-7 text-center shadow-sm [backface-visibility:hidden] [transform:rotateY(180deg)]">
-          <span className="block font-script text-3xl text-cream mb-5">{gift.title}</span>
+          <span className="block font-script text-3xl text-cream mb-4">{gift.title}</span>
           <div className="bg-white p-3 rounded-sm text-navy">
             {gift.qr ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={gift.qr} alt={`${gift.title} QR code`} className="w-[140px] h-[140px] object-contain" />
+              <img src={gift.qr} alt={`${gift.title} QR code`} className="w-[230px] h-[230px] object-contain" />
             ) : (
-              <QR text={gift.handle} size={140} />
+              <QR text={gift.handle} size={230} />
             )}
           </div>
           <span className="mt-5 block font-serif text-sm text-cream/80 break-words">{gift.handle}</span>

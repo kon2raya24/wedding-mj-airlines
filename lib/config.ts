@@ -99,8 +99,6 @@ export const wedding = {
     address: "1881 Amuyong-Kaytitinga Road, Barangay Kaytitinga I, Alfonso, Cavite",
     dressCode: "Formal Attire",
     mapsUrl: "https://maps.google.com/?q=Mariel's+Garden+Alfonso+Cavite",
-    // TODO: swap for a real photo of Mariel's Garden — this is from the
-    // prenup shoot, not the venue.
     image: "/images/venue-ceremony.jpg",
   },
   reception: {
@@ -110,8 +108,6 @@ export const wedding = {
     address: "1881 Amuyong-Kaytitinga Road, Barangay Kaytitinga I, Alfonso, Cavite",
     dressCode: "Formal cocktail attire",
     mapsUrl: "https://maps.google.com/?q=Mariel's+Garden+Alfonso+Cavite",
-    // TODO: swap for a real photo of Mariel's Pavilion — this is from the
-    // prenup shoot, not the venue.
     image: "/images/venue-reception.jpg",
   },
 
@@ -187,25 +183,26 @@ export const wedding = {
     },
   ],
 
+  // Each card flips to reveal its QR. `qr` is an image in public/images;
+  // leave it empty and the site generates a QR from `handle` instead.
   registry: [
     {
       title: "GCash",
-      handle: "Marjorie D. — 09XX-XXX-1126",
-      note: "Quick & easy — just scan our QR at the reception entrance.",
-      // TODO: swap for the real GCash QR image (drop it in public/images/).
-      qr: "",
+      handle: "MA*****E T. — 0956 654 ••••",
+      note: "Quickest option — scan and send.",
+      qr: "/images/qr-gcash.jpg",
     },
     {
-      title: "Bank Transfer",
-      handle: "BPI 1234-5678-90 — Joseph Santos",
-      note: "For larger gifts or international guests.",
-      qr: "",
+      title: "GoTyme",
+      handle: "Marjorie Tenido — ••••• 4509",
+      note: "Bank transfer via InstaPay.",
+      qr: "/images/qr-gotyme.jpg",
     },
     {
-      title: "Honeymoon Fund",
-      handle: "honeymoon.marjorieandjoseph.com",
-      note: "Help us explore Japan in spring 2027. Every peso means a memory.",
-      qr: "",
+      title: "MariBank",
+      handle: "Joseph Castaneda — ••••3018",
+      note: "Bank transfer via InstaPay.",
+      qr: "/images/qr-maribank.jpg",
     },
   ],
 
