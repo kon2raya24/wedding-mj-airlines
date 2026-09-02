@@ -81,12 +81,16 @@ export default function Registry() {
       <div className="absolute inset-0 bg-navy-deep/50 -z-10" aria-hidden />
 
       <div className="section-title">
-        <p className="section-eyebrow !text-gold">Help us pack for the journey</p>
-        <h2 className="section-heading !text-cream">Honeymoon Fund</h2>
+        <p className="section-eyebrow !text-gold">With love and gratitude</p>
+        <h2 className="section-heading !text-cream">Gift Registry</h2>
         <FloralDivider className="mt-6 !text-gold" />
-        <p className="max-w-xl mx-auto font-serif italic text-cream text-lg mt-6">
-          Your presence is the greatest gift. But if you&apos;d like to send us off in style,
-          a contribution to our travels is most appreciated.
+        <p className="max-w-2xl mx-auto font-serif italic text-cream text-lg mt-6">
+          Your presence is truly the greatest gift we could ask for. As we begin our
+          journey together and prepare to build our family abroad, a monetary
+          contribution toward our future would be sincerely appreciated.
+        </p>
+        <p className="max-w-2xl mx-auto font-serif italic text-cream/85 text-base mt-3">
+          Thank you for being part of this special chapter of our lives.
         </p>
       </div>
 

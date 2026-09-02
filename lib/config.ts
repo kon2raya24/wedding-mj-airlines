@@ -217,19 +217,15 @@ export const wedding = {
     },
     {
       q: "Are kids welcome?",
-      a: "We adore your little ones but our reception is an adults-only affair. Children of the immediate family are of course welcome.",
+      a: "We absolutely adore your little ones! However, to help us create the celebration we have envisioned, we kindly ask that only children whose names are specifically included on the invitation join us. Thank you so much for your understanding and for helping us keep our celebration adults-only.",
     },
     {
       q: "Is there parking?",
-      a: "Yes — Mariel's Garden has ample parking on-site. Valet is available from 2:00 PM onward.",
+      a: "Yes — Mariel's Garden has ample parking on-site.",
     },
     {
-      q: "What if I have a dietary restriction?",
-      a: "Please mention it in the RSVP form below. Our caterer can accommodate vegetarian, vegan, and most allergies with advance notice.",
-    },
-    {
-      q: "Will the ceremony be livestreamed?",
-      a: "Yes! We'll email the link to all RSVP'd guests on the morning of the wedding for friends and family who can't be there in person.",
+      q: "Can I take photos during the ceremony?",
+      a: "Absolutely! We'd love for you to capture little moments and memories throughout our special day. Since our ceremony is semi-unplugged, feel free to take photos and short videos from your seat and share in the joy of the moment. We simply ask that you remain mindful of our professional photographers and videographers — please avoid stepping into the aisle, blocking their view, or using flash during the ceremony. This way, everyone can capture and enjoy our special journey together. 🤍",
     },
   ],
 
