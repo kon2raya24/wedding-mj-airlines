@@ -2,17 +2,31 @@
 // site stays functional even without the email service wired up.
 //
 // Two emails go out per RSVP:
-//   - a confirmation to the guest (only if they left an address)
-//   - a notification to the couple at wedding.contact.email, so they see
+//   - a boarding-pass confirmation to the guest (if they left an address)
+//   - the same pass to the couple at wedding.notifyEmails, so they see
 //     every response without opening the admin page
+//
+// The markup is deliberately old-fashioned — nested tables, inline styles,
+// no flexbox/grid, no web fonts, no external images. That is what actually
+// renders in Gmail, Outlook and Apple Mail. The palette and layout mirror
+// the site's boarding pass; the script/serif faces degrade to Georgia.
 import { wedding } from "./config";
-import type { RsvpEntry } from "./rsvp-store";
-import { formatCompanion } from "./rsvp-types";
+import type { RsvpEntry } from "./rsvp-types";
 
-// Where the couple get notified. Overridable so they can point it at a
-// shared inbox without editing config.
-function notifyAddress(): string {
-  return process.env.RSVP_NOTIFY_EMAIL || wedding.contact.email;
+// Site palette (tailwind.config.ts)
+const NAVY = "#1c2940";
+const NAVY_DEEP = "#4c6385";
+const CREAM = "#f6efe0";
+const SAND = "#e9dcc2";
+const GOLD = "#c89b3c";
+
+const SERIF = "Georgia, 'Cormorant Garamond', 'Times New Roman', serif";
+const SANS = "Arial, Helvetica, sans-serif";
+
+function notifyAddresses(): string[] {
+  const raw = process.env.RSVP_NOTIFY_EMAIL;
+  if (raw) return raw.split(",").map((s) => s.trim()).filter(Boolean);
+  return wedding.notifyEmails;
 }
 
 function fromAddress(): string {
@@ -26,12 +40,199 @@ async function getResend() {
   return new Resend(process.env.RESEND_API_KEY);
 }
 
+function escapeHtml(s: string): string {
+  return s.replace(/[&<>"']/g, (c) =>
+    c === "&" ? "&amp;" : c === "<" ? "&lt;" : c === ">" ? "&gt;" : c === '"' ? "&quot;" : "&#39;",
+  );
+}
+
+// One "LABEL / value" line inside the pass.
+function field(label: string, value: string): string {
+  return `
+  <tr>
+    <td style="padding:0 0 2px;font-family:${SANS};font-size:9px;letter-spacing:2px;text-transform:uppercase;color:${NAVY}8c;">${escapeHtml(label)}</td>
+  </tr>
+  <tr>
+    <td style="padding:0 0 14px;font-family:${SERIF};font-size:16px;color:${NAVY};">${value}</td>
+  </tr>`;
+}
+
+function companionList(entry: RsvpEntry): string {
+  if (!entry.companions.length) {
+    return `<span style="color:${NAVY}8c;">Travelling solo</span>`;
+  }
+  return entry.companions
+    .map((c) =>
+      c.attending
+        ? `<span style="color:${NAVY};">&#9992;&nbsp;${escapeHtml(c.name)}</span>`
+        : `<span style="color:${NAVY}8c;">&#10007;&nbsp;${escapeHtml(c.name)} <em style="font-family:${SANS};font-size:11px;">(not boarding)</em></span>`,
+    )
+    .join(`<br/>`);
+}
+
+function motifSwatches(): string {
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>${wedding.motif
+    .map(
+      (m) =>
+        `<td width="22" height="22" bgcolor="${m.hex}" style="border-radius:11px;font-size:0;line-height:0;">&nbsp;</td><td width="6" style="font-size:0;line-height:0;">&nbsp;</td>`,
+    )
+    .join("")}</tr></table>`;
+}
+
+// The boarding pass itself. `forCouple` swaps the greeting for a summary
+// header so the couple can scan a full inbox quickly.
+function renderPass(entry: RsvpEntry, forCouple: boolean): string {
+  const attending = entry.attending === "yes";
+  const fullName = `${entry.firstName} ${entry.lastName}`;
+
+  const headline = forCouple
+    ? attending
+      ? `${fullName} is boarding`
+      : `${fullName} can't make it`
+    : attending
+      ? `You're on board, ${entry.firstName}!`
+      : `Thank you, ${entry.firstName}`;
+
+  const blurb = forCouple
+    ? `${escapeHtml(fullName)} just responded via the wedding site.`
+    : attending
+      ? `Your seat${entry.seatsAttending > 1 ? "s have" : " has"} been reserved. We can't wait to celebrate with you.`
+      : `We'll miss you on the day, but thank you for letting us know.`;
+
+  return `<!doctype html>
+<html>
+<body style="margin:0;padding:0;background:${NAVY_DEEP};">
+  <!-- preheader: shown in the inbox preview, hidden in the body -->
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">${escapeHtml(headline)} &#8212; ${escapeHtml(wedding.shortDate)}</div>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${NAVY_DEEP};">
+    <tr><td align="center" style="padding:28px 12px;">
+
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background:${CREAM};border-radius:6px;overflow:hidden;">
+
+        <!-- header bar -->
+        <tr>
+          <td style="background:${NAVY};padding:18px 26px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td style="font-family:${SANS};font-size:11px;letter-spacing:3px;text-transform:uppercase;color:${GOLD};">
+                  &#9992;&nbsp; ${escapeHtml(wedding.brand)}
+                  <div style="font-family:${SANS};font-size:9px;letter-spacing:2px;color:${CREAM}b3;padding-top:4px;">${escapeHtml(wedding.tagline)}</div>
+                </td>
+                <td align="right" style="font-family:${SANS};font-size:10px;letter-spacing:2px;color:${CREAM}b3;">
+                  FLT ${escapeHtml(wedding.flightNumber)}<br/>${escapeHtml(wedding.shortDateCompact)}
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- route strip -->
+        <tr>
+          <td style="background:${SAND};padding:16px 26px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td style="font-family:${SANS};font-size:9px;letter-spacing:2px;text-transform:uppercase;color:${NAVY}8c;">From</td>
+                <td align="center"></td>
+                <td align="right" style="font-family:${SANS};font-size:9px;letter-spacing:2px;text-transform:uppercase;color:${NAVY}8c;">To</td>
+              </tr>
+              <tr>
+                <td style="font-family:${SERIF};font-size:26px;color:${NAVY};">${escapeHtml(wedding.origin)}</td>
+                <td align="center" style="font-family:${SANS};font-size:16px;color:${GOLD};">&#9992;</td>
+                <td align="right" style="font-family:${SERIF};font-size:26px;color:${NAVY};">${escapeHtml(wedding.destination)}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- perforation -->
+        <tr><td style="font-size:0;line-height:0;border-top:2px dashed ${GOLD}66;">&nbsp;</td></tr>
+
+        <!-- greeting -->
+        <tr>
+          <td style="padding:26px 26px 6px;">
+            <div style="font-family:${SERIF};font-size:28px;font-style:italic;color:${NAVY};">${escapeHtml(headline)}</div>
+            <div style="font-family:${SERIF};font-size:15px;line-height:1.6;color:${NAVY}cc;padding-top:8px;">${blurb}</div>
+          </td>
+        </tr>
+
+        <!-- pass details -->
+        <tr>
+          <td style="padding:18px 26px 4px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px dashed ${GOLD}66;border-radius:4px;">
+              <tr><td style="padding:18px 20px 4px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  ${field("Passenger", escapeHtml(fullName))}
+                  ${field(
+                    "Boarding",
+                    attending
+                      ? `${entry.seatsAttending} of ${entry.seatsReserved} seat${entry.seatsReserved === 1 ? "" : "s"}`
+                      : "Sadly, no",
+                  )}
+                  ${field("Companions", companionList(entry))}
+                  ${entry.note ? field("Note", `<em>${escapeHtml(entry.note)}</em>`) : ""}
+                  ${forCouple && entry.email ? field("Reply to", escapeHtml(entry.email)) : ""}
+                </table>
+              </td></tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- flight info -->
+        <tr>
+          <td style="padding:20px 26px 6px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              ${field("Date", escapeHtml(wedding.shortDate))}
+              ${field("Boarding time", escapeHtml(wedding.boardingTime))}
+              ${field("Ceremony", `${escapeHtml(wedding.ceremonyTime)} &#183; ${escapeHtml(wedding.ceremony.venue)}`)}
+              ${field("Reception", `${escapeHtml(wedding.reception.time)} &#183; ${escapeHtml(wedding.reception.venue)}`)}
+              ${field("Destination", escapeHtml(wedding.ceremony.address))}
+            </table>
+          </td>
+        </tr>
+
+        <!-- dress code + motif -->
+        <tr>
+          <td style="padding:0 26px 22px;">
+            <div style="font-family:${SANS};font-size:9px;letter-spacing:2px;text-transform:uppercase;color:${NAVY}8c;padding-bottom:4px;">Dress code</div>
+            <div style="font-family:${SERIF};font-size:16px;color:${NAVY};padding-bottom:10px;">${escapeHtml(wedding.dressCode)} &#183; ${escapeHtml(wedding.attire.palette)}</div>
+            ${motifSwatches()}
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:0 26px 24px;">
+            <div style="border-top:1px dashed ${NAVY}33;padding-top:16px;font-family:${SANS};font-size:10px;letter-spacing:3px;text-transform:uppercase;color:${NAVY}a6;text-align:center;">
+              Together is our favorite destination &#9825;
+            </div>
+          </td>
+        </tr>
+
+        <!-- footer bar -->
+        <tr>
+          <td style="background:${NAVY};padding:14px 26px;text-align:center;font-family:${SANS};font-size:10px;letter-spacing:3px;text-transform:uppercase;color:${CREAM}b3;">
+            ${escapeHtml(wedding.hashtag)}
+          </td>
+        </tr>
+      </table>
+
+      <div style="font-family:${SANS};font-size:11px;color:${CREAM}99;padding-top:14px;">
+        ${escapeHtml(wedding.groomFirst)} &amp; ${escapeHtml(wedding.brideFirst)} &#183; ${escapeHtml(wedding.shortDate)}
+      </div>
+
+    </td></tr>
+  </table>
+</body>
+</html>`;
+}
+
 // Notifies the couple that an RSVP landed. Always sent, regardless of
 // whether the guest supplied their own address.
 export async function sendRsvpNotification(entry: RsvpEntry): Promise<void> {
+  const to = notifyAddresses();
   const resend = await getResend();
   if (!resend) {
-    console.log("[Email] RESEND_API_KEY not set, skipping notification to", notifyAddress());
+    console.log("[Email] RESEND_API_KEY not set, skipping notification to", to.join(", "));
     return;
   }
 
@@ -41,40 +242,15 @@ export async function sendRsvpNotification(entry: RsvpEntry): Promise<void> {
     ? `RSVP: ${who} is boarding (${entry.seatsAttending} of ${entry.seatsReserved})`
     : `RSVP: ${who} can't make it`;
 
-  const rows: [string, string][] = [
-    ["Passenger", who],
-    ["Attending", attending ? `Yes — ${entry.seatsAttending} of ${entry.seatsReserved} seats` : "No"],
-    ["Companions", entry.companions.length ? entry.companions.map(formatCompanion).join(", ") : "—"],
-    ["Guest email", entry.email || "—"],
-    ["Note", entry.note || "—"],
-    ["Submitted", new Date(entry.submittedAt).toLocaleString("en-PH", { timeZone: "Asia/Manila" })],
-  ];
-
-  const html = `
-<div style="font-family:Arial,Helvetica,sans-serif;color:#1c2940;max-width:520px;">
-  <h2 style="margin:0 0 4px;font-size:18px;">${escapeHtml(subject)}</h2>
-  <p style="margin:0 0 16px;color:#1c2940aa;font-size:13px;">${escapeHtml(wedding.brand)} · Flight ${escapeHtml(wedding.flightNumber)}</p>
-  <table style="width:100%;border-collapse:collapse;font-size:14px;">
-    ${rows
-      .map(
-        ([k, v]) => `<tr>
-      <td style="padding:6px 12px 6px 0;color:#1c2940aa;white-space:nowrap;vertical-align:top;">${escapeHtml(k)}</td>
-      <td style="padding:6px 0;">${escapeHtml(v)}</td>
-    </tr>`,
-      )
-      .join("")}
-  </table>
-</div>`;
-
   // Resend resolves with { data, error } instead of rejecting on API
   // errors, so an unverified sender or bad key would otherwise fail
   // completely silently. Surface it to the caller.
   const { error } = await resend.emails.send({
     from: fromAddress(),
-    to: notifyAddress(),
+    to,
     replyTo: entry.email || undefined,
     subject,
-    html,
+    html: renderPass(entry, true),
   });
   if (error) {
     throw new Error(`Resend rejected the notification: ${error.name} — ${error.message}`);
@@ -89,115 +265,18 @@ export async function sendRsvpConfirmation(entry: RsvpEntry): Promise<void> {
     return;
   }
 
-  const fromAddr = fromAddress();
-
   const subject =
     entry.attending === "yes"
       ? `Your boarding pass is confirmed — ${wedding.groomFirst} & ${wedding.brideFirst}, ${wedding.shortDateCompact}`
       : `We received your RSVP — ${wedding.groomFirst} & ${wedding.brideFirst}`;
 
-  const html = renderEmail(entry);
-
   const { error } = await resend.emails.send({
-    from: fromAddr,
+    from: fromAddress(),
     to: entry.email,
     subject,
-    html,
+    html: renderPass(entry, false),
   });
   if (error) {
     throw new Error(`Resend rejected the confirmation: ${error.name} — ${error.message}`);
   }
-}
-
-function renderEmail(entry: RsvpEntry): string {
-  const attending = entry.attending === "yes";
-  const companions = entry.companions.length
-    ? `<p style="margin:8px 0 0;font-size:14px;color:#1c2940cc;">Companions: ${escapeHtml(entry.companions.map(formatCompanion).join(", "))}</p>`
-    : "";
-  const note = entry.note
-    ? `<p style="margin:16px 0 0;font-size:14px;color:#1c2940cc;"><em>Your note:</em> ${escapeHtml(entry.note)}</p>`
-    : "";
-
-  return `
-<!doctype html>
-<html>
-  <body style="margin:0;padding:24px;background:#f6efe0;font-family:Georgia, 'Cormorant Garamond', serif;color:#1c2940;">
-    <div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 8px 24px rgba(32,41,60,0.12);">
-      <div style="background:#1c2940;color:#f6efe0;padding:20px 28px;display:flex;align-items:center;justify-content:space-between;">
-        <div>
-          <div style="font-family:Arial,sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#c89b3c;">${wedding.brand}</div>
-          <div style="font-family:Georgia,serif;font-size:18px;margin-top:4px;">Boarding Pass · ${attending ? "Confirmed" : "Received"}</div>
-        </div>
-        <div style="text-align:right;font-family:'Courier New',monospace;font-size:11px;color:#f6efe0cc;letter-spacing:2px;">
-          FLT ${escapeHtml(wedding.flightNumber)}<br/>
-          ${escapeHtml(wedding.shortDateCompact)}
-        </div>
-      </div>
-
-      <div style="padding:28px;">
-        <p style="margin:0;font-size:20px;">Dear ${escapeHtml(entry.firstName)},</p>
-        <p style="margin:12px 0 0;font-size:16px;line-height:1.55;">
-          ${
-            attending
-              ? `We're thrilled you'll be flying with us! Your seat${entry.seatsAttending > 1 ? "s have" : " has"} been reserved.`
-              : `Thank you for letting us know. We'll miss you on the day, but we're grateful you took the time to RSVP.`
-          }
-        </p>
-
-        <div style="margin:24px 0;padding:16px;border:1px dashed #c89b3c66;border-radius:4px;background:#f6efe0;">
-          <table style="width:100%;font-size:14px;color:#1c2940;">
-            <tr>
-              <td style="padding:4px 0;color:#1c2940aa;text-transform:uppercase;letter-spacing:2px;font-family:Arial,sans-serif;font-size:11px;">Passenger</td>
-              <td style="padding:4px 0;text-align:right;">${escapeHtml(entry.firstName)} ${escapeHtml(entry.lastName)}</td>
-            </tr>
-            <tr>
-              <td style="padding:4px 0;color:#1c2940aa;text-transform:uppercase;letter-spacing:2px;font-family:Arial,sans-serif;font-size:11px;">Reservation</td>
-              <td style="padding:4px 0;text-align:right;font-family:'Courier New',monospace;">${escapeHtml(entry.code)}</td>
-            </tr>
-            <tr>
-              <td style="padding:4px 0;color:#1c2940aa;text-transform:uppercase;letter-spacing:2px;font-family:Arial,sans-serif;font-size:11px;">Seats reserved</td>
-              <td style="padding:4px 0;text-align:right;">${entry.seatsReserved}</td>
-            </tr>
-            <tr>
-              <td style="padding:4px 0;color:#1c2940aa;text-transform:uppercase;letter-spacing:2px;font-family:Arial,sans-serif;font-size:11px;">Attending</td>
-              <td style="padding:4px 0;text-align:right;">${attending ? `${entry.seatsAttending} of ${entry.seatsReserved}` : "Sadly, no"}</td>
-            </tr>
-          </table>
-          ${companions}
-          ${note}
-        </div>
-
-        <p style="margin:0;font-size:14px;line-height:1.55;">
-          <strong>Date:</strong> ${escapeHtml(wedding.shortDate)}<br/>
-          <strong>Boarding:</strong> ${escapeHtml(wedding.boardingTime)}<br/>
-          <strong>Ceremony:</strong> ${escapeHtml(wedding.ceremonyTime)}<br/>
-          <strong>Destination:</strong> ${escapeHtml(wedding.destinationVenue)}<br/>
-          <strong>Dress code:</strong> ${escapeHtml(wedding.dressCode)}
-        </p>
-
-        <p style="margin:24px 0 0;font-style:italic;font-size:14px;color:#1c2940aa;">
-          Together is our favorite destination. ♡<br/>
-          — ${escapeHtml(wedding.groomFirst)} &amp; ${escapeHtml(wedding.brideFirst)}
-        </p>
-      </div>
-
-      <div style="background:#1c2940;color:#f6efe0cc;padding:14px 28px;font-family:Arial,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;text-align:center;">
-        ${escapeHtml(wedding.hashtag)}
-      </div>
-    </div>
-  </body>
-</html>`;
-}
-
-function escapeHtml(s: string): string {
-  return s.replace(/[&<>"']/g, (c) => {
-    switch (c) {
-      case "&": return "&amp;";
-      case "<": return "&lt;";
-      case ">": return "&gt;";
-      case '"': return "&quot;";
-      case "'": return "&#39;";
-      default: return c;
-    }
-  });
 }

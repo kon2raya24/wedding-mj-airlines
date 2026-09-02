@@ -10,7 +10,7 @@ import {
 } from "@/lib/admin-auth";
 import { rateLimit } from "@/lib/rate-limit";
 import { readRsvps } from "@/lib/rsvp-store";
-import { guests } from "@/lib/guests";
+import { getGuests } from "@/lib/guests";
 import { guestKey } from "@/lib/rsvp-types";
 import AdminDashboard from "@/components/AdminDashboard";
 import AdminLogin from "@/components/AdminLogin";
@@ -74,7 +74,7 @@ export default async function AdminPage() {
     return <AdminLogin action={adminLogin} configured={isAdminConfigured()} />;
   }
 
-  const rsvps = await readRsvps();
+  const [guests, rsvps] = await Promise.all([getGuests(), readRsvps()]);
   // The invitation code is shared, so join on the guest's name instead.
   const byName = new Map(
     rsvps.map((r) => [guestKey(r.firstName, r.lastName), r]),

@@ -229,6 +229,13 @@ export const wedding = {
     email: "joseph.loves.jorie@gmail.com",
   },
 
+  // Everyone who gets notified when an RSVP lands. Override with the
+  // RSVP_NOTIFY_EMAIL env var (comma-separated) without editing code.
+  notifyEmails: [
+    "joseph.loves.jorie@gmail.com",
+    "turayalemmuel@gmail.com",
+  ],
+
   quote: {
     text: "With you beside me, every path becomes home.",
     author: "For two travelers in love",

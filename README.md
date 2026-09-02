@@ -32,60 +32,88 @@ To swap photos, edit the `gallery` array in `lib/config.ts` (any URL works). For
 12. **RSVP** — Form with confetti success state
 13. **Footer** — Hashtag, social, sign-off
 
-## RSVP — where submissions go
+## The Google Sheet is the database
 
-Every RSVP is written to **three** places. Each is independent: if one fails
-the guest still gets a success screen, and the failure is logged with a
-`[RSVP] sheets|notify|confirm failed` line in the Vercel logs.
+One spreadsheet drives the whole site — no separate database. Three tabs,
+each with a header row in row 1:
 
-1. **Storage** — Vercel KV when configured, otherwise a local JSON file in
-   dev, otherwise memory + stdout. Keyed by guest, so re-submitting replaces
-   that guest's answer rather than adding a duplicate.
-2. **Google Sheet** — an append-only log, so a guest who changes their mind
-   leaves both rows and you keep the history.
-3. **Email** — a notification to the couple, plus a confirmation to the
-   guest if they left an address.
+**`Guests`** — your real guest list. This is what check-in reads.
 
-### Environment variables
+| A | B | C |
+| --- | --- | --- |
+| First name | Last name | Seats reserved |
+
+`Seats reserved` includes the guest themselves, so `2` means guest + 1
+companion. Adding a guest here lets them check in within a minute (the list
+is cached for 60s).
+
+**`RSVPs`** — written by the site, one row per response.
+
+| A | B | C | D | E | F | G | H | I |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Submitted at | First name | Last name | Seats reserved | Attending | Seats attending | Companions | Email | Note |
+
+**`Guestbook`** — written by the site.
+
+| A | B | C | D |
+| --- | --- | --- | --- |
+| Submitted at | Name | From | Message |
+
+You can safely edit these by hand. If a guest needs their RSVP changed,
+add a corrected row at the bottom — the later row wins.
+
+### One RSVP per guest
+
+The site refuses a second submission: a guest who returns sees their
+existing answer instead of a blank form, and the API rejects a replay with
+409. To let someone re-submit, delete their row from the `RSVPs` tab.
+
+### If the sheet write fails
+
+The guest sees an error and can retry, rather than a false success screen.
+Every submission is also written to the Vercel logs as an `[RSVP]` line, so
+nothing is ever truly lost.
+
+### Emails
+
+Each RSVP sends a boarding-pass email — styled like the site — to the guest
+(if they left an address) and to everyone in `notifyEmails` in
+`lib/config.ts`. Both include the main guest's name and every companion,
+with who is and isn't boarding. Mail failures are logged but never cost the
+guest their RSVP.
+
+## Environment variables
 
 | Variable | Needed for | Notes |
 | --- | --- | --- |
 | `SESSION_SECRET` | **required in production** | 16+ chars. Signs the guest cookie. |
+| `GOOGLE_SHEETS_ID` | everything | The long id in the spreadsheet URL. |
+| `GOOGLE_SERVICE_ACCOUNT_EMAIL` | everything | `...@....iam.gserviceaccount.com` |
+| `GOOGLE_PRIVATE_KEY` | everything | The `private_key` from the service-account JSON. Pasting it with literal `\n` is fine. |
 | `ADMIN_PASSWORD` | `/admin` | Without it the admin page is disabled. |
-| `KV_REST_API_URL` / `KV_REST_API_TOKEN` | persistence | Auto-populated by the Vercel KV / Upstash integration. **Without these, RSVPs survive only in the logs.** |
 | `RESEND_API_KEY` | emails | From resend.com. |
-| `EMAIL_FROM` | emails | e.g. `JM Airways <rsvp@yourdomain.com>`. Must be a Resend-verified domain — the default `onboarding@resend.dev` can only deliver to the Resend account owner. |
-| `RSVP_NOTIFY_EMAIL` | emails | Optional. Defaults to `contact.email` in `lib/config.ts`. |
-| `GOOGLE_SHEETS_ID` | sheet | The long id in the spreadsheet URL. |
-| `GOOGLE_SERVICE_ACCOUNT_EMAIL` | sheet | `...@....iam.gserviceaccount.com` |
-| `GOOGLE_PRIVATE_KEY` | sheet | The `private_key` from the service-account JSON. Pasting it with literal `\n` is fine. |
-| `GOOGLE_SHEETS_TAB` | sheet | Optional, defaults to `RSVPs`. |
+| `EMAIL_FROM` | emails | e.g. `JM Airways <rsvp@yourdomain.com>`. Must be a Resend-verified domain — the default `onboarding@resend.dev` only delivers to the Resend account owner. |
+| `RSVP_NOTIFY_EMAIL` | emails | Optional, comma-separated. Overrides `notifyEmails` in config. |
 
-### Google Sheets setup
+**Without the Google vars the site falls back to a seed guest list and a
+local JSON file** so `npm run dev` works with no credentials. That fallback
+is for development — never rely on it in production.
+
+## Google Sheets setup
 
 1. Google Cloud console → new (or existing) project → **enable the Google
    Sheets API**.
 2. Create a **service account**, then add a **JSON key** and download it.
 3. Open your spreadsheet and **share it with the service account's email
    address as an Editor** — this is the step people miss; without it every
-   append returns 403.
-4. Name the tab `RSVPs` (or set `GOOGLE_SHEETS_TAB`) and paste this header
-   row into row 1:
+   read and write returns 403.
+4. Create the three tabs above with their header rows.
+5. Set the three `GOOGLE_*` vars in Vercel and redeploy.
 
-   ```
-   Submitted at | First name | Last name | Seats reserved | Attending | Seats attending | Companions | Email | Note
-   ```
-
-5. Set `GOOGLE_SHEETS_ID`, `GOOGLE_SERVICE_ACCOUNT_EMAIL` and
-   `GOOGLE_PRIVATE_KEY` in the Vercel project, then redeploy.
-
-If the Google vars are absent the integration no-ops quietly and logs
-`[Sheets] not configured` — nothing else breaks.
-
-### Guest check-in
+## Guest check-in
 
 Every invitation carries the **same** code (`INVITATION_CODE` in
-`lib/config.ts`). A guest still has to appear by name in `lib/guests.ts`,
+`lib/config.ts`). A guest still has to appear by name on the `Guests` tab,
 which is where each guest's reserved seat count lives.
 
 ## Deploy to Vercel

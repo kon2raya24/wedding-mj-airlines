@@ -1,13 +1,14 @@
-// Guest book storage adapter. Mirrors lib/rsvp-store.ts: prefers Vercel
-// KV when configured, falls back to /data on disk, then to an in-memory
-// list.
+// Guest book storage. Mirrors lib/rsvp-store.ts — the "Guestbook" tab of
+// the Google Sheet is the store. Columns:
 //
-// On KV this is a Redis list: appends are a single atomic RPUSH, so two
-// guests signing at the same moment can't overwrite each other the way a
-// read-modify-write of one whole array could.
+//   A: Submitted at  B: Name  C: From  D: Message
+//
+// Falls back to a JSON file under /data when the Sheets env vars are
+// absent, so `npm run dev` works without credentials.
 import "server-only";
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { appendRow, isSheetsConfigured, readRows, TABS } from "./sheets";
 
 export type GuestBookEntry = {
   submittedAt: string;
@@ -17,13 +18,9 @@ export type GuestBookEntry = {
   code: string;
 };
 
-const KV_KEY = "mj:guestbook";
-const LOG_PATH = path.join(process.cwd(), "data", "guestbook.json");
-const memory: GuestBookEntry[] = [];
+export const GUESTBOOK_HEADERS = ["Submitted at", "Name", "From", "Message"];
 
-function hasKv(): boolean {
-  return !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
-}
+const LOG_PATH = path.join(process.cwd(), "data", "guestbook.json");
 
 async function readFromFile(): Promise<GuestBookEntry[]> {
   try {
@@ -35,45 +32,37 @@ async function readFromFile(): Promise<GuestBookEntry[]> {
   }
 }
 
-async function writeToFile(entries: GuestBookEntry[]): Promise<boolean> {
-  try {
-    await fs.mkdir(path.dirname(LOG_PATH), { recursive: true });
-    await fs.writeFile(LOG_PATH, JSON.stringify(entries, null, 2), "utf8");
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 export async function appendGuestBook(entry: GuestBookEntry): Promise<void> {
   console.log("[GUESTBOOK]", JSON.stringify(entry));
 
-  if (hasKv()) {
-    try {
-      const { kv } = await import("@vercel/kv");
-      await kv.rpush(KV_KEY, entry);
-      return;
-    } catch (err) {
-      console.warn("[GUESTBOOK] KV write failed, falling back:", err);
-    }
+  if (isSheetsConfigured()) {
+    await appendRow(TABS.guestbook, [
+      entry.submittedAt,
+      entry.name,
+      entry.from,
+      entry.message,
+    ]);
+    return;
   }
 
   const existing = await readFromFile();
   existing.push(entry);
-  const ok = await writeToFile(existing);
-  if (!ok) memory.push(entry);
+  await fs.mkdir(path.dirname(LOG_PATH), { recursive: true });
+  await fs.writeFile(LOG_PATH, JSON.stringify(existing, null, 2), "utf8");
 }
 
 export async function readGuestBook(): Promise<GuestBookEntry[]> {
-  if (hasKv()) {
-    try {
-      const { kv } = await import("@vercel/kv");
-      return await kv.lrange<GuestBookEntry>(KV_KEY, 0, -1);
-    } catch (err) {
-      console.warn("[GUESTBOOK] KV read failed, falling back:", err);
-    }
+  if (isSheetsConfigured()) {
+    const rows = await readRows(TABS.guestbook, GUESTBOOK_HEADERS.length);
+    return rows
+      .filter((r) => r[1] && r[3])
+      .map((r) => ({
+        submittedAt: r[0],
+        name: r[1],
+        from: r[2],
+        message: r[3],
+        code: "",
+      }));
   }
-  const fromDisk = await readFromFile();
-  if (fromDisk.length > 0) return fromDisk;
-  return memory.slice();
+  return readFromFile();
 }

@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { wedding } from "@/lib/config";
-import type { Companion } from "@/lib/rsvp-types";
+import type { Companion, RsvpEntry } from "@/lib/rsvp-types";
 import { useAuth } from "@/components/AuthProvider";
 import { FloralDivider, Barcode, FlightArc, PaperPlane } from "@/components/Decor";
 
@@ -14,6 +14,12 @@ export default function RSVP() {
   const { session: auth } = useAuth();
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
+  // The guest's existing answer, if they have already responded.
+  // undefined = still checking, null = none on file.
+  const [existing, setExisting] = useState<RsvpEntry | null | undefined>(undefined);
+  // Guards against a fast double-click firing two requests before the
+  // disabled state has rendered.
+  const inFlight = useRef(false);
 
   const [attending, setAttending] = useState<"yes" | "no">("yes");
   const [companions, setCompanions] = useState<Companion[]>([]);
@@ -32,6 +38,26 @@ export default function RSVP() {
     });
   }, [auth]);
 
+  // Look up any RSVP already on file for this guest.
+  useEffect(() => {
+    if (!auth) {
+      setExisting(null);
+      return;
+    }
+    let cancelled = false;
+    fetch("/api/rsvp")
+      .then((r) => (r.ok ? r.json() : { rsvp: null }))
+      .then((d) => {
+        if (!cancelled) setExisting(d.rsvp ?? null);
+      })
+      .catch(() => {
+        if (!cancelled) setExisting(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [auth]);
+
   // Seats used = the guest (if boarding) plus each companion who is boarding.
   const seatsAttending =
     attending === "no"
@@ -45,6 +71,8 @@ export default function RSVP() {
       setError("You need to check in first. Please sign in above.");
       return;
     }
+    if (inFlight.current) return;
+    inFlight.current = true;
     setStatus("submitting");
     setError(null);
 
@@ -69,11 +97,23 @@ export default function RSVP() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error(`Server responded ${res.status}`);
+      const data = await res.json().catch(() => ({}));
+
+      if (res.status === 409 && data.alreadySubmitted) {
+        // Somebody got in first — another tab, or a stale form.
+        setExisting(data.rsvp ?? null);
+        setStatus("idle");
+        return;
+      }
+      if (!res.ok) {
+        throw new Error(data.error || `Server responded ${res.status}`);
+      }
       setStatus("success");
     } catch (err) {
       setStatus("error");
       setError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      inFlight.current = false;
     }
   }
 
@@ -173,7 +213,72 @@ export default function RSVP() {
           </div>
 
           <div className="p-4 sm:p-6 md:p-8 space-y-5">
-            {!auth ? (
+            {existing ? (
+              <div className="rounded-md border border-gold/40 bg-gold/10 p-5 sm:p-6 space-y-4">
+                <div className="text-center">
+                  <p className="font-sans uppercase tracking-[0.3em] text-[10px] text-gold">
+                    Already confirmed
+                  </p>
+                  <h3 className="font-script text-4xl sm:text-5xl text-navy mt-2">
+                    {existing.attending === "yes" ? "You're on board!" : "Safe travels"}
+                  </h3>
+                </div>
+
+                <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 font-serif text-navy text-sm sm:text-base">
+                  <dt className="font-sans uppercase tracking-[0.2em] text-[10px] text-navy/55 pt-1">
+                    Passenger
+                  </dt>
+                  <dd>
+                    {existing.firstName} {existing.lastName}
+                  </dd>
+
+                  <dt className="font-sans uppercase tracking-[0.2em] text-[10px] text-navy/55 pt-1">
+                    Boarding
+                  </dt>
+                  <dd>
+                    {existing.attending === "yes"
+                      ? `${existing.seatsAttending} of ${existing.seatsReserved} seat${
+                          existing.seatsReserved === 1 ? "" : "s"
+                        }`
+                      : "Sadly, no"}
+                  </dd>
+
+                  {existing.companions.length > 0 && (
+                    <>
+                      <dt className="font-sans uppercase tracking-[0.2em] text-[10px] text-navy/55 pt-1">
+                        With you
+                      </dt>
+                      <dd>
+                        <ul className="space-y-0.5">
+                          {existing.companions.map((c, i) => (
+                            <li key={i}>
+                              {c.name}
+                              {!c.attending && (
+                                <span className="font-sans text-[11px] text-navy/50"> — not boarding</span>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      </dd>
+                    </>
+                  )}
+
+                  {existing.note && (
+                    <>
+                      <dt className="font-sans uppercase tracking-[0.2em] text-[10px] text-navy/55 pt-1">
+                        Your note
+                      </dt>
+                      <dd className="italic">{existing.note}</dd>
+                    </>
+                  )}
+                </dl>
+
+                <p className="font-serif italic text-navy/70 text-sm text-center pt-1">
+                  Need to change something? Message {wedding.groomFirst} or{" "}
+                  {wedding.brideFirst} and we&apos;ll update it for you.
+                </p>
+              </div>
+            ) : !auth ? (
               <div className="rounded-md border border-gold/40 bg-gold/10 p-5 text-center space-y-3">
                 <p className="font-serif text-navy/90 text-base">
                   Please check in to confirm your RSVP.

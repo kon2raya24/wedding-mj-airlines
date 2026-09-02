@@ -12,7 +12,7 @@ async function checkIn(formData: FormData): Promise<{ error?: string }> {
   const code = String(formData.get("code") ?? "");
   const next = String(formData.get("next") ?? "/");
 
-  const guest = findGuest(firstName, lastName, code);
+  const guest = await findGuest(firstName, lastName, code);
   if (!guest) {
     return { error: "We couldn't find that reservation. Check the spelling of your name and the code on your invitation." };
   }
