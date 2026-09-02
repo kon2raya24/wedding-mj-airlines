@@ -99,8 +99,9 @@ export const wedding = {
     address: "1881 Amuyong-Kaytitinga Road, Barangay Kaytitinga I, Alfonso, Cavite",
     dressCode: "Formal Attire",
     mapsUrl: "https://maps.google.com/?q=Mariel's+Garden+Alfonso+Cavite",
-    // TODO: replace with a real photo of Mariel's Garden (drop it in public/images/).
-    image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=1400&q=80",
+    // TODO: swap for a real photo of Mariel's Garden — this is from the
+    // prenup shoot, not the venue.
+    image: "/images/venue-ceremony.jpg",
   },
   reception: {
     title: "Reception",
@@ -109,8 +110,9 @@ export const wedding = {
     address: "1881 Amuyong-Kaytitinga Road, Barangay Kaytitinga I, Alfonso, Cavite",
     dressCode: "Formal cocktail attire",
     mapsUrl: "https://maps.google.com/?q=Mariel's+Garden+Alfonso+Cavite",
-    // TODO: replace with a real photo of Mariel's Pavilion (drop it in public/images/).
-    image: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1400&q=80",
+    // TODO: swap for a real photo of Mariel's Pavilion — this is from the
+    // prenup shoot, not the venue.
+    image: "/images/venue-reception.jpg",
   },
 
   schedule: [
@@ -151,17 +153,23 @@ export const wedding = {
   },
 
   gallery: [
-    { src: "https://images.unsplash.com/photo-1519741497674-611481863552", alt: "Engagement portrait" },
-    { src: "https://images.unsplash.com/photo-1525772764200-be829a350797", alt: "Holding hands" },
-    { src: "https://images.unsplash.com/photo-1606800052052-a08af7148866", alt: "Beach sunset" },
-    { src: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc", alt: "Garden walk" },
-    { src: "https://images.unsplash.com/photo-1591604466107-ec97de577aff", alt: "Studio shot" },
-    { src: "https://images.unsplash.com/photo-1519225421980-715cb0215aed", alt: "Candid laughter" },
+    { src: "/images/gallery-1.jpg", alt: "By the lake", stamp: "THE LAKE" },
+    { src: "/images/gallery-2.jpg", alt: "Hands in the air", stamp: "TAKE OFF" },
+    { src: "/images/gallery-3.jpg", alt: "A quiet moment", stamp: "THE VEIL" },
+    { src: "/images/gallery-4.jpg", alt: "On the bamboo raft", stamp: "THE RAFT" },
+    { src: "/images/gallery-5.jpg", alt: "Songs at golden hour", stamp: "GOLDEN HOUR" },
+    { src: "/images/gallery-6.jpg", alt: "Where it started", stamp: "WHERE IT BEGAN" },
   ],
 
   // Background music. Empty = the player is off entirely. To enable it,
   // drop an mp3 in public/audio/ and set this to e.g. "/audio/song.mp3".
   music: "",
+
+  // Full-bleed section backgrounds.
+  backgrounds: {
+    hero: "/images/hero.jpg",
+    login: "/images/login.jpg",
+  },
 
   prenup: {
     coverImage: "/images/prenup-cover.jpg",
@@ -251,8 +259,7 @@ export const wedding = {
   quote: {
     text: "With you beside me, every path becomes home.",
     author: "For two travelers in love",
-    image:
-      "https://images.unsplash.com/photo-1525772764200-be829a350797?w=2000&q=85",
+    image: "/images/quote.jpg",
   },
 
   stats: [

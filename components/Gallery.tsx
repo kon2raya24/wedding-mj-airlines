@@ -6,7 +6,6 @@ import { wedding } from "@/lib/config";
 import { FloralDivider, PassportStamp } from "@/components/Decor";
 import Reveal from "@/components/Reveal";
 
-const stamps = ["BAGUIO", "EL NIDO", "BORACAY", "TOKYO", "BALI", "MANILA"];
 const tilts = [
   "sm:-rotate-3",
   "sm:rotate-2",
@@ -68,7 +67,7 @@ export default function Gallery() {
                   className="object-cover sepia-[20%] group-hover:sepia-0 transition-all duration-700 group-hover:scale-110"
                 />
                 <PassportStamp
-                  text={stamps[i % stamps.length]}
+                  text={img.stamp}
                   rotate={-15 + (i % 3) * 12}
                   className={`absolute -top-2 -right-2 w-20 h-20 ${stampColors[i % stampColors.length]} z-10`}
                 />
@@ -76,7 +75,7 @@ export default function Gallery() {
 
               <div className="flex items-center justify-between mt-3 font-mono text-[10px] uppercase tracking-widest text-navy/70">
                 <span>POSTCARD · {String(i + 1).padStart(2, "0")}</span>
-                <span>{stamps[i % stamps.length]}</span>
+                <span>{img.stamp}</span>
               </div>
               <div className="font-script text-2xl text-navy text-center mt-2">
                 {img.alt}

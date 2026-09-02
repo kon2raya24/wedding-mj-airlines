@@ -220,8 +220,7 @@ export default function Hero() {
       <div
         className="absolute inset-0 bg-cover bg-center opacity-45"
         style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=2400&q=85')",
+          backgroundImage: `url('${wedding.backgrounds.hero}')`,
         }}
         aria-hidden
       />

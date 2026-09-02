@@ -7,8 +7,7 @@ export default function Quote() {
       <div
         className="absolute inset-0 bg-cover bg-center md:bg-fixed scale-105"
         style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=2000&q=85')",
+          backgroundImage: `url('${wedding.quote.image}')`,
         }}
         aria-hidden
       />

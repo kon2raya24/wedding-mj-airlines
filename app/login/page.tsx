@@ -56,6 +56,7 @@ export default async function LoginPage({
       gate={wedding.gate}
       origin={wedding.origin}
       destination={wedding.destination}
+      background={wedding.backgrounds.login}
       action={checkIn}
     />
   );
