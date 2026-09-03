@@ -32,7 +32,7 @@ export const wedding = {
   date: "2026-11-26T15:00:00+08:00",
   ceremonyTime: "3:00 PM",
   boardingTime: "02:30 PM",
-  rsvpCloseDate: "November 1, 2026",
+  rsvpCloseDate: "October 2, 2026",
   dressCode: "Formal Attire",
 
   // Where the guests fly from / to on every boarding pass in the site.
@@ -234,6 +234,10 @@ export const wedding = {
     {
       q: "What's the dress code?",
       a: "Formal attire in our motif — dusty blue, navy blue, silvery or gray. Principal sponsors in gray or silver gray, secondary sponsors in dusty blue, and guests in any shade of blue or warm gray. Please avoid pure white or ivory, those are reserved for the bride!",
+    },
+    {
+      q: "When should I RSVP?",
+      a: "Please RSVP on or before October 2, 2026 so we can finalize seats with the venue. If we don't hear from you by then, we'll sadly have to take it as a no — no RSVP means no seat on board.",
     },
     {
       q: "Can I bring a plus-one?",
