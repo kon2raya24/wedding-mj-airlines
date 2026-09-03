@@ -38,7 +38,7 @@ export default function AltitudeMeter({ light = false }: { light?: boolean }) {
 
   return (
     <div className={`hidden md:flex items-center gap-3 font-mono uppercase tracking-[0.25em] text-[10px] ${light ? "text-cream/80" : "text-navy/80"}`}>
-      <span className={light ? "text-gold-soft" : "text-gold"}>●</span>
+      <span className={light ? "text-silver-pale" : "text-silver"}>●</span>
       <span className="tabular-nums">
         {altitude.toLocaleString()} FT
       </span>
@@ -46,7 +46,7 @@ export default function AltitudeMeter({ light = false }: { light?: boolean }) {
       <span>{phase}</span>
       <div className={`relative w-24 h-1.5 rounded-sm overflow-hidden ${light ? "bg-cream/15" : "bg-navy/15"}`}>
         <div
-          className={`absolute inset-y-0 left-0 transition-[width] duration-150 ${light ? "bg-gold-soft" : "bg-gold"}`}
+          className={`absolute inset-y-0 left-0 transition-[width] duration-150 ${light ? "bg-silver-pale" : "bg-silver"}`}
           style={{ width: `${pct * 100}%` }}
         />
       </div>

@@ -32,12 +32,12 @@ export default function MusicToggle() {
       <button
         onClick={toggle}
         aria-label={playing ? "Pause music" : "Play music"}
-        className="fixed bottom-6 right-6 z-40 h-12 w-12 rounded-full bg-ink/90 text-cream backdrop-blur shadow-lg flex items-center justify-center hover:bg-champagne transition-colors group"
+        className="fixed bottom-[5.5rem] right-6 z-40 h-12 w-12 rounded-full bg-ink/90 text-cream backdrop-blur shadow-lg flex items-center justify-center hover:bg-silver transition-colors group"
       >
         <span className="font-script text-xl mr-px">♪</span>
         <span
           aria-hidden
-          className={`absolute inset-0 rounded-full border border-champagne/50 ${
+          className={`absolute inset-0 rounded-full border border-silver/50 ${
             playing ? "animate-ping" : ""
           }`}
         />

@@ -117,18 +117,24 @@ export type SessionPayload = {
   firstName: string;
   lastName: string;
   seatsReserved: number;
+  // Names of the people travelling on this invitation (may be empty).
+  companions: string[];
   ts: number;
 };
 
-export async function encodeSession(guest: Guest): Promise<string> {
-  const payload: SessionPayload = {
+function payloadFor(guest: Guest): SessionPayload {
+  return {
     code: INVITATION_CODE,
     firstName: guest.firstName,
     lastName: guest.lastName,
     seatsReserved: guest.seatsReserved,
+    companions: guest.companions ?? [],
     ts: Date.now(),
   };
-  return signLabeled("session", payload);
+}
+
+export async function encodeSession(guest: Guest): Promise<string> {
+  return signLabeled("session", payloadFor(guest));
 }
 
 // Invitation links emailed to guests carry a signed token so clicking
@@ -137,14 +143,12 @@ export async function encodeSession(guest: Guest): Promise<string> {
 export const INVITE_MAX_MS = 400 * 24 * 60 * 60 * 1000;
 
 export async function encodeInvite(guest: Guest): Promise<string> {
-  const payload: SessionPayload = {
-    code: INVITATION_CODE,
-    firstName: guest.firstName,
-    lastName: guest.lastName,
-    seatsReserved: guest.seatsReserved,
-    ts: Date.now(),
-  };
-  return signLabeled("invite", payload);
+  return signLabeled("invite", payloadFor(guest));
+}
+
+// Cookies minted before companions were stored simply have none.
+function normalise(p: SessionPayload): SessionPayload {
+  return { ...p, companions: Array.isArray(p.companions) ? p.companions.filter((c) => typeof c === "string") : [] };
 }
 
 export async function decodeInvite(
@@ -155,7 +159,7 @@ export async function decodeInvite(
   if (typeof decoded.ts !== "number" || Date.now() - decoded.ts > INVITE_MAX_MS) {
     return null;
   }
-  return decoded;
+  return normalise(decoded);
 }
 
 export async function decodeSession(
@@ -166,5 +170,5 @@ export async function decodeSession(
   if (typeof decoded.ts !== "number" || Date.now() - decoded.ts > SESSION_MAX_MS) {
     return null;
   }
-  return decoded;
+  return normalise(decoded);
 }

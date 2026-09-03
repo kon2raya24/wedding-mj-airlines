@@ -16,8 +16,12 @@ const config: Config = {
         // borders, and highlights so #8398B7 stays visibly "the color."
         navy: "#1c2940",
         "navy-deep": "#4c6385",
-        gold: "#c89b3c",
-        "gold-soft": "#e6c98a",
+        // Accents come from the attire motif (lib/config.ts): Silver Gray is
+        // the metallic, Warm Gray the neutral. `silver-pale` is for small
+        // text on navy-deep, where plain silver falls under 4.5:1.
+        silver: "#b9bec6",
+        "silver-pale": "#e1e4e9",
+        warm: "#b3a89b",
         sky: "#8398b7",
         "sky-pale": "#c5d2e3",
         sand: "#e9dcc2",
@@ -28,7 +32,6 @@ const config: Config = {
         // legacy aliases kept for safety
         blush: "#e9dcc2",
         "blush-deep": "#cdb98a",
-        champagne: "#c89b3c",
         sage: "#8398b7",
       },
       fontFamily: {
@@ -37,9 +40,15 @@ const config: Config = {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
+      transitionTimingFunction: {
+        "out-expo": "cubic-bezier(0.16, 1, 0.3, 1)",
+      },
       animation: {
         "fade-in": "fadeIn 1.2s ease-out forwards",
         "fade-up": "fadeUp 0.9s ease-out forwards",
+        "hero-up": "heroUp 1.1s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "zoom-in": "zoomIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "fade-in-fast": "fadeIn 0.3s ease-out both",
         "float-slow": "float 6s ease-in-out infinite",
         "confetti": "confetti 2.5s ease-out forwards",
         "stamp": "stamp 0.6s cubic-bezier(.22,1.5,.36,1) forwards",
@@ -53,6 +62,14 @@ const config: Config = {
         fadeUp: {
           "0%": { opacity: "0", transform: "translateY(24px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        heroUp: {
+          "0%": { opacity: "0", transform: "translateY(28px)", filter: "blur(6px)" },
+          "100%": { opacity: "1", transform: "translateY(0)", filter: "blur(0)" },
+        },
+        zoomIn: {
+          "0%": { opacity: "0", transform: "scale(0.96)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
         },
         float: {
           "0%, 100%": { transform: "translateY(0)" },

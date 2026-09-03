@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Great_Vibes, Cormorant_Garamond, Inter } from "next/font/google";
-import { wedding } from "@/lib/config";
+import { wedding, siteUrl } from "@/lib/config";
 import "./globals.css";
 
 const script = Great_Vibes({
@@ -23,9 +23,23 @@ const sans = Inter({
   display: "swap",
 });
 
+const title = `${wedding.groomFirst} & ${wedding.brideFirst} — ${wedding.shortDate}`;
+const description = `Join us as we say "I do." ${wedding.shortDate} at ${wedding.destinationVenue}.`;
+
+// Share cards: app/opengraph-image.jpg is picked up automatically; metadataBase
+// makes its URL absolute so Messenger, Viber and iMessage can fetch it.
 export const metadata: Metadata = {
-  title: `${wedding.groomFirst} & ${wedding.brideFirst} — ${wedding.shortDate}`,
-  description: `Join us as we say "I do." ${wedding.shortDate} at ${wedding.destinationVenue}.`,
+  metadataBase: new URL(siteUrl()),
+  title,
+  description,
+  openGraph: {
+    title,
+    description,
+    siteName: wedding.brand,
+    type: "website",
+    locale: "en_PH",
+  },
+  twitter: { card: "summary_large_image", title, description },
 };
 
 export default function RootLayout({

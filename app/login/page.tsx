@@ -56,7 +56,11 @@ export default async function LoginPage({
       gate={wedding.gate}
       origin={wedding.origin}
       destination={wedding.destination}
-      background={wedding.backgrounds.login}
+      venue={wedding.destinationVenue}
+      ceremonyTime={wedding.ceremonyTime}
+      videoUrl={wedding.prenup.videoUrl}
+      lightVideoUrl={wedding.prenup.loopUrl}
+      poster={wedding.prenup.poster}
       action={checkIn}
     />
   );

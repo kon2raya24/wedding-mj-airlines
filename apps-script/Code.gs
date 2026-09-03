@@ -31,7 +31,7 @@ const TAB_RSVPS = 'RSVPs';
 const TAB_GUESTBOOK = 'Guestbook';
 
 const HEADERS = {};
-HEADERS[TAB_GUESTS] = ['First name', 'Last name', 'Seats reserved'];
+HEADERS[TAB_GUESTS] = ['First name', 'Last name', 'Seats reserved', 'Companions'];
 HEADERS[TAB_RSVPS] = [
   'Submitted at', 'First name', 'Last name', 'Seats reserved',
   'Attending', 'Seats attending', 'Companions', 'Email', 'Note',
@@ -91,13 +91,19 @@ function key(first, last) {
 // ── actions ───────────────────────────────────────────────────────────────
 
 function readGuests() {
-  return rows(TAB_GUESTS, 3)
+  return rows(TAB_GUESTS, 4)
     .filter(function (r) { return r[0] || r[1]; })
     .map(function (r) {
+      // Companions: one per line, or separated by ";".
+      const companions = String(r[3] || '')
+        .split(/[;\n]/)
+        .map(function (s) { return s.trim(); })
+        .filter(Boolean);
       return {
         firstName: r[0].trim(),
         lastName: r[1].trim(),
-        seatsReserved: Math.max(1, parseInt(r[2], 10) || 1),
+        seatsReserved: Math.max(1, parseInt(r[2], 10) || 1, 1 + companions.length),
+        companions: companions,
       };
     });
 }
@@ -109,9 +115,9 @@ function setGuests(list) {
   if (last > 1) sh.getRange(2, 1, last - 1, HEADERS[TAB_GUESTS].length).clearContent();
   if (!list.length) return { ok: true, count: 0 };
   const rows = list.map(function (g) {
-    return [g.firstName, g.lastName, g.seatsReserved];
+    return [g.firstName, g.lastName, g.seatsReserved, (g.companions || []).join('; ')];
   });
-  sh.getRange(2, 1, rows.length, 3).setValues(rows);
+  sh.getRange(2, 1, rows.length, 4).setValues(rows);
   return { ok: true, count: rows.length };
 }
 

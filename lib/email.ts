@@ -20,7 +20,8 @@ const NAVY = "#1c2940";
 const NAVY_DEEP = "#4c6385";
 const CREAM = "#f6efe0";
 const SAND = "#e9dcc2";
-const GOLD = "#c89b3c";
+const SILVER = "#b9bec6";
+const SKY = "#8398b7";
 
 const SERIF = "Georgia, 'Cormorant Garamond', 'Times New Roman', serif";
 const SANS = "Arial, Helvetica, sans-serif";
@@ -106,7 +107,7 @@ function renderPass(entry: RsvpEntry, forCouple: boolean, inviteUrl: string): st
           <td style="background:${NAVY};padding:18px 26px;">
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
-                <td style="font-family:${SANS};font-size:11px;letter-spacing:3px;text-transform:uppercase;color:${GOLD};">
+                <td style="font-family:${SANS};font-size:11px;letter-spacing:3px;text-transform:uppercase;color:${SILVER};">
                   &#9992;&nbsp; ${escapeHtml(wedding.brand)}
                   <div style="font-family:${SANS};font-size:9px;letter-spacing:2px;color:${CREAM}b3;padding-top:4px;">${escapeHtml(wedding.tagline)}</div>
                 </td>
@@ -129,7 +130,7 @@ function renderPass(entry: RsvpEntry, forCouple: boolean, inviteUrl: string): st
               </tr>
               <tr>
                 <td style="font-family:${SERIF};font-size:26px;color:${NAVY};">${escapeHtml(wedding.origin)}</td>
-                <td align="center" style="font-family:${SANS};font-size:16px;color:${GOLD};">&#9992;</td>
+                <td align="center" style="font-family:${SANS};font-size:16px;color:${SKY};">&#9992;</td>
                 <td align="right" style="font-family:${SERIF};font-size:26px;color:${NAVY};">${escapeHtml(wedding.destination)}</td>
               </tr>
             </table>
@@ -137,7 +138,7 @@ function renderPass(entry: RsvpEntry, forCouple: boolean, inviteUrl: string): st
         </tr>
 
         <!-- perforation -->
-        <tr><td style="font-size:0;line-height:0;border-top:2px dashed ${GOLD}66;">&nbsp;</td></tr>
+        <tr><td style="font-size:0;line-height:0;border-top:2px dashed ${SKY}66;">&nbsp;</td></tr>
 
         <!-- greeting -->
         <tr>
@@ -150,7 +151,7 @@ function renderPass(entry: RsvpEntry, forCouple: boolean, inviteUrl: string): st
         <!-- pass details -->
         <tr>
           <td style="padding:18px 26px 4px;">
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px dashed ${GOLD}66;border-radius:4px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px dashed ${SKY}66;border-radius:4px;">
               <tr><td style="padding:18px 20px 4px;">
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                   ${field("Passenger", escapeHtml(fullName))}

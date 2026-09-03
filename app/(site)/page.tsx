@@ -1,7 +1,8 @@
 import Hero from "@/components/Hero";
 import QuickLinks from "@/components/QuickLinks";
 import PassengerCheckIn from "@/components/PassengerCheckIn";
-import BoardingPassStub from "@/components/BoardingPassStub";
+import BoardingPass from "@/components/BoardingPass";
+import TiltCard from "@/components/TiltCard";
 import Countdown from "@/components/Countdown";
 import OurStory from "@/components/OurStory";
 import EventDetails from "@/components/EventDetails";
@@ -17,6 +18,7 @@ import RSVP from "@/components/RSVP";
 import Footer from "@/components/Footer";
 import Marquee from "@/components/Marquee";
 import Quote from "@/components/Quote";
+import Reveal from "@/components/Reveal";
 import { weddingPhase } from "@/lib/day-of";
 
 export default function Home() {
@@ -28,23 +30,29 @@ export default function Home() {
       <Hero />
 
       {/* Dashboard row — quick links, check-in form, side stub */}
-      <section className="relative bg-navy-deep">
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 py-8 lg:py-12 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
-          {/* Left column — quick links + (conditional) countdown stacked */}
-          <div className="lg:col-span-5 grid grid-cols-1 gap-6 lg:gap-8">
-            <QuickLinks />
-            {showCountdown && <Countdown />}
-          </div>
+      {/* Dashboard row — the boarding pass rises out of the film into the
+          counter, followed by check-in, quick links and the countdown. */}
+      <section className="relative z-20 pb-6 md:pb-10">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 -mt-24 lg:-mt-32 pb-8 lg:pb-12 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+          <Reveal className="lg:col-span-7">
+            <TiltCard className="h-full">
+              <BoardingPass />
+            </TiltCard>
+          </Reveal>
 
-          {/* Center — Passenger check-in form */}
-          <div className="lg:col-span-4">
+          <Reveal delay={120} className="lg:col-span-5">
             <PassengerCheckIn />
-          </div>
+          </Reveal>
 
-          {/* Right — vertical boarding pass stub */}
-          <div className="lg:col-span-3">
-            <BoardingPassStub />
-          </div>
+          <Reveal delay={200} className={showCountdown ? "lg:col-span-7" : "lg:col-span-12"}>
+            <QuickLinks />
+          </Reveal>
+
+          {showCountdown && (
+            <Reveal delay={280} className="lg:col-span-5">
+              <Countdown />
+            </Reveal>
+          )}
         </div>
       </section>
 

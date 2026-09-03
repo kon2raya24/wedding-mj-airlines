@@ -47,15 +47,34 @@ export const wedding = {
     { name: "Warm Gray", hex: "#b3a89b" },
   ],
 
-  // Attire guidance by role — shown under the motif swatches.
+  // Attire guidance by group. `image` is the illustrated line-up for the
+  // group (public/images/attire); `swatches` are the chips shown above it.
   attire: {
-    image: "/images/attire-guide.jpg",
     palette: "Dusty Blue · Navy Blue · Silvery or Gray",
-    roles: [
-      { role: "Principal Sponsors", guidance: "Gray or silver gray", hex: "#b9bec6" },
-      { role: "Secondary Sponsors", guidance: "Dusty blue", hex: "#8398b7" },
-      { role: "Guests", guidance: "Any shades of blue or warm gray", hex: "#6f86a8" },
+    groups: [
+      {
+        name: "Principal Sponsors",
+        cabin: "First Class",
+        ladies: "Silver gray long formal dress",
+        gentlemen: "Black suit and pants",
+        swatches: ["#b9bec6", "#1a1a1a"],
+        image: "/images/attire/sponsors.webp",
+      },
+      {
+        name: "Bridesmaids & Groomsmen",
+        cabin: "Business",
+        ladies: "Dusty blue long formal dress",
+        gentlemen: "Gray suit and pants",
+        swatches: ["#8398b7", "#7d858f"],
+        image: "/images/attire/entourage.webp",
+      },
     ],
+    guests: {
+      cabin: "Economy Plus",
+      note:
+        "We would love to see you in your best formal or semi-formal attire that suits our color motif below. We kindly ask that you avoid casual wear.",
+      image: "/images/attire/guests.webp",
+    },
   },
 
   story: [
@@ -167,15 +186,14 @@ export const wedding = {
   // drop an mp3 in public/audio/ and set this to e.g. "/audio/song.mp3".
   music: "",
 
-  // Full-bleed section backgrounds.
-  backgrounds: {
-    hero: "/images/hero.jpg",
-    login: "/images/login.jpg",
-  },
-
   prenup: {
     coverImage: "/images/prenup-cover.jpg",
     videoUrl: "/video/save-the-date.mp4",
+    // The hero plays videoUrl itself (the full 1080p master) on desktop; this
+    // muted 30s 1440px excerpt (~3 MB) is used on phones and data-saver
+    // connections. `poster` is the frame shown until either loads.
+    loopUrl: "/video/hero-loop.mp4",
+    poster: "/images/hero-poster.jpg",
     duration: "1:02",
     tagline: "Our Journey to Forever",
   },

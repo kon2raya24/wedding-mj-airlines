@@ -29,7 +29,7 @@ export default function AdminLogin({
         className="w-full max-w-sm bg-navy-deep/90 text-cream rounded-md p-7 border border-cream/15 shadow-2xl shadow-navy-deep/40 space-y-5"
       >
         <div>
-          <p className="font-sans uppercase tracking-[0.4em] text-[10px] text-gold">Admin</p>
+          <p className="font-sans uppercase tracking-[0.4em] text-[10px] text-silver">Admin</p>
           <h1 className="font-serif text-2xl mt-1">Sign in to manage RSVPs</h1>
         </div>
         <label className="block">
@@ -40,13 +40,13 @@ export default function AdminLogin({
             required
             disabled={!configured}
             autoComplete="current-password"
-            className="mt-1.5 w-full bg-cream/5 border border-cream/20 rounded px-3 py-2.5 font-mono tracking-widest text-cream focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/40 disabled:opacity-50"
+            className="mt-1.5 w-full bg-cream/5 border border-cream/20 rounded px-3 py-2.5 font-mono tracking-widest text-cream focus:outline-none focus:border-silver focus:ring-1 focus:ring-silver/40 disabled:opacity-50"
           />
         </label>
         <button
           type="submit"
           disabled={pending || !configured}
-          className="w-full font-sans uppercase tracking-[0.3em] text-[11px] px-6 py-3.5 bg-gold text-navy-deep hover:bg-cream rounded-sm transition-colors disabled:opacity-60"
+          className="w-full font-sans uppercase tracking-[0.3em] text-[11px] px-6 py-3.5 bg-silver text-navy hover:bg-cream rounded-sm transition-colors disabled:opacity-60"
         >
           {pending ? "Signing in…" : "Sign in"}
         </button>

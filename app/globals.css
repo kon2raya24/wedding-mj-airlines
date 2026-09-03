@@ -9,21 +9,88 @@
     overflow-x: hidden;
   }
   body {
-    @apply bg-cream text-navy font-serif antialiased;
-    background-image:
-      radial-gradient(ellipse 80% 50% at 10% 0%, rgba(200, 155, 60, 0.10), transparent 60%),
-      radial-gradient(ellipse 70% 50% at 90% 30%, rgba(131, 152, 183, 0.28), transparent 60%),
-      radial-gradient(ellipse 60% 40% at 0% 80%, rgba(131, 152, 183, 0.22), transparent 60%),
-      radial-gradient(ellipse 70% 60% at 50% 100%, rgba(233, 220, 194, 0.6), transparent 60%);
-    background-attachment: fixed;
-    overflow-x: hidden;
+    /* Night flight on the wedding motif: the navy from the palette is the
+       ground; the drifting dusty-blue / silver / warm-gray glows live in
+       components/Glow.tsx behind everything. Plain CSS on purpose — an
+       arbitrary colour inside @apply did not compile here. */
+    background-color: #1c2940;
+    @apply text-cream font-serif antialiased;
+    /* Clip (not hide) sideways overflow: iOS lets you pan into anything
+       wider than the screen even with overflow-x hidden on html, and clip
+       does not turn body into a scroll container, so sticky keeps working. */
+    overflow-x: clip;
+    /* No overflow here: with html already clipping the x-axis, a second
+       overflow on body would make body its own scroll container and break
+       position: sticky everywhere. */
+  }
+  /* One focus ring for every interactive element — visible on both the
+     cream and navy surfaces. */
+  :focus-visible {
+    outline: 2px solid #b9bec6;
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  /* Silver disappears on the cream cards; use the deep dusty blue there. */
+  .bg-cream :focus-visible,
+  .bg-cream\/95 :focus-visible,
+  .bg-white :focus-visible {
+    outline-color: #4c6385;
+  }
+  /* Honour reduced motion: keep state changes, drop the choreography. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
   h1, h2, h3 {
     @apply font-serif;
   }
+  /* Lenis inertia scrolling (see components/SmoothScroll.tsx). */
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-stopped { overflow: hidden; }
+  /* Boarding curtain (components/BoardingCurtain.tsx). While it is up the
+     page can't scroll and the hero's entrance waits for the curtain to lift. */
+  .boarding-curtain[data-active] {
+    display: grid;
+    transition: transform 950ms cubic-bezier(0.76, 0, 0.24, 1), opacity 950ms ease;
+  }
+  .boarding-curtain[data-active][data-exit] {
+    transform: translateY(-100%);
+    opacity: 0.9;
+  }
+  html:has(.boarding-curtain[data-active]) { overflow: hidden; }
+  html:has(.boarding-curtain[data-active]) .animate-hero-up,
+  html:has(.boarding-curtain[data-active]) .scribble-path { animation-play-state: paused; }
+  html:has(.boarding-curtain[data-active][data-exit]) .animate-hero-up,
+  html:has(.boarding-curtain[data-active][data-exit]) .scribble-path { animation-play-state: running; }
+  html:has(.boarding-curtain[data-active]) .hero-bg,
+  html:has(.boarding-curtain[data-active]) .hero-exit { animation: none; }
+  .boarding-logo { animation: boarding-in 900ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .boarding-copy { animation: boarding-in 900ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both; }
+  .boarding-bar { animation: boarding-bar 1400ms cubic-bezier(0.65, 0, 0.35, 1) 150ms both; }
+  @keyframes boarding-in {
+    from { opacity: 0; transform: translateY(14px); filter: blur(6px); }
+    to { opacity: 1; transform: none; filter: blur(0); }
+  }
+  @keyframes boarding-bar {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  /* Editorial numbering: every section eyebrow gets an index. */
+  main { counter-reset: section; }
+  main .section-eyebrow { counter-increment: section; }
+  main .section-eyebrow::before {
+    content: counter(section, decimal-leading-zero) "  —  ";
+    white-space: pre;
+    opacity: 0.6;
+  }
   ::selection {
-    background: #c89b3c;
-    color: #f6efe0;
+    background: #8398b7;
+    color: #1c2940;
   }
 }
 
@@ -37,17 +104,256 @@
   .section-title {
     @apply text-center mb-10 sm:mb-14;
   }
+  @keyframes title-up {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @supports (animation-timeline: view()) {
+    .section-title {
+      animation: title-up linear both;
+      animation-timeline: view();
+      animation-range: entry 10% entry 45%;
+    }
+    /* Full-bleed photo drifts a little slower than the page. The quote
+       section clips overflow, which makes it the scroll container for any
+       view() inside it, so the timeline is named on the section itself. */
+    .quote-scene { view-timeline-name: --quote; }
+    .parallax-bg {
+      animation: parallax linear both;
+      animation-timeline: --quote;
+    }
+    /* Hero: content lifts away and fades over the first screen of scroll,
+       while the photo behind it lags, so leaving the hero feels like
+       take-off rather than a hard cut. */
+    .hero-exit {
+      animation: hero-exit linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 90vh;
+    }
+    .hero-bg {
+      animation: hero-bg linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100vh;
+    }
+    /* Script headings write on from the left as they enter. */
+    .section-heading {
+      animation: write-on linear both;
+      animation-timeline: view();
+      animation-range: entry 25% entry 75%;
+    }
+    /* Each story stop is brightest when it crosses the middle of the
+       screen — the plane on the rail is "at" that stop. */
+    .story-focus {
+      animation: story-focus linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+    /* Masked word reveal (range staggered per word inline). */
+    .word-up {
+      animation: word-up linear both;
+      animation-timeline: view();
+      animation-range: entry 15% entry 55%;
+    }
+    /* Route map (components/RouteMap.tsx): plane, trail and stop lights ride
+       the --story view timeline declared on the story list. */
+    .route-plane {
+      offset-path: path("M70 430 Q140 340 215 315 Q285 285 300 120 Q330 30 440 235 Q505 340 530 410");
+      offset-rotate: auto;
+      animation: route-fly linear both;
+      animation-timeline: --story;
+      animation-range: cover 0% cover 100%;
+    }
+    .route-trail {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation: route-trail linear both;
+      animation-timeline: --story;
+      animation-range: cover 0% cover 100%;
+    }
+    .route-node {
+      opacity: 0;
+      animation: route-node linear both;
+      animation-timeline: --story;
+    }
+    /* Images unmask upward and settle from a slight zoom. */
+    .img-reveal {
+      animation: img-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 5% entry 55%;
+    }
+  }
+  @keyframes word-up {
+    from { transform: translateY(110%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes route-fly {
+    from { offset-distance: 0%; }
+    to { offset-distance: 100%; }
+  }
+  @keyframes route-trail {
+    from { stroke-dashoffset: 1; }
+    to { stroke-dashoffset: 0; }
+  }
+  @keyframes route-node {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  /* Without scroll-timeline support (or with reduced motion) show the
+     completed journey rather than a plane stuck at the first stop. */
+  @supports not (animation-timeline: view()) {
+    .route-plane { offset-path: path("M70 430 Q140 340 215 315 Q285 285 300 120 Q330 30 440 235 Q505 340 530 410"); offset-distance: 100%; offset-rotate: auto; }
+    .route-trail { stroke-dasharray: 1; stroke-dashoffset: 0; }
+    .route-node { opacity: 1; }
+  }
+  @keyframes img-reveal {
+    from { clip-path: inset(0 0 100% 0); transform: scale(1.08); }
+    to { clip-path: inset(0 0 0 0); transform: scale(1); }
+  }
+  @keyframes hero-exit {
+    from { transform: translateY(0) scale(1); opacity: 1; }
+    to { transform: translateY(-10vh) scale(0.965); opacity: 0; }
+  }
+  @keyframes hero-bg {
+    from { transform: translateY(0) scale(1); }
+    to { transform: translateY(18vh) scale(1.08); }
+  }
+  @keyframes write-on {
+    from { clip-path: inset(-15% 100% -15% -6%); }
+    to { clip-path: inset(-15% -6% -15% -6%); }
+  }
+  @keyframes story-focus {
+    0% { opacity: 0.4; }
+    42% { opacity: 1; }
+    58% { opacity: 1; }
+    100% { opacity: 0.4; }
+  }
+  @keyframes parallax {
+    from { transform: translateY(-8%) scale(1.15); }
+    to { transform: translateY(8%) scale(1.15); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .section-title, .parallax-bg, .hero-exit, .hero-bg, .section-heading, .story-focus, .word-up, .img-reveal,
+    .route-plane, .route-trail, .route-node, .board-sweep, .route-flow, .desk-card, .scribble-path, .lineup-figure, .hero-pointer-bg, .hero-pointer-fg, .cabin-window, .hero-letter, .cloud {
+      animation: none;
+    }
+    .scribble-path { stroke-dashoffset: 0; }
+    .desk-track { height: auto; }
+    .desk-scene { position: static; height: auto; }
+    .marquee-css { animation-duration: 120s; }
+    .glow-orb { animation: none; }
+    .route-plane { offset-distance: 100%; }
+    .route-trail { stroke-dashoffset: 0; }
+    .route-node { opacity: 1; }
+    .parallax-bg { transform: scale(1.05); }
+  }
+  /* Soft "horizon" edges on the full-bleed dark blocks so the cream sky
+     flows between them instead of meeting at hard lines. */
+  .horizon-b {
+    border-bottom-left-radius: 50% 2.5rem;
+    border-bottom-right-radius: 50% 2.5rem;
+  }
+  .horizon-t {
+    border-top-left-radius: 50% 2.5rem;
+    border-top-right-radius: 50% 2.5rem;
+  }
+  @media (min-width: 768px) {
+    .horizon-b {
+      border-bottom-left-radius: 50% 4.5rem;
+      border-bottom-right-radius: 50% 4.5rem;
+    }
+    .horizon-t {
+      border-top-left-radius: 50% 4.5rem;
+      border-top-right-radius: 50% 4.5rem;
+    }
+  }
+  /* Passport stamps slam down once the card they sit on has revealed. */
+  @keyframes stamp-in {
+    0% { opacity: 0; transform: scale(1.9); }
+    60% { opacity: 1; }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  [data-reveal]:not([data-revealed]) .stamp-in {
+    opacity: 0;
+  }
+  [data-revealed] .stamp-in {
+    animation: stamp-in 0.55s cubic-bezier(0.2, 1.4, 0.4, 1) 350ms both;
+  }
+  /* Hero scroll cue. */
+  @keyframes bob {
+    0%, 100% { transform: translateY(0); opacity: 0.55; }
+    50% { transform: translateY(6px); opacity: 1; }
+  }
+  .animate-bob {
+    animation: bob 1.8s ease-in-out infinite;
+  }
+  /* Toast slides up from the bottom edge. */
+  @keyframes toast-in {
+    from { opacity: 0; transform: translate(-50%, 16px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
+  .animate-toast {
+    animation: toast-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  /* Loading placeholder shimmer. */
+  @keyframes shimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+  }
+  .skeleton {
+    background: linear-gradient(90deg, rgba(28,41,64,0.06) 25%, rgba(28,41,64,0.12) 50%, rgba(28,41,64,0.06) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.6s linear infinite;
+  }
   .section-eyebrow {
-    @apply uppercase tracking-[0.35em] sm:tracking-[0.5em] text-[10px] sm:text-[11px] text-gold mb-3 font-sans;
+    @apply uppercase tracking-[0.35em] sm:tracking-[0.5em] text-[10px] sm:text-[11px] text-silver mb-3 font-sans;
   }
   .section-heading {
-    @apply font-script text-5xl sm:text-6xl md:text-7xl text-navy leading-none;
+    @apply font-script text-6xl sm:text-7xl md:text-8xl text-cream leading-none;
   }
+  /* Glass panel: the surface for UI on the dark ground. Paper objects
+     (boarding pass, postcards, tags) stay cream on purpose. */
   .glass {
-    background: rgba(246, 239, 224, 0.85);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(200, 155, 60, 0.35);
+    /* Dark translucent surface: reads as smoked glass over the glows and
+       keeps cream type at full contrast. */
+    background-color: rgba(76, 99, 133, 0.28);
+    @apply ring-1 ring-cream/10 backdrop-blur-md;
+    box-shadow:
+      0 40px 90px -40px rgba(0, 0, 0, 0.8),
+      0 2px 6px rgba(0, 0, 0, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  }
+  .glow-orb {
+    animation: orb-drift 26s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  .glow-orb-2 { animation-duration: 34s; animation-delay: -8s; }
+  .glow-orb-3 { animation-duration: 40s; animation-delay: -16s; }
+  @keyframes orb-drift {
+    from { transform: translate3d(0, 0, 0) scale(1); }
+    to { transform: translate3d(6vw, -5vh, 0) scale(1.12); }
+  }
+  /* Shared micro-interactions for buttons and CTAs: a hair of lift on
+     hover, a press on click. Colour changes stay in each component. */
+  .btn-motion {
+    @apply transition-all duration-300 ease-out-expo will-change-transform;
+  }
+  .btn-motion:hover {
+    transform: translateY(-2px);
+  }
+  .btn-motion:active {
+    transform: translateY(0) scale(0.98);
+    transition-duration: 80ms;
+  }
+  /* Form fields — one look everywhere. */
+  .field {
+    @apply w-full bg-white border border-navy/30 rounded px-3 py-2.5 font-serif text-base text-navy placeholder:text-navy/70 shadow-inner shadow-navy/[0.04] transition-all duration-200;
+  }
+  .field:hover {
+    @apply border-navy/50;
+  }
+  .field:focus {
+    @apply outline-none border-sky ring-2 ring-sky/25 bg-white;
   }
   .paper {
     background-color: #f6efe0;
@@ -68,7 +374,7 @@
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   }
   .ornament-rule {
-    background: linear-gradient(to right, transparent, rgba(200, 155, 60, 0.6), transparent);
+    background: linear-gradient(to right, transparent, rgba(185, 190, 198, 0.6), transparent);
     height: 1px;
   }
   .ticket-edge {
@@ -80,6 +386,74 @@
     mask:
       radial-gradient(var(--notch) at var(--notch) 50%, transparent 98%, #000) 0 0/100% 100% no-repeat,
       radial-gradient(var(--notch) at calc(100% - var(--notch)) 50%, transparent 98%, #000) 0 0/100% 100% no-repeat;
+  }
+  /* Luggage tags swing from their string on hover. */
+  .tag-swing {
+    transform-origin: 50% 0;
+    will-change: transform;
+  }
+  .tag-swing:hover {
+    animation: tag-swing 1.4s cubic-bezier(0.3, 0, 0.2, 1) both;
+  }
+  @keyframes tag-swing {
+    0% { transform: rotate(var(--tilt, 0deg)); }
+    30% { transform: rotate(calc(var(--tilt, 0deg) + 3.5deg)); }
+    60% { transform: rotate(calc(var(--tilt, 0deg) - 2deg)); }
+    80% { transform: rotate(calc(var(--tilt, 0deg) + 0.8deg)); }
+    100% { transform: rotate(var(--tilt, 0deg)); }
+  }
+  /* Marquee: CSS drift until the velocity-aware JS takes over (and for
+     reduced-motion users, who keep this gentle version). */
+  .marquee-css {
+    animation: marquee-scroll 42s linear infinite;
+  }
+  @keyframes marquee-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  /* A light sweep across primary buttons on hover. */
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-shine::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.35) 50%, transparent 65%);
+    transform: translateX(-130%);
+    transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+  .btn-shine:hover::after {
+    transform: translateX(130%);
+  }
+  /* Departure board: a faint light band sweeps the glass every few seconds. */
+  .board-sweep {
+    animation: board-sweep 9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    animation-delay: 2s;
+  }
+  @keyframes board-sweep {
+    0%, 70% { transform: translateX(-130%) skewX(-12deg); }
+    100% { transform: translateX(260%) skewX(-12deg); }
+  }
+  /* Route map: the planned route's dashes flow toward the destination. */
+  .route-flow {
+    animation: route-dash 2.4s linear infinite;
+  }
+  @keyframes route-dash {
+    to { stroke-dashoffset: -22; }
+  }
+  /* Airmail envelope edge — alternating rouge / dusty-blue stripes. */
+  .airmail-edge {
+    height: 5px;
+    background: repeating-linear-gradient(
+      135deg,
+      #a23a2a 0 10px,
+      transparent 10px 20px,
+      #8398b7 20px 30px,
+      transparent 30px 40px
+    );
   }
   .dotline {
     background-image: radial-gradient(circle, currentColor 1px, transparent 1.5px);
@@ -94,5 +468,203 @@
     background-repeat: repeat-x;
     height: 1px;
     color: currentColor;
+  }
+}
+
+@layer utilities {
+  /* Bottom dock (components/Dock.tsx): smoked glass with a lit top edge. */
+  .dock {
+    background: rgba(28, 41, 64, 0.72);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 1px solid rgba(246, 239, 224, 0.1);
+    box-shadow:
+      0 24px 60px -20px rgba(0, 0, 0, 0.85),
+      0 2px 6px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.14),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+  }
+
+  /* Postcard desk (components/Gallery.tsx). The track is tall so the scene
+     can pin for a while; cards ride the track's view timeline from their
+     scattered start to their grid slot, staggered by --i. */
+  .desk-track {
+    view-timeline-name: --desk;
+    overflow-x: clip;
+  }
+  .desk-card {
+    --scatter: 0.5;
+    transform: rotate(var(--tilt));
+  }
+  @media (min-width: 768px) {
+    .desk-card { --scatter: 1; }
+    .desk-track { height: 180vh; }
+    .desk-scene {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+    }
+  }
+  @supports (animation-timeline: view()) {
+    .desk-card {
+      animation: desk-settle linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 90%;
+    }
+    @media (min-width: 768px) {
+      .desk-card {
+        animation-timeline: --desk;
+        animation-range: contain calc(var(--i) * 6%) contain calc(50% + var(--i) * 6%);
+      }
+    }
+  }
+  @keyframes desk-settle {
+    from { transform: translate3d(calc(var(--sx) * var(--scatter, 1)), calc(var(--sy) * var(--scatter, 1)), 0) rotate(var(--sr)) scale(0.94); }
+    to { transform: translate3d(0, 0, 0) rotate(var(--tilt)) scale(1); }
+  }
+  @supports not (animation-timeline: view()) {
+    .desk-track { height: auto; }
+    .desk-scene { position: static; height: auto; }
+  }
+
+  /* Hand-drawn underline (Decor.tsx Scribble): writes on after the hero
+     copy has landed. */
+  .scribble-path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: scribble 1.1s cubic-bezier(0.65, 0, 0.35, 1) 1.4s forwards;
+  }
+  .scribble-path-2 {
+    animation-duration: 0.8s;
+    animation-delay: 2.1s;
+  }
+  @keyframes scribble {
+    to { stroke-dashoffset: 0; }
+  }
+}
+
+@layer utilities {
+  /* Pointer light on glass (components/Spotlight.tsx). */
+  :where(.glass:not(.fixed):not(.absolute):not(.sticky)) {
+    position: relative;
+  }
+  .glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      380px circle at var(--sx, 50%) var(--sy, 50%),
+      rgba(255, 255, 255, 0.1),
+      rgba(185, 190, 198, 0.04) 40%,
+      transparent 65%
+    );
+    opacity: 0;
+    transition: opacity 500ms ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .glass:hover::before {
+    opacity: 1;
+  }
+
+  /* Hero pointer parallax (components/HeroPointer.tsx): film against the
+     cursor, names with it. */
+  .hero-pointer-bg {
+    transform: translate3d(calc(var(--px, 0) * -14px), calc(var(--py, 0) * -10px), 0) scale(1.05);
+    transition: transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
+  }
+  .hero-pointer-fg {
+    transform: translate3d(calc(var(--px, 0) * 10px), calc(var(--py, 0) * 6px), 0);
+    transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Attire lineup: each figure steps up into the row as it scrolls in. */
+  @supports (animation-timeline: view()) {
+    .lineup-figure {
+      animation: figure-in linear both;
+      animation-timeline: view();
+      animation-range: entry calc(var(--k) * 5%) entry calc(55% + var(--k) * 5%);
+    }
+  }
+  @keyframes figure-in {
+    from { transform: translateY(36px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  /* Background glows also ride the scroll at three depths, added on top of
+     their own drift, so the whole page has parallax behind it. */
+  @supports (animation-timeline: scroll()) {
+    .glow-orb {
+      animation: orb-drift 26s ease-in-out infinite alternate, orb-scroll linear both;
+      animation-timeline: auto, scroll(root);
+      animation-composition: replace, add;
+    }
+    .glow-orb-2 { animation-duration: 34s, auto; animation-delay: -8s, 0s; }
+    .glow-orb-3 { animation-duration: 40s, auto; animation-delay: -16s, 0s; }
+  }
+  @keyframes orb-scroll {
+    to { transform: translate3d(0, var(--rise, -30vh), 0); }
+  }
+}
+
+@layer utilities {
+  /* Quote: the photo opens like a cabin window as the section scrolls in. */
+  .cabin-window {
+    clip-path: inset(0 0 0 0 round 0);
+  }
+  @supports (animation-timeline: view()) {
+    .cabin-window {
+      animation: cabin-open linear both;
+      animation-timeline: --quote;
+      animation-range: entry 0% cover 42%;
+    }
+  }
+  @keyframes cabin-open {
+    from { clip-path: inset(20% 30% 20% 30% round 9rem); }
+    55% { clip-path: inset(7% 9% 7% 9% round 4rem); }
+    to { clip-path: inset(0 0 0 0 round 0); }
+  }
+
+  /* Hero letters scatter at their own speeds as the guest scrolls away,
+     on top of the whole block lifting off (.hero-exit). */
+  .hero-letter {
+    will-change: transform;
+  }
+  @supports (animation-timeline: scroll()) {
+    .hero-letter {
+      animation: letter-drift linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 90vh;
+    }
+  }
+  @keyframes letter-drift {
+    to {
+      transform: translate3d(calc(var(--d, 0) * 0.6vw), calc(var(--d, 0) * -1.6vh), 0) rotate(calc(var(--d, 0) * 0.5deg));
+    }
+  }
+
+  /* Cloud wisps (components/Glow.tsx): slow sideways drift, plus a rise
+     tied to the page scroll so they pass at a different speed. */
+  .cloud {
+    animation: cloud-drift 60s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  .cloud-2 { animation-duration: 75s; animation-delay: -20s; }
+  .cloud-3 { animation-duration: 90s; animation-delay: -40s; }
+  @supports (animation-timeline: scroll()) {
+    .cloud {
+      animation: cloud-drift 60s ease-in-out infinite alternate, orb-scroll linear both;
+      animation-timeline: auto, scroll(root);
+      animation-composition: replace, add;
+    }
+    .cloud-2 { animation-duration: 75s, auto; animation-delay: -20s, 0s; }
+    .cloud-3 { animation-duration: 90s, auto; animation-delay: -40s, 0s; }
+  }
+  @keyframes cloud-drift {
+    to { transform: translate3d(var(--drift, 8vw), 0, 0) scaleX(1.15); }
   }
 }

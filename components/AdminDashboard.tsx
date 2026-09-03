@@ -87,9 +87,9 @@ export default function AdminDashboard({
       <div className="max-w-6xl mx-auto">
         <header className="flex flex-wrap items-end justify-between gap-4 mb-8">
           <div>
-            <p className="font-sans uppercase tracking-[0.4em] text-[10px] text-gold">Admin</p>
+            <p className="font-sans uppercase tracking-[0.4em] text-[10px] text-silver">Admin</p>
             <h1 className="font-serif text-3xl sm:text-4xl mt-1">RSVP Manifest</h1>
-            <p className="font-sans text-sm text-navy/65 mt-1">
+            <p className="font-sans text-sm text-navy/70 mt-1">
               {totalRsvps} of {totalGuests} guests have responded.
             </p>
           </div>
@@ -102,7 +102,7 @@ export default function AdminDashboard({
             </button>
             <button
               onClick={downloadCsv}
-              className="font-sans uppercase tracking-[0.25em] text-[10px] px-4 py-2 bg-navy-deep text-cream hover:bg-gold hover:text-navy rounded"
+              className="font-sans uppercase tracking-[0.25em] text-[10px] px-4 py-2 bg-navy-deep text-cream hover:bg-silver hover:text-navy rounded"
             >
               Export CSV
             </button>
@@ -120,11 +120,11 @@ export default function AdminDashboard({
         <section className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
           <Stat label="Attending" value={totals.yes} accent="text-emerald-600" />
           <Stat label="Declined" value={totals.no} accent="text-rouge" />
-          <Stat label="Pending" value={totals.pending} accent="text-navy/50" />
+          <Stat label="Pending" value={totals.pending} accent="text-navy/70" />
           <Stat
             label="Seats confirmed"
             value={`${totals.seatsConfirmed} / ${totals.seatsReserved}`}
-            accent="text-gold"
+            accent="text-silver"
           />
         </section>
 
@@ -146,7 +146,7 @@ export default function AdminDashboard({
 
         <div className="overflow-x-auto border border-navy/15 rounded bg-white">
           <table className="min-w-full text-sm">
-            <thead className="bg-sand/40 text-navy/60 text-[11px] uppercase tracking-[0.2em]">
+            <thead className="bg-sand/40 text-navy/70 text-[11px] uppercase tracking-[0.2em]">
               <tr>
                 <Th>Name</Th>
                 <Th className="text-center">Reserved</Th>
@@ -194,14 +194,14 @@ export default function AdminDashboard({
                   <Td className="max-w-[240px] truncate" title={r.rsvp?.note ?? ""}>
                     {r.rsvp?.note || "—"}
                   </Td>
-                  <Td className="whitespace-nowrap text-[12px] text-navy/60">
+                  <Td className="whitespace-nowrap text-[12px] text-navy/70">
                     {r.rsvp?.submittedAt ? new Date(r.rsvp.submittedAt).toLocaleString() : "—"}
                   </Td>
                 </tr>
               ))}
               {filteredRows.length === 0 && (
                 <tr>
-                  <td colSpan={9} className="text-center text-navy/55 py-10 italic">
+                  <td colSpan={9} className="text-center text-navy/70 py-10 italic">
                     No guests match this filter.
                   </td>
                 </tr>
@@ -210,7 +210,7 @@ export default function AdminDashboard({
           </table>
         </div>
 
-        <p className="mt-6 text-[12px] text-navy/55 leading-relaxed">
+        <p className="mt-6 text-[12px] text-navy/70 leading-relaxed">
           RSVPs persist in Vercel KV when configured (env vars{" "}
           <code className="font-mono text-[11px] bg-sand/50 px-1 rounded">KV_REST_API_URL</code> and{" "}
           <code className="font-mono text-[11px] bg-sand/50 px-1 rounded">KV_REST_API_TOKEN</code>),
@@ -225,7 +225,7 @@ export default function AdminDashboard({
 function Stat({ label, value, accent }: { label: string; value: number | string; accent: string }) {
   return (
     <div className="bg-white border border-navy/10 rounded p-4">
-      <div className="font-sans uppercase tracking-[0.25em] text-[10px] text-navy/55">{label}</div>
+      <div className="font-sans uppercase tracking-[0.25em] text-[10px] text-navy/70">{label}</div>
       <div className={`font-serif text-2xl sm:text-3xl mt-1 leading-none ${accent}`}>{value}</div>
     </div>
   );
@@ -247,7 +247,7 @@ function Badge({ children, color }: { children: React.ReactNode; color: "emerald
   const styles = {
     emerald: "bg-emerald-100 text-emerald-700 border-emerald-200",
     rouge: "bg-rouge/10 text-rouge border-rouge/30",
-    gray: "bg-navy/5 text-navy/55 border-navy/20",
+    gray: "bg-navy/5 text-navy/70 border-navy/20",
   };
   return (
     <span className={`inline-block px-2 py-0.5 rounded text-[11px] font-sans uppercase tracking-widest border ${styles[color]}`}>

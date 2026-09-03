@@ -7,12 +7,17 @@ const PUBLIC_PATHS = [
   "/i",
   "/api/logout",
   "/api/calendar.ics",
+  // Share cards / icons, fetched by link previews with no cookie.
+  "/opengraph-image",
+  "/twitter-image",
+  "/icon",
+  "/apple-icon",
 ];
 
 export const config = {
   // Skip Next internals and common static asset extensions.
   matcher: [
-    "/((?!_next/|favicon.ico|robots.txt|sitemap.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|map|woff2?|ttf)$).*)",
+    "/((?!_next/|favicon.ico|robots.txt|sitemap.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|map|woff2?|ttf|mp4|webm|mp3|m4a)$).*)",
   ],
 };
 

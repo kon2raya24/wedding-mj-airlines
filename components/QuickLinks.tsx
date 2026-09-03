@@ -41,21 +41,24 @@ const items = [
 
 export default function QuickLinks() {
   return (
-    <div className="bg-cream/95 rounded-md border border-navy/10 shadow-sm overflow-hidden">
-      <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-navy/10">
-        {items.map((item) => {
+    <div className="glass rounded-md overflow-hidden">
+      <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-cream/10">
+        {items.map((item, i) => {
           const Icon = item.icon;
           return (
             <li key={item.href}>
               <a
                 href={item.href}
-                className="group block px-5 py-6 text-center hover:bg-sand/40 transition-colors h-full"
+                className="group block px-5 py-6 text-center hover:bg-white/5 transition-colors h-full"
               >
-                <Icon className="w-9 h-9 mx-auto text-navy/80 group-hover:text-gold transition-colors" />
-                <div className="mt-3 font-sans uppercase tracking-[0.25em] text-[11px] text-navy">
+                <div className="font-mono uppercase tracking-[0.3em] text-[9px] text-cream/60 mb-3 group-hover:text-silver transition-colors">
+                  Gate A{i + 1}
+                </div>
+                <Icon className="w-9 h-9 mx-auto text-cream/85 group-hover:text-silver group-hover:-translate-y-1 transition-[color,transform] duration-300 ease-out-expo" />
+                <div className="mt-3 font-sans uppercase tracking-[0.25em] text-[11px] text-cream">
                   {item.title}
                 </div>
-                <p className="mt-2 font-serif text-[13px] text-navy/65 leading-snug">
+                <p className="mt-2 font-serif text-[13px] text-cream/60 leading-snug">
                   {item.desc}
                 </p>
               </a>

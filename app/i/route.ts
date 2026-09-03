@@ -22,6 +22,7 @@ export async function GET(req: NextRequest) {
       firstName: invite.firstName,
       lastName: invite.lastName,
       seatsReserved: invite.seatsReserved,
+      companions: invite.companions,
     }),
     {
       httpOnly: true,

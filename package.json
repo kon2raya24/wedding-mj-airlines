@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "guests:push": "node scripts/push-guests.mjs"
   },
   "dependencies": {
+    "lenis": "^1.3.26",
     "next": "^15.1.0",
     "qrcode": "^1.5.4",
     "react": "^19.0.0",

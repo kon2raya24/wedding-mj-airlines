@@ -83,10 +83,11 @@ function SplitFlapChar({
   const ch = ALPHA[idx] || " ";
   return (
     <span
-      className="relative inline-flex items-stretch justify-center w-[0.7em] h-[1.1em] bg-navy-deep text-cream rounded-[2px] overflow-hidden shadow-inner shadow-black/40"
+      className="relative inline-flex items-stretch justify-center w-[0.72em] h-[1.25em] bg-[#161d2b] text-cream rounded-[3px] overflow-hidden shadow-[inset_0_1px_0_rgba(255,255,255,0.08),inset_0_-1px_0_rgba(0,0,0,0.6)] ring-1 ring-black/40"
       aria-hidden
     >
-      <span className="absolute inset-x-0 top-1/2 h-px bg-black/70 z-10" />
+      <span className="absolute inset-x-0 top-1/2 h-px bg-black/80 z-10" />
+      <span className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/[0.06] to-transparent pointer-events-none" />
       <span
         key={ch + idx}
         className="flap-anim w-full h-full grid place-items-center font-mono tabular-nums"

@@ -11,6 +11,7 @@ import { isSameOrigin } from "@/lib/csrf";
 
 type RsvpPayload = {
   attending?: "yes" | "no";
+  // Which of the guest's named companions are boarding, by name.
   companions?: { name?: unknown; attending?: unknown }[];
   email?: string;
   note?: string;
@@ -98,18 +99,21 @@ export async function POST(req: Request) {
 
   const attending: "yes" | "no" = payload.attending === "no" ? "no" : "yes";
 
-  // Companions are capped at the seats actually reserved for this guest.
-  // Anything past that is dropped rather than trusted.
+  // Companion names come from the guest list, never from the client; the
+  // client only says which of them are boarding (unlisted = boarding).
+  const flags = new Map<string, boolean>();
+  if (Array.isArray(payload.companions)) {
+    for (const c of payload.companions) {
+      if (c && typeof c.name === "string") flags.set(c.name.trim().toLowerCase(), c.attending === true);
+    }
+  }
   const companions: Companion[] =
-    attending === "no" || !Array.isArray(payload.companions)
+    attending === "no"
       ? []
-      : payload.companions
-          .filter((c) => c && typeof c.name === "string" && c.name.trim())
-          .map((c) => ({
-            name: (c.name as string).trim().slice(0, 80),
-            attending: c.attending === true,
-          }))
-          .slice(0, Math.max(0, guest.seatsReserved - 1));
+      : guest.companions.map((name) => ({
+          name,
+          attending: flags.get(name.trim().toLowerCase()) ?? true,
+        }));
 
   // Derived, never taken from the client: the guest's own seat plus each
   // companion who is boarding.

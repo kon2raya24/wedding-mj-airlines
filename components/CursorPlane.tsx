@@ -30,6 +30,13 @@ export default function CursorPlane() {
     }
     window.addEventListener("mousemove", onMove, { passive: true });
 
+    // Grow and glow over anything clickable.
+    function onOver(e: MouseEvent) {
+      const t = (e.target as Element | null)?.closest("a, button, [role=button], input, textarea, label");
+      planeRef.current?.classList.toggle("is-hover", !!t);
+    }
+    document.addEventListener("mouseover", onOver, { passive: true });
+
     function tick() {
       // Smooth lerp toward target
       const lerp = 0.18;
@@ -69,6 +76,7 @@ export default function CursorPlane() {
 
     return () => {
       window.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseover", onOver);
       if (raf.current) cancelAnimationFrame(raf.current);
     };
   }, []);
@@ -84,20 +92,24 @@ export default function CursorPlane() {
           ref={(el) => {
             trailRefs.current[i] = el;
           }}
-          className="absolute top-0 left-0 w-1.5 h-1.5 rounded-full bg-gold"
+          className="absolute top-0 left-0 w-1.5 h-1.5 rounded-full bg-silver"
         />
       ))}
 
       {/* The paper plane */}
       <div
         ref={planeRef}
-        className="absolute top-0 left-0 will-change-transform"
+        className="group absolute top-0 left-0 will-change-transform"
         style={{ transition: "filter 0.2s" }}
       >
-        <svg viewBox="0 0 32 32" className="w-7 h-7 drop-shadow-[0_2px_4px_rgba(32,41,60,0.45)]">
+        <span
+          aria-hidden
+          className="absolute left-1/2 top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 rounded-full border border-silver/70 opacity-0 scale-50 transition-[opacity,transform] duration-300 ease-out-expo group-[.is-hover]:opacity-100 group-[.is-hover]:scale-100"
+        />
+        <svg viewBox="0 0 32 32" className="w-7 h-7 drop-shadow-[0_2px_4px_rgba(32,41,60,0.45)] transition-transform duration-300 ease-out-expo group-[.is-hover]:scale-125">
           <path
             d="M1 16 L31 2 L20 30 L15 19 L1 16 Z"
-            fill="#c89b3c"
+            fill="#b9bec6"
             stroke="#1c2940"
             strokeWidth="1"
           />

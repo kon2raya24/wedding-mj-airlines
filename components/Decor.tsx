@@ -2,9 +2,9 @@ import { wedding } from "@/lib/config";
 
 type SvgProps = React.SVGProps<SVGSVGElement> & { className?: string };
 
-export function PaperPlane({ className = "" }: SvgProps) {
+export function PaperPlane({ className = "", style }: SvgProps) {
   return (
-    <svg viewBox="0 0 64 64" fill="none" className={className} aria-hidden>
+    <svg viewBox="0 0 64 64" fill="none" className={className} style={style} aria-hidden>
       <path
         d="M2 32 L62 4 L40 60 L30 38 L2 32 Z"
         fill="currentColor"
@@ -79,8 +79,26 @@ export function FlightArc({ className = "" }: SvgProps) {
       />
       <circle cx="20" cy="90" r="5" fill="currentColor" />
       <circle cx="580" cy="90" r="5" fill="currentColor" />
-      <g transform="translate(295, 18) rotate(20)">
+      {/* Static plane for reduced-motion; otherwise one glides the route. */}
+      <g className="hidden motion-reduce:block" transform="translate(295, 18) rotate(20)">
         <path d="M0 8 L24 0 L18 22 L12 14 L0 8 Z" fill="currentColor" />
+      </g>
+      <g className="motion-reduce:hidden">
+        <path
+          d="M2 32 L62 4 L40 60 L30 38 L2 32 Z"
+          fill="currentColor"
+          transform="rotate(43) scale(0.42) translate(-32 -32)"
+        >
+          <animateMotion
+            dur="9s"
+            repeatCount="indefinite"
+            rotate="auto"
+            path="M20 90 Q 300 -30 580 90"
+            calcMode="spline"
+            keyTimes="0;1"
+            keySplines="0.45 0 0.55 1"
+          />
+        </path>
       </g>
     </svg>
   );
@@ -98,6 +116,23 @@ export function FlightArcSmall({ className = "" }: SvgProps) {
       />
       <circle cx="10" cy="32" r="3" fill="currentColor" />
       <circle cx="190" cy="32" r="3" fill="currentColor" />
+      <g className="motion-reduce:hidden">
+        <path
+          d="M2 32 L62 4 L40 60 L30 38 L2 32 Z"
+          fill="currentColor"
+          transform="rotate(43) scale(0.2) translate(-32 -32)"
+        >
+          <animateMotion
+            dur="6s"
+            repeatCount="indefinite"
+            rotate="auto"
+            path="M10 32 Q 100 -16 190 32"
+            calcMode="spline"
+            keyTimes="0;1"
+            keySplines="0.45 0 0.55 1"
+          />
+        </path>
+      </g>
     </svg>
   );
 }
@@ -114,7 +149,8 @@ export function PassportStamp({
   const r = 60;
   const pathId = `stamp-${text.replace(/[^a-z0-9]/gi, "")}`;
   return (
-    <svg viewBox="0 0 160 160" className={className} style={{ transform: `rotate(${rotate}deg)` }} aria-hidden>
+    <span className={`block ${className}`} style={{ transform: `rotate(${rotate}deg)` }} aria-hidden>
+    <svg viewBox="0 0 160 160" className="stamp-in w-full h-full">
       <defs>
         <path id={pathId} d={`M 80 80 m -${r} 0 a ${r} ${r} 0 1 1 ${r * 2} 0 a ${r} ${r} 0 1 1 -${r * 2} 0`} />
       </defs>
@@ -149,6 +185,7 @@ export function PassportStamp({
         {wedding.shortDateCompact.replace(",", "")}
       </text>
     </svg>
+    </span>
   );
 }
 
@@ -213,7 +250,7 @@ export function Sprig({ className = "", flip = false }: SvgProps & { flip?: bool
 
 export function FloralDivider({ className = "" }: SvgProps) {
   return (
-    <div className={`flex items-center justify-center gap-3 text-gold ${className}`}>
+    <div className={`flex items-center justify-center gap-3 text-silver ${className}`}>
       <Sprig className="w-32 md:w-48 h-auto" />
       <PaperPlane className="w-5 h-5" />
       <Sprig className="w-32 md:w-48 h-auto" flip />
@@ -466,6 +503,31 @@ export function FakeQR({ className = "" }: SvgProps) {
         if (inCorner) return null;
         return <rect key={i} x={c.x} y={c.y} width="1" height="1" fill="currentColor" />;
       })}
+    </svg>
+  );
+}
+
+// Hand-drawn underline that writes itself on (see .scribble-path in
+// globals.css). Stretches to the width of whatever it sits under.
+export function Scribble({ className = "" }: SvgProps) {
+  return (
+    <svg viewBox="0 0 320 24" fill="none" aria-hidden className={className} preserveAspectRatio="none">
+      <path
+        className="scribble-path"
+        d="M4 14 C 60 4, 120 22, 180 10 S 280 8, 316 14"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        pathLength={1}
+      />
+      <path
+        className="scribble-path scribble-path-2"
+        d="M40 20 C 110 14, 200 24, 300 18"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        pathLength={1}
+      />
     </svg>
   );
 }
