@@ -21,7 +21,7 @@ export const config = {
   ],
 };
 
-// Link-preview crawlers (Messenger, WhatsApp, iMessage, Viber, Telegram, X,
+// Link-preview crawlers (Messenger,   /facebookexternalhit|Facebot|meta-external|WhatsApp, iMessage, Viber, Telegram, X,
 // Slack, Discord, LinkedIn…). Several of them will not follow a redirect,
 // so instead of bouncing them to /login they are served the login page in
 // place, with a 200 and the share-card metadata in its <head>.
@@ -44,6 +44,16 @@ export async function middleware(req: NextRequest) {
   const token = req.cookies.get(SESSION_COOKIE)?.value;
   const session = await decodeSession(token);
   if (session) return NextResponse.next();
+
+  // The root is the URL people share. Show the check-in page there in place
+  // (200, same URL) rather than redirecting: no crawler has to follow a hop
+  // to find the share card, and guests still land on the form.
+  if (pathname === "/") {
+    const home = req.nextUrl.clone();
+    home.pathname = "/login";
+    home.search = "";
+    return NextResponse.rewrite(home);
+  }
 
   if (PREVIEW_BOT.test(req.headers.get("user-agent") ?? "")) {
     const preview = req.nextUrl.clone();
