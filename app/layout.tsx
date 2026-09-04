@@ -26,8 +26,11 @@ const sans = Inter({
 const title = `${wedding.groomFirst} & ${wedding.brideFirst} — ${wedding.shortDate}`;
 const description = `Join us as we say "I do." ${wedding.shortDate} at ${wedding.destinationVenue}.`;
 
-// Share cards: app/opengraph-image.jpg is picked up automatically; metadataBase
-// makes its URL absolute so Messenger, Viber and iMessage can fetch it.
+// Share card: app/opengraph-image.jpg (1200×630 JPEG, kept under 300 KB so
+// WhatsApp, Viber and iMessage accept it) is picked up automatically;
+// metadataBase makes its URL absolute. The card was rendered from the
+// former app/opengraph-image.tsx route (see git history) — re-render there
+// if the names or date change.
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
   title,
@@ -38,6 +41,7 @@ export const metadata: Metadata = {
     siteName: wedding.brand,
     type: "website",
     locale: "en_PH",
+    url: "/",
   },
   twitter: { card: "summary_large_image", title, description },
 };

@@ -21,6 +21,13 @@ export const config = {
   ],
 };
 
+// Link-preview crawlers (Messenger, WhatsApp, iMessage, Viber, Telegram, X,
+// Slack, Discord, LinkedIn…). Several of them will not follow a redirect,
+// so instead of bouncing them to /login they are served the login page in
+// place, with a 200 and the share-card metadata in its <head>.
+const PREVIEW_BOT =
+  /facebookexternalhit|Facebot|WhatsApp|Twitterbot|TelegramBot|Slackbot|Discordbot|LinkedInBot|Pinterest|Viber|SkypeUriPreview|Snapchat|Applebot|Googlebot|bingbot|kakaotalk-scrap|Line\/|Iframely|Embedly|redditbot|vkShare|W3C_Validator/i;
+
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
@@ -37,6 +44,13 @@ export async function middleware(req: NextRequest) {
   const token = req.cookies.get(SESSION_COOKIE)?.value;
   const session = await decodeSession(token);
   if (session) return NextResponse.next();
+
+  if (PREVIEW_BOT.test(req.headers.get("user-agent") ?? "")) {
+    const preview = req.nextUrl.clone();
+    preview.pathname = "/login";
+    preview.search = "";
+    return NextResponse.rewrite(preview);
+  }
 
   // Send unauthed visitors to the login page, preserving the original URL
   // so we can bounce them back after they check in.
