@@ -41,7 +41,10 @@ export const metadata: Metadata = {
     siteName: wedding.brand,
     type: "website",
     locale: "en_PH",
-    url: "/",
+    // No og:url on purpose: Facebook folds every URL that declares the same
+    // canonical into one cached object, so a stale scrape of the root would
+    // also swallow fresh variants. Without it each shared URL is scraped on
+    // its own.
   },
   twitter: { card: "summary_large_image", title, description },
 };
