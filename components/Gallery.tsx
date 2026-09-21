@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import Image from "next/image";
 import { wedding } from "@/lib/config";
+import { lockScroll } from "@/lib/scroll-lock";
 import { FloralDivider, PassportStamp } from "@/components/Decor";
 
 // Postcards tossed on the table. As the desk pins and the guest scrolls,
@@ -23,29 +24,61 @@ const stampColors = ["text-rouge/80", "text-navy/70", "text-warm", "text-sky", "
 export default function Gallery() {
   const [active, setActive] = useState<number | null>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  // The postcard that opened the lightbox, so focus can be handed back to it.
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const swipeX = useRef<number | null>(null);
   const count = wedding.gallery.length;
+  const isOpen = active !== null;
 
   const step = useCallback(
     (dir: 1 | -1) => setActive((i) => (i === null ? i : (i + dir + count) % count)),
     [count],
   );
 
+  // Escape, arrows, and a Tab trap: `aria-modal` promises focus cannot leave
+  // the dialog, so it has to actually stay in it.
   useEffect(() => {
-    if (active === null) return;
+    if (!isOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setActive(null);
-      if (e.key === "ArrowRight") step(1);
-      if (e.key === "ArrowLeft") step(-1);
+      if (e.key === "Escape") return setActive(null);
+      if (e.key === "ArrowRight") return step(1);
+      if (e.key === "ArrowLeft") return step(-1);
+      if (e.key !== "Tab") return;
+      const root = dialogRef.current;
+      if (!root) return;
+      // Prev / next / close are the only focusable things in here.
+      const items = root.querySelectorAll<HTMLElement>("button");
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      const inside = root.contains(document.activeElement);
+      if (e.shiftKey && (document.activeElement === first || !inside)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (document.activeElement === last || !inside)) {
+        e.preventDefault();
+        first.focus();
+      }
     };
     document.addEventListener("keydown", onKey);
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    return () => document.removeEventListener("keydown", onKey);
+  }, [isOpen, step]);
+
+  // Hold the page still, move focus in, and hand it back to the postcard on
+  // the way out. Keyed on open/closed rather than on `active`, so stepping
+  // between postcards doesn't yank focus back to the close button each time.
+  useEffect(() => {
+    if (!isOpen) return;
+    // Held on <html>: an overflow on <body> never reached the viewport, so the
+    // page used to keep scrolling behind the open postcard.
+    const release = lockScroll();
     closeRef.current?.focus();
     return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prevOverflow;
+      release();
+      triggerRef.current?.focus();
     };
-  }, [active, step]);
+  }, [isOpen]);
 
   return (
     <section id="gallery" className="section">
@@ -74,7 +107,10 @@ export default function Gallery() {
                 >
                   <button
                     type="button"
-                    onClick={() => setActive(i)}
+                    onClick={(e) => {
+                      triggerRef.current = e.currentTarget;
+                      setActive(i);
+                    }}
                     className="group relative block w-full bg-cream p-2.5 sm:p-3 pb-9 sm:pb-11 text-left shadow-[0_18px_40px_-18px_rgba(0,0,0,0.6),0_2px_6px_rgba(0,0,0,0.18)] transition-[transform,box-shadow] duration-500 ease-out-expo hover:-translate-y-1.5 hover:shadow-[0_34px_60px_-20px_rgba(0,0,0,0.7),0_4px_10px_rgba(0,0,0,0.2)]"
                     aria-label={`Open postcard ${i + 1}: ${img.alt}`}
                   >
@@ -108,6 +144,7 @@ export default function Gallery() {
 
       {active !== null && (
         <div
+          ref={dialogRef}
           className="fixed inset-0 z-[60] bg-navy-deep/95 backdrop-blur-sm flex flex-col items-center justify-center p-4 sm:p-8 animate-fade-in-fast"
           onClick={() => setActive(null)}
           role="dialog"
@@ -118,6 +155,17 @@ export default function Gallery() {
             key={active}
             className="relative max-w-[95vw] max-h-[90vh] flex flex-col items-center animate-zoom-in"
             onClick={(e) => e.stopPropagation()}
+            onTouchStart={(e) => {
+              swipeX.current = e.touches[0]?.clientX ?? null;
+            }}
+            onTouchEnd={(e) => {
+              const from = swipeX.current;
+              const to = e.changedTouches[0]?.clientX;
+              swipeX.current = null;
+              if (from == null || to == null) return;
+              // Only a deliberate flick counts, so a tap still does nothing.
+              if (Math.abs(to - from) > 48) step(to < from ? 1 : -1);
+            }}
           >
             <Image
               src={wedding.gallery[active].src}
@@ -137,6 +185,10 @@ export default function Gallery() {
                 {wedding.gallery[active].stamp}
               </span>
             </figcaption>
+            <p className="mt-3 font-mono uppercase tracking-[0.3em] text-[9px] text-cream/45">
+              <span className="md:hidden">Swipe to browse</span>
+              <span className="hidden md:inline">← → to browse · Esc to close</span>
+            </p>
           </figure>
 
           <button

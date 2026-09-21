@@ -45,6 +45,7 @@ export default function FAQ() {
                 <button
                   onClick={() => setOpen(isOpen ? null : i)}
                   aria-expanded={isOpen}
+                  aria-controls={`faq-answer-${i}`}
                   className="w-full grid grid-cols-[auto_1fr_auto] items-start gap-5 sm:gap-8 px-6 sm:px-8 py-6 sm:py-7 text-left"
                 >
                   <span className="font-mono text-2xl sm:text-3xl text-navy-deep leading-none pt-1 tabular-nums">
@@ -62,7 +63,12 @@ export default function FAQ() {
                     </svg>
                   </span>
                 </button>
+                {/* `inert` while collapsed: the grid-rows trick only hides the
+                    answer visually, so without it `aria-expanded` would lie and
+                    a screen reader would read every answer at once. */}
                 <div
+                  id={`faq-answer-${i}`}
+                  inert={!isOpen}
                   className={`grid transition-[grid-template-rows,opacity] duration-500 ease-out-expo ${
                     isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
                   }`}

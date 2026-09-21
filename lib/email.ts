@@ -75,12 +75,18 @@ function motifSwatches(): string {
 // header so the couple can scan a full inbox quickly.
 function renderPass(entry: RsvpEntry, forCouple: boolean, inviteUrl: string): string {
   const attending = entry.attending === "yes";
+  // A representative can decline while companions on the same invitation
+  // still board, so "can't make it" is only the whole story when nobody is.
+  const partyOnly = !attending && entry.seatsAttending > 0;
   const fullName = `${entry.firstName} ${entry.lastName}`;
+  const seats = `${entry.seatsAttending} seat${entry.seatsAttending === 1 ? "" : "s"}`;
 
   const headline = forCouple
     ? attending
       ? `${fullName} is boarding`
-      : `${fullName} can't make it`
+      : partyOnly
+        ? `${fullName} can't make it — ${seats} still boarding`
+        : `${fullName} can't make it`
     : attending
       ? `You're on board, ${entry.firstName}!`
       : `Thank you, ${entry.firstName}`;
@@ -89,7 +95,9 @@ function renderPass(entry: RsvpEntry, forCouple: boolean, inviteUrl: string): st
     ? `${escapeHtml(fullName)} just responded via the wedding site.`
     : attending
       ? `Your seat${entry.seatsAttending > 1 ? "s have" : " has"} been reserved. We can't wait to celebrate with you.`
-      : `We'll miss you on the day, but thank you for letting us know.`;
+      : partyOnly
+        ? `We'll miss you on the day — but ${escapeHtml(seats)} on your invitation ${entry.seatsAttending === 1 ? "is" : "are"} reserved. Thank you for letting us know.`
+        : `We'll miss you on the day, but thank you for letting us know.`;
 
   return `<!doctype html>
 <html>
@@ -250,7 +258,9 @@ export function buildRsvpEmails(entry: RsvpEntry, inviteToken: string): Mail[] {
       replyTo: entry.email || undefined,
       subject: attending
         ? `RSVP: ${who} is boarding (${entry.seatsAttending} of ${entry.seatsReserved})`
-        : `RSVP: ${who} can't make it`,
+        : entry.seatsAttending > 0
+          ? `RSVP: ${who} can't make it — ${entry.seatsAttending} of ${entry.seatsReserved} still boarding`
+          : `RSVP: ${who} can't make it`,
       html: renderPass(entry, true, inviteUrl),
     },
   ];

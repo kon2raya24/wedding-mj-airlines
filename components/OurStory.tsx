@@ -28,6 +28,9 @@ export default function OurStory() {
         <ol className="[view-timeline-name:--story] divide-y divide-dashed divide-silver/40">
           {wedding.story.map((s, i) => (
             <Reveal as="li" key={i} delay={i * 130} className="story-focus py-10 first:pt-0 lg:py-14 lg:first:pt-2">
+              {/* Jump target for this leg's stop on the map (RouteMap.tsx).
+                  html's scroll-padding-top keeps it clear of the nav. */}
+              <span id={`leg-${i}`} aria-hidden />
               <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
                 <span className="font-mono font-bold text-cream text-2xl sm:text-3xl leading-none whitespace-nowrap">
                   {s.code}

@@ -165,7 +165,7 @@ export const wedding = {
     ],
     secondarySponsors: [
       { task: "Candle", names: ["Karl De Guzman", "Mary Lhen Susano"] },
-      { task: "Veil", names: ["Justine Castañeda", "Anna Marie Torres-Ligo", "Mark Gayo", "Princess"] },
+      { task: "Veil", names: ["Justine Castañeda", "Anna Marie Torres-Ligo", "Mark Gayo", "Arianne Princess Chipongian"] },
       { task: "Cord", names: ["Joshua Rodelas", "Kayla Zamudio", "Joshua Moreno", "Regine Ibañez"] },
       { task: "Bible Bearer", names: ["Alwyn Alfonso"] },
       { task: "Coin Bearer", names: ["Jash Andrei Tolentino"] },

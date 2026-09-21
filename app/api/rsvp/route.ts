@@ -107,18 +107,17 @@ export async function POST(req: Request) {
       if (c && typeof c.name === "string") flags.set(c.name.trim().toLowerCase(), c.attending === true);
     }
   }
-  const companions: Companion[] =
-    attending === "no"
-      ? []
-      : guest.companions.map((name) => ({
-          name,
-          attending: flags.get(name.trim().toLowerCase()) ?? true,
-        }));
+  // Kept whichever way the guest answered for themselves: a representative
+  // who can't come does not cancel the rest of their party's seats.
+  const companions: Companion[] = guest.companions.map((name) => ({
+    name,
+    attending: flags.get(name.trim().toLowerCase()) ?? true,
+  }));
 
-  // Derived, never taken from the client: the guest's own seat plus each
-  // companion who is boarding.
+  // Derived, never taken from the client: the guest's own seat if they are
+  // boarding, plus each companion who is.
   const seatsAttending =
-    attending === "no" ? 0 : 1 + companions.filter((c) => c.attending).length;
+    (attending === "yes" ? 1 : 0) + companions.filter((c) => c.attending).length;
 
   const email = (payload.email ?? "").trim().slice(0, 254);
   const validEmail =

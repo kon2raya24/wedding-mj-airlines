@@ -26,7 +26,10 @@ export default function AdminDashboard({
   const totals = useMemo(() => {
     const yes = rows.filter((r) => r.rsvp?.attending === "yes");
     const no = rows.filter((r) => r.rsvp?.attending === "no");
-    const seatsConfirmed = yes.reduce((s, r) => s + (r.rsvp?.seatsAttending ?? 0), 0);
+    // Every answered row, not just the "yes" ones: a representative can
+    // decline while companions on the same invitation still board, and those
+    // seats have to reach the catering count.
+    const seatsConfirmed = rows.reduce((s, r) => s + (r.rsvp?.seatsAttending ?? 0), 0);
     const seatsReserved = rows.reduce((s, r) => s + r.guest.seatsReserved, 0);
     return {
       yes: yes.length,
@@ -172,6 +175,9 @@ export default function AdminDashboard({
                     {r.rsvp ? (
                       r.rsvp.attending === "yes" ? (
                         <Badge color="emerald">Attending</Badge>
+                      ) : r.rsvp.seatsAttending > 0 ? (
+                        // They cannot come, but their companions can.
+                        <Badge color="amber">Party only</Badge>
                       ) : (
                         <Badge color="rouge">Declined</Badge>
                       )
@@ -180,7 +186,7 @@ export default function AdminDashboard({
                     )}
                   </Td>
                   <Td className="text-center">
-                    {r.rsvp?.attending === "yes" ? r.rsvp.seatsAttending : "—"}
+                    {r.rsvp ? r.rsvp.seatsAttending : "—"}
                   </Td>
                   <Td
                     className="max-w-[180px] truncate"
@@ -243,9 +249,16 @@ function Td({ children, className = "", title }: { children: React.ReactNode; cl
   );
 }
 
-function Badge({ children, color }: { children: React.ReactNode; color: "emerald" | "rouge" | "gray" }) {
+function Badge({
+  children,
+  color,
+}: {
+  children: React.ReactNode;
+  color: "emerald" | "amber" | "rouge" | "gray";
+}) {
   const styles = {
     emerald: "bg-emerald-100 text-emerald-700 border-emerald-200",
+    amber: "bg-kraft/20 text-kraft border-kraft/40",
     rouge: "bg-rouge/10 text-rouge border-rouge/30",
     gray: "bg-navy/5 text-navy/70 border-navy/20",
   };

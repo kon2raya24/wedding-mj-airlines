@@ -18,7 +18,12 @@ export default function RouteMap() {
   const stops = wedding.story;
   return (
     <div className="relative aspect-[600/520] w-full max-w-xl mx-auto">
-      <svg viewBox="0 0 600 520" className="absolute inset-0 h-full w-full overflow-visible" aria-hidden>
+      <svg
+        viewBox="0 0 600 520"
+        className="absolute inset-0 h-full w-full overflow-visible"
+        role="group"
+        aria-label={`Flight log — ${stops.length} legs. Each stop links to its leg.`}
+      >
         <defs>
           <radialGradient id="route-glow" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor="#b9bec6" stopOpacity="0.55" />
@@ -26,37 +31,44 @@ export default function RouteMap() {
           </radialGradient>
         </defs>
 
-        {/* Faint chart grid */}
-        {Array.from({ length: 7 }).map((_, i) => (
-          <line key={`h${i}`} x1="0" x2="600" y1={i * 86.6} y2={i * 86.6} stroke="#f6efe0" strokeOpacity="0.07" />
-        ))}
-        {Array.from({ length: 8 }).map((_, i) => (
-          <line key={`v${i}`} x1={i * 85.7} x2={i * 85.7} y1="0" y2="520" stroke="#f6efe0" strokeOpacity="0.07" />
-        ))}
-
-        {/* Planned route (dashed) and the trail flown so far (silver) */}
-        <path d={ROUTE} fill="none" stroke="#f6efe0" strokeOpacity="0.4" strokeWidth="1.5" strokeDasharray="4 7" strokeLinecap="round" className="route-flow" />
-        <path
-          d={ROUTE}
-          pathLength={1}
-          fill="none"
-          stroke="#b9bec6"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          className="route-trail"
-        />
+        {/* Chart grid, planned route (dashed) and the trail flown so far
+            (silver) — all decoration, so kept out of the accessibility tree. */}
+        <g aria-hidden="true">
+          {Array.from({ length: 7 }).map((_, i) => (
+            <line key={`h${i}`} x1="0" x2="600" y1={i * 86.6} y2={i * 86.6} stroke="#f6efe0" strokeOpacity="0.07" />
+          ))}
+          {Array.from({ length: 8 }).map((_, i) => (
+            <line key={`v${i}`} x1={i * 85.7} x2={i * 85.7} y1="0" y2="520" stroke="#f6efe0" strokeOpacity="0.07" />
+          ))}
+          <path d={ROUTE} fill="none" stroke="#f6efe0" strokeOpacity="0.4" strokeWidth="1.5" strokeDasharray="4 7" strokeLinecap="round" className="route-flow" />
+          <path
+            d={ROUTE}
+            pathLength={1}
+            fill="none"
+            stroke="#b9bec6"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            className="route-trail"
+          />
+        </g>
 
         {/* Stops */}
         {STOPS.map((p, i) => {
           // Stop 0 is where leg 1 departs; every later stop is where the
           // previous leg lands. The last stop is the "∞" landing place.
-          const leg = stops[Math.max(0, Math.min(i - 1, stops.length - 1))];
+          const legIndex = Math.max(0, Math.min(i - 1, stops.length - 1));
+          const leg = stops[legIndex];
           const parts = leg.code.split(" - ");
           const code =
             i === STOPS.length - 1 ? "∞" : i === 0 ? parts[0] : parts[1] ?? parts[0];
           const labelAbove = p.y > 260;
           return (
-            <g key={i}>
+            <a
+              key={i}
+              href={`#leg-${legIndex}`}
+              className="route-stop"
+              aria-label={`Leg ${legIndex + 1}: ${leg.title} — ${leg.city}, ${leg.year}`}
+            >
               <circle cx={p.x} cy={p.y} r="26" fill="url(#route-glow)" className="route-node" style={nodeRange(i)} />
               <circle cx={p.x} cy={p.y} r="6" fill="#1c2940" stroke="#f6efe0" strokeWidth="1.5" />
               <circle cx={p.x} cy={p.y} r="6" fill="#b9bec6" className="route-node" style={nodeRange(i)} />
@@ -83,12 +95,15 @@ export default function RouteMap() {
               >
                 {leg.year}
               </text>
-            </g>
+              {/* Hover/focus ring, then a generous invisible hit area on top. */}
+              <circle cx={p.x} cy={p.y} r="15" fill="none" stroke="#f6efe0" strokeWidth="1.5" className="route-ring" />
+              <circle cx={p.x} cy={p.y} r="30" fill="transparent" />
+            </a>
           );
         })}
 
         {/* The plane, riding the route via CSS motion path */}
-        <g className="route-plane">
+        <g className="route-plane" aria-hidden="true">
           <path
             d="M2 32 L62 4 L40 60 L30 38 L2 32 Z"
             fill="#f6efe0"

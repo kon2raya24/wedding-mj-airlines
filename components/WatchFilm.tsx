@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { PlayIcon } from "@/components/Decor";
+import { lockScroll } from "@/lib/scroll-lock";
 
 // "Watch the film": opens the full save-the-date video, with sound, in a
 // cinema overlay. The trigger keeps the #prenup id so the nav link still lands.
@@ -36,12 +37,13 @@ export default function WatchFilm({
       if (e.key === "Escape") setOpen(false);
     };
     document.addEventListener("keydown", onKey);
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    // Held on <html>: an overflow on <body> never reached the viewport, so the
+    // page used to keep scrolling behind the open film.
+    const release = lockScroll();
     closeRef.current?.focus();
     return () => {
       document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prev;
+      release();
     };
   }, [open]);
 

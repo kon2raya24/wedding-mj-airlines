@@ -7,6 +7,9 @@
     scroll-behavior: smooth;
     scroll-padding-top: 5rem;
     overflow-x: hidden;
+    /* Reserve the scrollbar gutter so locking the page (lib/scroll-lock.ts)
+       does not shift the layout sideways on classic-scrollbar platforms. */
+    scrollbar-gutter: stable;
   }
   body {
     /* Night flight on the wedding motif: the navy from the palette is the
@@ -52,33 +55,139 @@
   html.lenis, html.lenis body { height: auto; }
   .lenis.lenis-smooth { scroll-behavior: auto !important; }
   .lenis.lenis-stopped { overflow: hidden; }
-  /* Boarding curtain (components/BoardingCurtain.tsx). While it is up the
-     page can't scroll and the hero's entrance waits for the curtain to lift. */
-  .boarding-curtain[data-active] {
+  /* Invitation gate (components/Porthole.tsx). A guest opening the check-in
+     link arrives in the cabin with the shade still down — an invitation that
+     has not been opened yet. Clicking the window lifts the shade and pushes
+     the frame past the camera onto the form behind it. The porthole's own
+     60vmax box-shadow paints the cabin wall, so the hole is genuinely
+     transparent: what shows through the glass is the check-in page itself.
+     Nothing here is on a timer, so an unopened invitation waits as long as
+     the guest likes. The lock and the .porthole-* classes on <html> are put
+     there by the component, never matched with :has() on its markup, so a
+     guest whose JS never runs is not locked out — the window is a real link
+     that renders the page with the cover suppressed. */
+  html.scroll-locked { overflow: hidden; }
+  html.porthole-active .animate-hero-up,
+  html.porthole-active .scribble-path { animation-play-state: paused; }
+  html.porthole-zooming .animate-hero-up,
+  html.porthole-zooming .scribble-path { animation-play-state: running; }
+  .porthole-open {
+    display: block;
+    border-radius: 34% / 26%;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    animation: porthole-in 800ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  /* A real cabin window: warm moulded plastic, a rounded rectangle rather
+     than an oval. Every ring of the bezel is a concentric box-shadow on this
+     one element rather than a nested box, because a percentage border-radius
+     re-resolves against each box's own size — nesting them left hairline gaps
+     at the corners where the curves disagreed. Sharing one box means the
+     shade's `border-radius: inherit` lines up with the pane exactly.
+
+     The element's own box IS the pane, and it stays transparent, so what
+     shows through the glass is the check-in page behind it. The outermost
+     ring is the cabin wall; the recess shadow sits before it so it still
+     paints on top of the wall, and after the bezels so they stay on top. */
+  .porthole {
+    position: relative;
+    display: block;
+    width: clamp(148px, 37vmin, 236px);
+    aspect-ratio: 3 / 4;
+    border-radius: 34% / 26%;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 2px rgba(255, 255, 255, 0.55),        /* light catching the lip */
+      0 0 0 10px #efe9dd,                         /* inner bezel */
+      0 0 0 23px #d9d1c4,                         /* outer bezel */
+      0 16px 34px -10px rgba(28, 41, 64, 0.42),   /* recess into the wall */
+      0 0 0 60vmax #b3a89b;                       /* the cabin wall */
+    transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  /* Only while it is still shut: once it is opening, hover must not fight
+     the push-in. */
+  .porthole-intro:not([data-open]) .porthole-open:hover .porthole,
+  .porthole-intro:not([data-open]) .porthole-open:focus-visible .porthole {
+    transform: scale(1.03);
+  }
+  .porthole-glass,
+  .porthole-shade {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+  .porthole-glass {
+    background:
+      linear-gradient(118deg, transparent 30%, rgba(255, 255, 255, 0.16) 42%, rgba(255, 255, 255, 0.07) 49%, transparent 62%),
+      radial-gradient(120% 100% at 50% 0%, rgba(28, 41, 64, 0.06), rgba(28, 41, 64, 0.22));
+    transition: opacity 900ms ease;
+  }
+  /* The shade sits closed and slides up on the click, uncovering the view
+     from the bottom — the way a cabin shade actually works. */
+  .porthole-shade {
     display: grid;
-    transition: transform 950ms cubic-bezier(0.76, 0, 0.24, 1), opacity 950ms ease;
+    /* The monogram centred in the pane, the pull tab along the bottom. */
+    grid-template-rows: 1fr auto;
+    justify-items: center;
+    align-items: center;
+    background: linear-gradient(#e6dfd2, #d2c9ba);
+    box-shadow:
+      inset 0 -2px 4px rgba(255, 255, 255, 0.5),
+      0 4px 10px rgba(28, 41, 64, 0.25);
+    transform: translateY(0);
+    transition: transform 750ms cubic-bezier(0.76, 0, 0.24, 1);
   }
-  .boarding-curtain[data-active][data-exit] {
-    transform: translateY(-100%);
-    opacity: 0.9;
+  /* Moulded into the plastic rather than printed on it: a dark tint with a
+     light edge below reads as a debossed stamp. */
+  .porthole-seal {
+    width: 44%;
+    height: auto;
+    color: rgba(28, 41, 64, 0.17);
+    filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.85));
+    transition: color 400ms ease;
   }
-  html:has(.boarding-curtain[data-active]) { overflow: hidden; }
-  html:has(.boarding-curtain[data-active]) .animate-hero-up,
-  html:has(.boarding-curtain[data-active]) .scribble-path { animation-play-state: paused; }
-  html:has(.boarding-curtain[data-active][data-exit]) .animate-hero-up,
-  html:has(.boarding-curtain[data-active][data-exit]) .scribble-path { animation-play-state: running; }
-  html:has(.boarding-curtain[data-active]) .hero-bg,
-  html:has(.boarding-curtain[data-active]) .hero-exit { animation: none; }
-  .boarding-logo { animation: boarding-in 900ms cubic-bezier(0.16, 1, 0.3, 1) both; }
-  .boarding-copy { animation: boarding-in 900ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both; }
-  .boarding-bar { animation: boarding-bar 1400ms cubic-bezier(0.65, 0, 0.35, 1) 150ms both; }
-  @keyframes boarding-in {
+  .porthole-open:hover .porthole-seal,
+  .porthole-open:focus-visible .porthole-seal { color: rgba(28, 41, 64, 0.28); }
+  /* The moulded pull tab along the bottom edge of the shade. */
+  .porthole-tab {
+    display: block;
+    width: 32%;
+    height: 11px;
+    margin-bottom: 6%;
+    border-radius: 999px;
+    background: linear-gradient(#e9e2d6 0%, #cdc3b2 55%, #b6ab99 100%);
+    box-shadow:
+      0 2px 5px rgba(28, 41, 64, 0.3),
+      0 1px 0 rgba(255, 255, 255, 0.75),
+      inset 0 1px 1px rgba(255, 255, 255, 0.6);
+    transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .porthole-open:hover .porthole-tab,
+  .porthole-open:focus-visible .porthole-tab { transform: translateY(-3px); }
+  .porthole-copy { animation: porthole-copy-in 900ms cubic-bezier(0.16, 1, 0.3, 1) 250ms both; }
+  .porthole-intro[data-open] .porthole-shade { transform: translateY(-100%); }
+  .porthole-intro[data-open] .porthole-copy { animation: porthole-copy-out 350ms ease both; }
+  /* Push in: the frame accelerates past the camera, taking the wall with it. */
+  .porthole-intro[data-zoom] .porthole {
+    animation: porthole-zoom 1300ms cubic-bezier(0.55, 0, 0.85, 0.4) both;
+  }
+  .porthole-intro[data-zoom] .porthole-glass { opacity: 0; }
+  @keyframes porthole-in {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes porthole-copy-in {
     from { opacity: 0; transform: translateY(14px); filter: blur(6px); }
     to { opacity: 1; transform: none; filter: blur(0); }
   }
-  @keyframes boarding-bar {
-    from { transform: scaleX(0); }
-    to { transform: scaleX(1); }
+  @keyframes porthole-copy-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+  @keyframes porthole-zoom {
+    from { transform: scale(1); opacity: 1; }
+    86% { opacity: 1; }
+    to { transform: scale(14); opacity: 0; }
   }
   /* Editorial numbering: every section eyebrow gets an index. */
   main { counter-reset: section; }
@@ -233,7 +342,8 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .section-title, .parallax-bg, .hero-exit, .hero-bg, .section-heading, .story-focus, .word-up, .img-reveal,
-    .route-plane, .route-trail, .route-node, .board-sweep, .route-flow, .desk-card, .scribble-path, .lineup-figure, .hero-pointer-bg, .hero-pointer-fg, .cabin-window, .hero-letter, .cloud {
+    .route-plane, .route-trail, .route-node, .board-sweep, .route-flow, .desk-card, .scribble-path, .lineup-figure, .hero-pointer-bg, .hero-pointer-fg, .cabin-window, .hero-letter, .cloud,
+    .descent-window {
       animation: none;
     }
     .scribble-path { stroke-dashoffset: 0; }
@@ -444,6 +554,71 @@
   @keyframes route-dash {
     to { stroke-dashoffset: -22; }
   }
+  /* Takeoff (components/LoginForm.tsx). The moment a guest is checked in, a
+     paper plane climbs away across the screen before the site loads. It is
+     positioned from the top-left corner, so the translate values read as
+     "off the bottom-left" to "off the top-right". */
+  .takeoff { animation: takeoff-in 320ms ease both; }
+  .takeoff-copy { animation: takeoff-copy 1100ms cubic-bezier(0.16, 1, 0.3, 1) 180ms both; }
+  /* Anchored at the middle of the screen and flown symmetrically about it, so
+     it crosses the centre on every viewport. The greeting carries a z-index,
+     so the plane passes behind it. */
+  .takeoff-plane {
+    position: absolute;
+    left: 50%;
+    /* Below the greeting rather than through it — offsetting the anchor keeps
+       the -45deg direction untouched. */
+    top: calc(50% + 19vmin);
+    width: clamp(66px, 10vmin, 124px);
+    height: auto;
+    color: #f6efe0;
+    filter: drop-shadow(0 8px 26px rgba(185, 190, 198, 0.45));
+    animation: takeoff-fly 3400ms cubic-bezier(0.35, 0, 0.7, 1) both;
+  }
+  /* Only offered once the flight is clearly not going to arrive on its own. */
+  .takeoff-continue { animation: takeoff-continue 400ms ease 2700ms both; }
+  @keyframes takeoff-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes takeoff-copy {
+    from { opacity: 0; transform: translateY(16px); filter: blur(6px); }
+    to { opacity: 1; transform: none; filter: blur(0); }
+  }
+  @keyframes takeoff-continue {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  /* Both axes in vmax and equal, so the climb is exactly -45deg on any
+     viewport — mixing vw with vh made the angle depend on the aspect ratio.
+     The icon's nose already points -43deg, so it needs almost no rotation to
+     fly where it is pointing; the few degrees either side of 0 pitch it up as
+     it climbs away. */
+  @keyframes takeoff-fly {
+    0% { transform: translate(-65vmax, 65vmax) rotate(7deg) scale(0.7); opacity: 0; }
+    14% { opacity: 1; }
+    50% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
+    100% { transform: translate(65vmax, -65vmax) rotate(-7deg) scale(1.3); opacity: 0; }
+  }
+
+  /* Route map: each stop is a link to the leg it belongs to, so the flight
+     log doubles as navigation. The ring is the hover/focus affordance; the
+     stop dots themselves are driven by the --story scroll timeline and must
+     be left alone. */
+  .route-stop { cursor: pointer; }
+  .route-ring {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    scale: 0.55;
+    transition: opacity 250ms ease, scale 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .route-stop:hover .route-ring,
+  .route-stop:focus-visible .route-ring {
+    opacity: 0.85;
+    scale: 1;
+  }
+
   /* Airmail envelope edge — alternating rouge / dusty-blue stripes. */
   .airmail-edge {
     height: 5px;
@@ -627,6 +802,43 @@
     from { clip-path: inset(20% 30% 20% 30% round 9rem); }
     55% { clip-path: inset(7% 9% 7% 9% round 4rem); }
     to { clip-path: inset(0 0 0 0 round 0); }
+  }
+
+  /* Landing (components/Footer.tsx). The mirror of the boarding porthole:
+     the cabin wall closes back in until the farewell line is framed by the
+     window. Resting scale is 6 — the aperture is wider than the block, so
+     browsers without view() timelines and reduced-motion users see nothing.
+     The range stops at `entry 100%` because the block sits ~550px from the
+     end of the document: anything past that is never scrolled into reach.
+     The timeline is named on .descent because it clips overflow and would
+     otherwise be the scroll container for the view() inside it. */
+  .descent-window {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: clamp(180px, 32vmin, 300px);
+    aspect-ratio: 3 / 4;
+    translate: -50% -50%;
+    scale: 6;
+    border-radius: 46% / 38%;
+    border: 10px solid #22304a;
+    /* Dusk sky through the glass on approach. */
+    background: radial-gradient(120% 90% at 50% 12%, rgba(131, 152, 183, 0.42), rgba(28, 41, 64, 0));
+    box-shadow:
+      0 0 0 60vmax rgba(28, 41, 64, 0.92),
+      inset 0 0 0 1px rgba(246, 239, 224, 0.14);
+  }
+  @supports (animation-timeline: view()) {
+    .descent { view-timeline-name: --descent; }
+    .descent-window {
+      animation: descent-close linear both;
+      animation-timeline: --descent;
+      animation-range: entry 0% entry 100%;
+    }
+  }
+  @keyframes descent-close {
+    from { scale: 6; }
+    to { scale: 2.2; }
   }
 
   /* Hero letters scatter at their own speeds as the guest scrolls away,

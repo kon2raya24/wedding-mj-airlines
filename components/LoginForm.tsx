@@ -4,6 +4,10 @@ import { useState, useTransition } from "react";
 import { FlightArc, Barcode, PaperPlane, CalendarIcon, PinIcon, ClockIcon } from "@/components/Decor";
 import HeroVideo from "@/components/HeroVideo";
 
+// Long enough to read "welcome aboard" and watch the plane cross the screen
+// and climb away — it has to match .takeoff-plane's flight in globals.css.
+const TAKEOFF_MS = 3400;
+
 function Chip({ icon, text }: { icon: React.ReactNode; text: string }) {
   return (
     <div className="flex items-center gap-3 font-sans uppercase tracking-[0.25em] text-[10px] sm:text-[11px] text-cream/85">
@@ -42,26 +46,64 @@ export default function LoginForm({
   videoUrl: string;
   lightVideoUrl: string;
   poster: string;
-  action: (formData: FormData) => Promise<{ error?: string }>;
+  action: (
+    formData: FormData,
+  ) => Promise<{ error: string } | { ok: true; firstName: string; to: string }>;
 }) {
   const [error, setError] = useState<string | null>(null);
   const [shake, setShake] = useState(false);
   const [pending, startTransition] = useTransition();
+  // Set the moment check-in succeeds: the plane climbs away, then we navigate.
+  const [takeoff, setTakeoff] = useState<{ firstName: string; to: string } | null>(null);
 
   function onSubmit(formData: FormData) {
     setError(null);
     startTransition(async () => {
       const result = await action(formData);
-      if (result?.error) {
+      if ("error" in result) {
         setError(result.error);
         setShake(true);
         window.setTimeout(() => setShake(false), 600);
+        return;
       }
+      // A full navigation rather than a client push: the session cookie was
+      // just set, and this guarantees the server renders with it.
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        window.location.href = result.to;
+        return;
+      }
+      setTakeoff({ firstName: result.firstName, to: result.to });
+      window.setTimeout(() => {
+        window.location.href = result.to;
+      }, TAKEOFF_MS);
     });
   }
 
   return (
     <div className="grain relative min-h-[100svh] bg-navy text-cream overflow-x-hidden">
+      {takeoff && (
+        <div className="takeoff fixed inset-0 z-[95] grid place-items-center bg-navy" role="status">
+          <div className="takeoff-copy relative z-10 px-6 text-center">
+            <p className="font-sans uppercase tracking-[0.4em] text-[10px] text-cream/70">
+              Checked in
+            </p>
+            <p className="mt-4 font-script text-4xl sm:text-5xl text-cream">
+              Welcome aboard{takeoff.firstName ? `, ${takeoff.firstName}` : ""}
+            </p>
+            <p className="mt-5 font-mono uppercase tracking-[0.3em] text-[9px] text-cream/50">
+              Flight {flightNumber} · cleared for takeoff
+            </p>
+            {/* The timer does the navigating; this is here in case it cannot. */}
+            <a
+              href={takeoff.to}
+              className="takeoff-continue mt-8 inline-block font-sans uppercase tracking-[0.3em] text-[10px] text-cream/50 underline decoration-cream/30 hover:text-silver"
+            >
+              Continue
+            </a>
+          </div>
+          <PaperPlane className="takeoff-plane" aria-hidden />
+        </div>
+      )}
       {/* The film */}
       <div className="fixed inset-0" aria-hidden>
         <HeroVideo src={videoUrl} lightSrc={lightVideoUrl} poster={poster} />

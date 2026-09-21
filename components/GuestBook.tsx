@@ -141,9 +141,12 @@ export default function GuestBook() {
             <PaperPlane className="w-4 h-4" />
             {status === "submitting" ? "Sending…" : "Send postcard"}
           </button>
-          {status === "error" && (
-            <p className="text-sm text-rouge font-serif">{error}</p>
-          )}
+          {/* Pre-rendered so the live region already exists when it gets
+              something to say — a screen reader can miss an alert that is
+              inserted together with its text. */}
+          <p role="alert" className="text-sm text-rouge font-serif">
+            {status === "error" ? error : ""}
+          </p>
         </div>
       </form>
 

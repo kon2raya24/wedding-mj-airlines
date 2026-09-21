@@ -6,7 +6,6 @@ import BackToTop from "@/components/BackToTop";
 import AltitudeMeter from "@/components/AltitudeMeter";
 import Glow from "@/components/Glow";
 import SmoothScroll from "@/components/SmoothScroll";
-import BoardingCurtain, { BOARDED_COOKIE } from "@/components/BoardingCurtain";
 import CursorPlane from "@/components/CursorPlane";
 import Dock from "@/components/Dock";
 import Spotlight from "@/components/Spotlight";
@@ -18,12 +17,10 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   const cookieStore = await cookies();
   const session = await decodeSession(cookieStore.get(SESSION_COOKIE)?.value);
   if (!session) redirect("/login");
-  const firstVisit = !cookieStore.get(BOARDED_COOKIE);
 
   return (
     <AuthProvider initialSession={session}>
       <Glow />
-      <BoardingCurtain active={firstVisit} />
       <SmoothScroll />
       <Nav />
       <CursorPlane />

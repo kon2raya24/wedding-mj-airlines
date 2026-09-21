@@ -57,11 +57,12 @@ export default function RSVP() {
     };
   }, [auth]);
 
-  // Seats used = the guest (if boarding) plus each companion who is boarding.
+  // Seats used = the guest's own seat if they are boarding, plus every
+  // companion who is boarding. A representative who can't come no longer
+  // rules out the rest of their party — each seat is answered on its own.
   const seatsAttending =
-    attending === "no"
-      ? 0
-      : 1 + companions.filter((c) => c.attending).length;
+    (attending === "yes" ? 1 : 0) + companions.filter((c) => c.attending).length;
+  const someoneBoarding = seatsAttending > 0;
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -79,7 +80,7 @@ export default function RSVP() {
     // so they are deliberately not sent here.
     const payload = {
       attending,
-      companions: attending === "yes" ? companions : [],
+      companions,
       note: note.trim(),
       email: email.trim(),
       submittedAt: new Date().toISOString(),
@@ -141,15 +142,21 @@ export default function RSVP() {
           <div className="p-10 text-center relative">
             <PaperPlane className="w-12 h-12 text-sky mx-auto mb-4" />
             <h3 className="font-script text-6xl text-navy mb-3">
-              {attending === "yes" ? "You're on board!" : "Safe travels"}
+              {attending === "yes"
+                ? "You're on board!"
+                : someoneBoarding
+                  ? "Their seats are saved"
+                  : "Safe travels"}
             </h3>
             <p className="font-serif text-lg text-navy/80 max-w-md mx-auto">
               {attending === "yes"
                 ? `Your seat${seatsAttending > 1 ? "s have" : " has"} been reserved. We'll see you at the gate on November 26.`
-                : "We'll miss you on the day, but we're so grateful you took the time to let us know."}
+                : someoneBoarding
+                  ? `We'll miss you on the day — but ${seatsAttending === 1 ? "one seat is" : `${seatsAttending} seats are`} reserved for your party. Thank you for letting us know.`
+                  : "We'll miss you on the day, but we're so grateful you took the time to let us know."}
             </p>
             <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-              {attending === "yes" &&
+              {someoneBoarding &&
                 CONFETTI_PIECES.map((_, i) => (
                   <span
                     key={i}
@@ -331,26 +338,35 @@ export default function RSVP() {
                   </div>
                 </fieldset>
 
-                {attending === "yes" && companions.length > 0 && (
+                {companions.length > 0 && (
                   <fieldset>
                     <legend className="font-sans uppercase tracking-[0.25em] sm:tracking-[0.3em] text-[10px] text-navy/70 mb-1">
-                      Who is flying with you?
+                      {attending === "yes" ? "Who is flying with you?" : "Who else is flying?"}
                     </legend>
                     <p className="font-sans text-[12px] text-navy/70 mb-3">
-                      These seats are reserved on your invitation. Tap to mark anyone who can&apos;t make it.
+                      {attending === "yes"
+                        ? "These seats are reserved on your invitation. Tap to mark anyone who can't make it."
+                        : "You can't make it — but the other seats on your invitation are still yours. Mark anyone who can come."}
                     </p>
 
                     <ul className="space-y-2">
-                      {/* The guest themselves — always seat 1 */}
+                      {/* Seat 1 is the guest's own, and mirrors the answer
+                          above rather than assuming they are boarding. */}
                       <li className="flex flex-col sm:flex-row sm:items-center gap-2 bg-sand/40 border border-navy/20 rounded px-3 py-2.5">
-                        <span className="flex-1 font-serif text-base text-navy">
+                        <span
+                          className={`flex-1 font-serif text-base ${
+                            attending === "yes"
+                              ? "text-navy"
+                              : "text-navy/70 line-through decoration-navy/30"
+                          }`}
+                        >
                           {auth.firstName} {auth.lastName}
-                          <span className="ml-2 font-sans uppercase tracking-[0.2em] text-[9px] text-navy/70">
+                          <span className="ml-2 font-sans uppercase tracking-[0.2em] text-[9px] text-navy/70 no-underline">
                             You
                           </span>
                         </span>
                         <span className="font-sans uppercase tracking-[0.2em] text-[10px] text-navy-deep shrink-0">
-                          Boarding
+                          {attending === "yes" ? "Boarding" : "Not boarding"}
                         </span>
                       </li>
 
@@ -439,9 +455,12 @@ export default function RSVP() {
                   {status === "submitting" ? "Reserving seat…" : "Confirm boarding ✈"}
                 </button>
 
-                {status === "error" && (
-                  <p className="text-sm text-rouge font-serif">{error}</p>
-                )}
+                {/* Pre-rendered so the live region already exists when it
+                    gets something to say — a screen reader can miss an alert
+                    that is inserted together with its text. */}
+                <p role="alert" className="text-sm text-rouge font-serif">
+                  {status === "error" ? error : ""}
+                </p>
               </>
             )}
           </div>

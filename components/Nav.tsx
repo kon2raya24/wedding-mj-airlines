@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { MJLogo, PaperPlane } from "@/components/Decor";
+import { lockScroll } from "@/lib/scroll-lock";
 
 const links = [
   { href: "#top", label: "Home" },
@@ -90,14 +91,16 @@ export default function Nav() {
 
   useEffect(() => {
     if (!open) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    // Held on <html>: an overflow on <body> never reached the viewport, so the
+    // page used to keep scrolling behind the open drawer. The drawer's own
+    // overflow-y-auto still scrolls, since the lock is on the root.
+    const release = lockScroll();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setOpen(false);
     };
     document.addEventListener("keydown", onKey);
     return () => {
-      document.body.style.overflow = prev;
+      release();
       document.removeEventListener("keydown", onKey);
     };
   }, [open]);

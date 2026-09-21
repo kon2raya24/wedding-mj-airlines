@@ -6,19 +6,25 @@ import {
   TikTokIcon,
   YouTubeIcon,
 } from "@/components/Decor";
+import CopyButton from "@/components/CopyButton";
 
 export default function Footer() {
   return (
     <footer className="relative bg-navy/85 text-cream py-10 sm:py-12 border-t border-cream/10">
-      {/* Closing beat — one big line before the small print. */}
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 pt-6 pb-12 sm:pt-10 sm:pb-16 mb-10 border-b border-cream/10 text-center">
-        <p className="section-eyebrow !text-silver">Final call</p>
-        <p className="section-heading !text-cream text-6xl sm:text-7xl md:text-8xl lg:text-9xl">
-          See you at the gate
-        </p>
-        <p className="font-sans uppercase tracking-[0.4em] text-[10px] text-cream/60 mt-6">
-          {wedding.shortDate} · {wedding.destinationVenue}
-        </p>
+      {/* Closing beat — one big line before the small print. Landing: the
+          cabin wall closes back in until the window frames it
+          (.descent in globals.css), the mirror of the boarding porthole. */}
+      <div className="descent relative overflow-hidden max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 pt-6 pb-12 sm:pt-10 sm:pb-16 mb-10 border-b border-cream/10 text-center">
+        <span className="descent-window" aria-hidden />
+        <div className="relative">
+          <p className="section-eyebrow !text-silver">Final call</p>
+          <p className="section-heading !text-cream text-6xl sm:text-7xl md:text-8xl lg:text-9xl">
+            See you at the gate
+          </p>
+          <p className="font-sans uppercase tracking-[0.4em] text-[10px] text-cream/60 mt-6">
+            {wedding.shortDate} · {wedding.destinationVenue}
+          </p>
+        </div>
       </div>
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
         {/* Left — brand */}
@@ -33,7 +39,10 @@ export default function Footer() {
 
         {/* Center — hashtag + socials */}
         <div className="flex flex-col items-center gap-4">
-          <div className="font-script text-2xl text-silver">{wedding.hashtag}</div>
+          <div className="flex flex-col items-center gap-1.5">
+            <div className="font-script text-2xl text-silver">{wedding.hashtag}</div>
+            <CopyButton value={wedding.hashtag} what="hashtag" />
+          </div>
           <ul className="flex items-center gap-5 text-cream/85">
             <li>
               <a

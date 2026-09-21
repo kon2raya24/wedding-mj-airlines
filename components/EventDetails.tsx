@@ -1,6 +1,7 @@
 import { wedding } from "@/lib/config";
 import { FloralDivider, PassportStamp, FlightArcSmall } from "@/components/Decor";
 import Reveal from "@/components/Reveal";
+import CopyButton from "@/components/CopyButton";
 
 type Event = typeof wedding.ceremony;
 
@@ -48,7 +49,14 @@ function EventCard({
             </div>
             <div className="grid grid-cols-[88px_1fr] sm:grid-cols-[110px_1fr] gap-2 items-baseline">
               <dt className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[10px] text-cream/60">Address</dt>
-              <dd className="break-words">{event.address}</dd>
+              <dd className="break-words">
+                {event.address}{" "}
+                <CopyButton
+                  value={event.address}
+                  what={`${event.title} address`}
+                  className="ml-1"
+                />
+              </dd>
             </div>
             <div className="grid grid-cols-[88px_1fr] sm:grid-cols-[110px_1fr] gap-2 items-baseline">
               <dt className="font-sans uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[10px] text-cream/60">Dress code</dt>
