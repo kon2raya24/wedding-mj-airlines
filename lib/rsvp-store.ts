@@ -46,7 +46,7 @@ export type SubmitResult =
   | { ok: true; mail: { to: string; sent: boolean; error?: string }[] }
   | { ok: false; alreadySubmitted: true; rsvp: RsvpEntry };
 
-/** Saves the RSVP and sends its emails. Refuses a second submission. */
+/** Saves the RSVP and sends its emails. A later answer replaces the earlier one. */
 export async function submitRsvp(
   entry: RsvpEntry,
   emails: Mail[],
@@ -68,13 +68,12 @@ export async function submitRsvp(
     return { ok: true, mail: res.mail ?? [] };
   }
 
-  // Local dev: same duplicate rule, against the JSON file.
+  // Local dev: same overwrite rule, against the JSON file.
   const existing = await readFromFile();
   const key = guestKey(entry.firstName, entry.lastName);
-  const dupe = existing.find((e) => guestKey(e.firstName, e.lastName) === key);
-  if (dupe) return { ok: false, alreadySubmitted: true, rsvp: dupe };
-
-  existing.push(entry);
+  const at = existing.findIndex((e) => guestKey(e.firstName, e.lastName) === key);
+  if (at >= 0) existing[at] = entry;
+  else existing.push(entry);
   await writeToFile(existing);
   console.log(
     "[Email] backend not configured, would have sent to:",

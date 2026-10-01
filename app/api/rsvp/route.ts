@@ -81,22 +81,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "Invalid payload" }, { status: 400 });
   }
 
-  // One RSVP per guest. Checked server-side so it holds even if someone
-  // re-opens the form in another tab or after signing in again.
-  const existing = await findRsvpForGuest(guest.firstName, guest.lastName);
-  if (existing) {
-    return NextResponse.json(
-      {
-        ok: false,
-        alreadySubmitted: true,
-        rsvp: existing,
-        error:
-          "You've already confirmed your RSVP. Message Joseph or Marjorie if you need to change it.",
-      },
-      { status: 409 },
-    );
-  }
-
   const attending: "yes" | "no" = payload.attending === "no" ? "no" : "yes";
 
   // Companion names come from the guest list, never from the client; the

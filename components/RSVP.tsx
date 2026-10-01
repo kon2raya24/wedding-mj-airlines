@@ -17,6 +17,9 @@ export default function RSVP() {
   // The guest's existing answer, if they have already responded.
   // undefined = still checking, null = none on file.
   const [existing, setExisting] = useState<RsvpEntry | null | undefined>(undefined);
+  // Set while the guest is revising an answer they already sent, so the
+  // form shows instead of the confirmation summary.
+  const [editing, setEditing] = useState(false);
   // Guards against a fast double-click firing two requests before the
   // disabled state has rendered.
   const inFlight = useRef(false);
@@ -103,6 +106,7 @@ export default function RSVP() {
       if (!res.ok) {
         throw new Error(data.error || `Server responded ${res.status}`);
       }
+      setEditing(false);
       setStatus("success");
     } catch (err) {
       setStatus("error");
@@ -211,7 +215,7 @@ export default function RSVP() {
           </div>
 
           <div className="p-4 sm:p-6 md:p-8 space-y-5">
-            {existing ? (
+            {existing && !editing ? (
               <div className="rounded-md border border-sky/40 bg-sky/10 p-5 sm:p-6 space-y-4">
                 <div className="text-center">
                   <p className="font-sans uppercase tracking-[0.3em] text-[10px] text-navy-deep">
@@ -271,10 +275,32 @@ export default function RSVP() {
                   )}
                 </dl>
 
-                <p className="font-serif italic text-navy/70 text-sm text-center pt-1">
-                  Need to change something? Message {wedding.groomFirst} or{" "}
-                  {wedding.brideFirst} and we&apos;ll update it for you.
-                </p>
+                <div className="text-center space-y-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAttending(existing.attending);
+                      setCompanions(
+                        (auth?.companions ?? []).map((name) => ({
+                          name,
+                          attending:
+                            existing.companions.find((c) => c.name === name)?.attending ?? true,
+                        })),
+                      );
+                      setNote(existing.note ?? "");
+                      setEmail(existing.email ?? "");
+                      setStatus("idle");
+                      setEditing(true);
+                    }}
+                    className="btn-motion inline-flex items-center justify-center gap-2 font-sans uppercase tracking-[0.3em] text-[10px] px-5 py-3 bg-navy-deep text-cream hover:bg-silver hover:text-navy rounded-sm"
+                  >
+                    Change my answer
+                  </button>
+                  <p className="font-serif italic text-navy/70 text-sm">
+                    Or message {wedding.groomFirst} or {wedding.brideFirst} and
+                    we&apos;ll update it for you.
+                  </p>
+                </div>
               </div>
             ) : !auth ? (
               <div className="rounded-md border border-sky/40 bg-sky/10 p-5 text-center space-y-3">
