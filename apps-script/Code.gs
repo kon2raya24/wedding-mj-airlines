@@ -139,25 +139,40 @@ function readGuestbook() {
  * submitting at the same moment can't race. Refuses a second submission
  * from the same guest.
  */
+/**
+ * Saves an RSVP. A guest who answers again overwrites their own row, so the
+ * sheet keeps exactly one line per guest and the couple never has to delete
+ * a row by hand to let someone change their mind.
+ */
 function submitRsvp(row, emails) {
   const lock = LockService.getScriptLock();
   lock.waitLock(20000);
+  let updated = false;
   try {
+    const sh = sheet(TAB_RSVPS);
+    const width = HEADERS[TAB_RSVPS].length;
     const guestKey = key(row[1], row[2]);
-    const existing = readRsvpRows();
-    for (let i = 0; i < existing.length; i++) {
-      if (key(existing[i][1], existing[i][2]) === guestKey) {
-        return { ok: false, alreadySubmitted: true, row: existing[i] };
+    const last = sh.getLastRow();
+    // Scanned off the raw range, not readRsvpRows(): that one drops blank
+    // rows, so its indexes no longer line up with the sheet's.
+    if (last > 1) {
+      const vals = sh.getRange(2, 1, last - 1, width).getValues();
+      for (let i = 0; i < vals.length; i++) {
+        if (key(vals[i][1], vals[i][2]) === guestKey) {
+          sh.getRange(i + 2, 1, 1, width).setValues([row]);
+          updated = true;
+          break;
+        }
       }
     }
-    sheet(TAB_RSVPS).appendRow(row);
+    if (!updated) sh.appendRow(row);
   } finally {
     lock.releaseLock();
   }
 
   // Mail is sent after the row is safely written: a delivery problem must
   // never cost the guest their RSVP.
-  return { ok: true, mail: sendAll(emails) };
+  return { ok: true, updated: updated, mail: sendAll(emails) };
 }
 
 function addGuestbook(row) {
