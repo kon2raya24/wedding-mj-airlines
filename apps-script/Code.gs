@@ -136,13 +136,8 @@ function readGuestbook() {
 
 /**
  * Appends the RSVP and sends the emails, under a lock so two guests
- * submitting at the same moment can't race. Refuses a second submission
- * from the same guest.
- */
-/**
- * Saves an RSVP. A guest who answers again overwrites their own row, so the
- * sheet keeps exactly one line per guest and the couple never has to delete
- * a row by hand to let someone change their mind.
+ * submitting at the same moment can't race. A guest who answers again
+ * overwrites their own row, so the sheet keeps one line per guest.
  */
 function submitRsvp(row, emails) {
   const lock = LockService.getScriptLock();
