@@ -41,6 +41,7 @@
   {"family": "Ibañez", "firstName": "Regine", "lastName": "Ibañez", "companions": []},
   {"family": "Ligo", "firstName": "Anna Marie", "lastName": "Ligo", "companions": ["James Ligo"]},
   {"family": "Ligo", "firstName": "James", "lastName": "Ligo", "companions": []},
+  {"family": "Llamas", "firstName": "Cherry", "lastName": "Llamas", "companions": []},
   {"family": "Llaneta", "firstName": "Liezet", "lastName": "Llaneta", "companions": []},
   {"family": "Llaneta", "firstName": "Lovesy Shane", "lastName": "Llaneta", "companions": []},
   {"family": "Loja", "firstName": "Kaizhel", "lastName": "Loja", "companions": []},
