@@ -32,7 +32,7 @@ export const wedding = {
   date: "2026-11-26T15:00:00+08:00",
   ceremonyTime: "3:00 PM",
   boardingTime: "02:30 PM",
-  rsvpCloseDate: "October 2, 2026",
+  rsvpCloseDate: "October 30, 2026",
   dressCode: "Formal Attire",
 
   // Where the guests fly from / to on every boarding pass in the site.
@@ -237,7 +237,7 @@ export const wedding = {
     },
     {
       q: "When should I RSVP?",
-      a: "Please RSVP on or before October 2, 2026 so we can finalize seats with the venue. If we don't hear from you by then, we'll sadly have to take it as a no — no RSVP means no seat on board.",
+      a: "Please RSVP on or before October 30, 2026 so we can finalize seats with the venue. If we don't hear from you by then, we'll sadly have to take it as a no — no RSVP means no seat on board.",
     },
     {
       q: "Can I bring a plus-one?",
